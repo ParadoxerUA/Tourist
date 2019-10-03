@@ -1,6 +1,5 @@
-from flask import Blueprint
-from .urls import add_urls
+from helper_classes.application_blueprint import ApplicationBlueprint
+from .urls import urls
+from .controllers import controllers
 
-smoke_app = Blueprint('smoke_app', __name__)
-
-add_urls(smoke_app)
+smoke_app = ApplicationBlueprint('smoke_app', __name__, controllers, urls)
