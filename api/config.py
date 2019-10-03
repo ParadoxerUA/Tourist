@@ -1,0 +1,3 @@
+APPS = [
+    'smoke_app',
+]
