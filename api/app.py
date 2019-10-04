@@ -8,8 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 
-def create_app(main_app, app_list):
-    setup_db(main_app, app_list)
+def create_app(main_app, app_list, db_config):
+    setup_db(main_app, db_config)
     setup_blueprints(main_app, app_list)
 
 
@@ -28,5 +28,5 @@ def setup_blueprints(main_app, app_list):
 
 
 if __name__ == '__main__':
-    create_app(app, APPS)
+    create_app(app, APPS, Config)
     app.run()

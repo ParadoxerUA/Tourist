@@ -13,10 +13,10 @@ class BaseView(MethodView):
         
         return jsonify(response)
 
-    def _serialize(self, data): 
-        if isinstance(data, list): 
-            return [self._serialize(item) for item in data] 
-        elif isinstance(data, dict): 
+    def _serialize(self, data):
+        if isinstance(data, list):
+            return [self._serialize(item) for item in data]
+        elif isinstance(data, dict):
             return data 
-        else: 
-            return data.__dict__      
+        else:
+            return data.__dict__

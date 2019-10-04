@@ -6,6 +6,5 @@ class SmokeView(BaseView):
     def dispatch_request(self):
         data = [
             app.smoke_app.controllers.SmokeController.get_message(),
-            #self.smoke().get_question()
         ]
         return self._get_response(data)
