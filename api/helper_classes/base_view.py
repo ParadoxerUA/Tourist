@@ -4,9 +4,9 @@ from datetime import datetime
 
 
 class BaseView(MethodView):
-    def _get_response(self, data):
+    def _get_response(self, data, *, status_code=200):
         response = {
-            'status': 200,
+            'status': status_code,
             'data': self._serialize(data),
             'date': datetime.now().__str__(),
         }

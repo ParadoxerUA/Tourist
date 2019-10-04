@@ -3,7 +3,7 @@ from flask import current_app
 
 
 class SmokeView(BaseView):
-    def dispatch_request(self):
+    def get(self):
         data = [
             current_app.blueprints['smoke_app'].controllers.SmokeController.get_message(),
         ]
