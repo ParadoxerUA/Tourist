@@ -1,5 +1,5 @@
-from .views import SmokeView
+from . import views
 
 urls = {
-    '/smoke': SmokeView
+    '/smoke': views.SmokeView
 }
