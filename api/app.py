@@ -9,16 +9,16 @@ app = Flask(__name__)
 
 
 def create_app(main_app, app_list, db_config):
-    setup_db(main_app, db_config)
-    setup_blueprints(main_app, app_list)
+    _setup_db(main_app, db_config)
+    _setup_blueprints(main_app, app_list)
 
 
-def setup_db(main_app, config):
+def _setup_db(main_app, config):
     main_app.config.from_object(config)
     db = SQLAlchemy(main_app)
 
 
-def setup_blueprints(main_app, app_list):
+def _setup_blueprints(main_app, app_list):
     for app in app_list:
         curr_module = importlib.import_module(app + '.app')
         app_bp = getattr(curr_module, app)
