@@ -1,11 +1,10 @@
-from flask import jsonify
-from flask.views import View
-from .controller import register_controllers
+from helper_classes.base_view import BaseView 
+from flask import current_app
 
 
-class SmokeView(View):
-    def dispatch_request(self):
-        smoke_app_controllers = register_controllers()
-
-        return jsonify(smoke_app_controllers.smoke().get_message(),
-                       smoke_app_controllers.smoke().get_question())
+class SmokeView(BaseView):
+    def get(self):
+        data = [
+            current_app.blueprints['smoke_app'].controllers.SmokeController.get_message(),
+        ]
+        return self._get_response(data)

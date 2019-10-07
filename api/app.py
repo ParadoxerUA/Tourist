@@ -1,20 +1,32 @@
 from flask import Flask
 import importlib
-
 from config import APPS
+from db_config import Config
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 
 
-def create_app(app, applications_list):
-    for application in applications_list:
-        curr_module = importlib.import_module(application + '.app')
-        application_bp = getattr(curr_module, application)
-        app.register_blueprint(application_bp)
+def create_app(main_app, app_list, db_config):
+    _setup_db(main_app, db_config)
+    _setup_blueprints(main_app, app_list)
 
-    return app
+
+def _setup_db(main_app, config):
+    main_app.config.from_object(config)
+    db = SQLAlchemy(main_app)
+
+
+def _setup_blueprints(main_app, app_list):
+    for app in app_list:
+        curr_module = importlib.import_module(app + '.app')
+        app_bp = getattr(curr_module, app)
+        app_bp.setup_urls()
+        app_bp.setup_controllers()
+        main_app.register_blueprint(app_bp)
 
 
 if __name__ == '__main__':
-    app = create_app(app, APPS)
+    create_app(app, APPS, Config)
     app.run()

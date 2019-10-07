@@ -1,5 +1,5 @@
-from .views import SmokeView
+from . import views
 
-
-def add_urls(app):
-    app.add_url_rule('/smoke', view_func=SmokeView.as_view('smoke_app'))
+urls = {
+    '/smoke': views.SmokeView
+}
