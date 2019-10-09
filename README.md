@@ -12,3 +12,9 @@ Run tests, type in console
 
 > make run_tests 
 
+## Test
+
+Run in console
+> make debug
+
+> curl -GET localhost:5000/api/smoke/v1/smoke

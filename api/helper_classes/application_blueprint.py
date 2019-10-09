@@ -8,6 +8,7 @@ class ApplicationBlueprint(Blueprint):
         self.controllers_list = controllers_list
         self.urls_dict = urls_dict
         self.controllers = None
+        self.name = name
 
     def setup_urls(self):
         for rule, class_view in self.urls_dict.items():

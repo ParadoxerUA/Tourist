@@ -26,5 +26,5 @@ class BasicTestCase(unittest.TestCase):
 
     def test_smoke_status_code(self):
         """Smoke page status code test"""
-        response = self.test_client.get('/smoke', content_type='html/text')
+        response = self.test_client.get('/api/smoke/v1/smoke', content_type='html/text')
         self.assertEqual(response.status_code, 200)
