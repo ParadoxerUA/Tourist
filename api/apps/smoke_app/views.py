@@ -1,4 +1,4 @@
-from helper_classes.base_view import BaseView 
+from helper_classes.base_view import BaseView
 from flask import current_app
 
 

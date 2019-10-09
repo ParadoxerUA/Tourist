@@ -1,8 +1,14 @@
 # Tourist
-> The aim of the project is ...
-
-Detailed project description
 
 ## Usage
 
-## Installation
+Run app in debug mode, run in console
+> cd tourist
+
+> make debug
+
+Run tests, type in console
+> cd tourist
+
+> make run_tests 
+
