@@ -7,6 +7,7 @@ class DebugConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     APPS = [
         'smoke_app',
+        'user_app',
     ]
 
 
@@ -17,4 +18,5 @@ class ProductionConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     APPS = [
         'api.smoke_app',
+        'api.user_app',
     ]
