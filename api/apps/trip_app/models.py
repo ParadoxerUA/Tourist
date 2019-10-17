@@ -1,0 +1,11 @@
+from database import db
+
+
+class Trip(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(200))
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
+    status = db.Column(db.Boolean)
+    id_admin = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
