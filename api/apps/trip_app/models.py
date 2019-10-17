@@ -9,3 +9,12 @@ class Trip(db.Model):
     end_date = db.Column(db.DateTime)
     status = db.Column(db.Boolean)
     id_admin = db.Column(db.Integer, db.ForeignKey('user_profile.id'))
+
+    @classmethod
+    def create_trip(cls, **data):
+        trip = cls(data)
+        db.session.save(trip)
+        db.session.commit()
+
+    def __repr__(self):
+        return f'<Trip {self.name}>'
