@@ -19,4 +19,5 @@ class ProductionConfig:
     APPS = [
         'api.smoke_app',
         'api.user_app',
+        'api.role_app',
     ]
