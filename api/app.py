@@ -1,5 +1,6 @@
 from flask import Flask
 from apps import APPS
+from flask_sqlalchemy import SQLAlchemy
 
 
 def _setup_blueprints(main_app, app_list):
@@ -12,7 +13,7 @@ def _setup_blueprints(main_app, app_list):
 def _set_db(main_app):
     from database import db
     # import your models below
-
+    main_app.db = SQLAlchemy(main_app)
     db.init_app(main_app)
 
 

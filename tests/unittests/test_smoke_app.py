@@ -8,6 +8,7 @@ class BasicTestCase(unittest.TestCase):
         """Instructions that will be executed before every single test"""
         import sys
         sys.path.append("./api")
+        print(sys.path)
         from api.app import create_app
         from api.config import DebugConfig
         app = create_app(DebugConfig)
@@ -28,3 +29,6 @@ class BasicTestCase(unittest.TestCase):
         """Smoke page status code test"""
         response = self.test_client.get('/api/smoke/v1/smoke', content_type='html/text')
         self.assertEqual(response.status_code, 200)
+
+if __name__ == '__main__':
+    unittest.main()
