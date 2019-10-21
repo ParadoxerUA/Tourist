@@ -44,5 +44,3 @@ if __name__ == '__main__':
     )
     sys.path.append(path)
     unittest.main()
-else:
-    sys.path.append('./api')
