@@ -1,5 +1,5 @@
 import unittest
-import sys
+
 
 class BaseOTCTest(unittest.TestCase):
     def setUp(self):
@@ -44,3 +44,5 @@ if __name__ == '__main__':
     )
     sys.path.append(path)
     unittest.main()
+else:
+    sys.path.append('./api')

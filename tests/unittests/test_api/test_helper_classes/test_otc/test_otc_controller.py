@@ -1,5 +1,5 @@
 import unittest
-import sys
+
 
 class OTCControllerTest(unittest.TestCase):
     def setUp(self):
