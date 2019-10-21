@@ -1,4 +1,4 @@
-from api.database import db
+from database import db
 
 class Trip(db.Model):
     id = db.Column(db.Integer, primary_key=True)
