@@ -1,18 +1,10 @@
 import unittest
-
+import sys
 
 class BaseOTCTest(unittest.TestCase):
     def setUp(self):
         import sys
         import os
-
-        path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                '../../../../..'
-            )
-        )
-        sys.path.append(path)
 
     def test_otc_type_value(self):
         from api.helper_classes import otc
@@ -41,4 +33,14 @@ class BaseOTCTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    import sys
+    import os
+
+    path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '../../../../..'
+        )
+    )
+    sys.path.append(path)
     unittest.main()

@@ -1,18 +1,10 @@
 import unittest
-
+import sys
 
 class OTCControllerTest(unittest.TestCase):
     def setUp(self):
         import sys
         import os
-
-        path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                '../../../../..'
-            )
-        )
-        sys.path.append(path)
 
     def test_create_OTC_instance(self):
         from api.helper_classes import otc
@@ -47,4 +39,14 @@ class OTCControllerTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    import sys
+    import os
+
+    path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '../../../../..'
+        )
+    )
+    sys.path.append(path)
     unittest.main()
