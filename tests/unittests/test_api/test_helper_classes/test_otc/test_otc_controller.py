@@ -2,10 +2,6 @@ import unittest
 
 
 class OTCControllerTest(unittest.TestCase):
-    def setUp(self):
-        import sys
-        import os
-
     def test_create_OTC_instance(self):
         from api.helper_classes import otc
 

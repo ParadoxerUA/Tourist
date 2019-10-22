@@ -2,10 +2,6 @@ import unittest
 
 
 class RegistrationOTCTest(unittest.TestCase):
-    def setUp(self):
-        import sys
-        import os
-
     def test_otc_type_value(self):
         from api.helper_classes import otc
 
