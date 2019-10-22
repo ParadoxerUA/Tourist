@@ -1,20 +1,13 @@
 from helper_classes.base_view import BaseView
 from flask import current_app, request
 from .schemas.trip_schema import TripSchema
-from marshmallow.exceptions import ValidationError
+from marshmallow import ValidationError
 
 
-class TripView(BaseView):
-    def get(self):
-        data = [
-            current_app.blueprints['trip'].controllers.TripController.get_message(),
-        ]
-        return self._get_response(data)
-
+class AddTripView(BaseView):
     def post(self):
-        schema = TripSchema()
         try:
-            result = schema.load(request.json)
+            result = TripSchema().load(request.json)
             data = [
                 current_app.blueprints['trip'].controllers.TripController.add_trip(result),
             ]
