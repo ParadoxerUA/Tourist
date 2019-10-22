@@ -21,4 +21,5 @@ class ProductionConfig:
         'api.smoke_app',
         'api.user_app',
         'api.trip_app',
+        'api.role_app',
     ]
