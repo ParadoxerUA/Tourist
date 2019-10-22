@@ -13,7 +13,7 @@ class TripModelTestCase(unittest.TestCase):
 
     def test_create_trip(self):
         from api.apps.trip_app.models import Trip
-        expected_result = {
+        data = {
             'name': 'Name',
             'description': '',
             'start_date': date(2019, 11, 11),
@@ -21,7 +21,7 @@ class TripModelTestCase(unittest.TestCase):
             'status': True,
             'id_admin': 1
         }
-        trip = Trip.create_trip(expected_result)
+        trip = Trip.create_trip(data)
         self.assertEqual(trip.name, 'Name')
         self.assertEqual(trip.description, '')
         self.assertEqual(trip.start_date, date(2019, 11, 11))
