@@ -1,6 +1,9 @@
 from database import db
 
+
 class Trip(db.Model):
+    __tablename__ = 'trip'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(200))
@@ -14,6 +17,7 @@ class Trip(db.Model):
         trip = cls(**data)
         db.session.add(trip)
         db.session.commit()
+        return trip
 
     def __repr__(self):
         return f'<Trip {self.name}>'
