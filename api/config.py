@@ -9,6 +9,7 @@ class DebugConfig:
         'smoke_app',
         'user_app',
         'trip_app',
+        'role_app',
     ]
 
 
