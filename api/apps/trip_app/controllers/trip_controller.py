@@ -1,4 +1,5 @@
-from apps.trip_app.models import Trip
+from ..models import Trip
+from .point_controller import PointController
 
 class TripController:
 
@@ -7,6 +8,11 @@ class TripController:
         pass
 
     @classmethod
-    def add_trip(cls, data):
+    def create_trip(cls, data):
         data['id_admin'] = cls._get_session_user_id()
-        return Trip.create_trip(data)
+
+        trip = Trip.create_trip(data["trip"])
+        for point in data["points"]:
+            point['id_trip'] = trip.id
+            PointController.create_point(point)
+        return trip.id
