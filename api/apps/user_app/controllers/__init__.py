@@ -1,6 +1,7 @@
-from .user_test_controller import UserTestController
+from .user_controller import UserController
 
 
 controllers = [
-    UserTestController,
+    UserController,
+
 ]
