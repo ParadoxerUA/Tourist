@@ -18,14 +18,3 @@ Run in console
 > make debug
 
 > curl -GET localhost:5000/api/smoke/v1/smoke
-
-# Migrations
-
-## Usage
-
-from tourist/api run
-> python manage.py db init
-
-> python manage.py db migrate
-
-> python manage.py db upgrade

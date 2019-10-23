@@ -7,4 +7,4 @@ class RoleView(BaseView):
         data = [
             current_app.blueprints['role'].controllers.RoleController.get_message(),
         ]
-        return self._get_response(data)
+

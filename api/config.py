@@ -8,6 +8,7 @@ class DebugConfig:
     APPS = [
         'smoke_app',
         'user_app',
+        'role_app',
     ]
 
 
