@@ -7,6 +7,7 @@ class BasicTestCase(unittest.TestCase):
     def setUp(self):
         """Instructions that will be executed before every single test"""
         import sys
+
         sys.path.append("./api")
         from api.app import create_app
         from api.config import DebugConfig
