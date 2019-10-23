@@ -8,10 +8,15 @@ app = Flask(__name__)
 celery = Celery(app.name, broker='redis://localhost:6379/0')
 app.config.from_object(MailServiceConfig)
 mail = Mail(app)
+
+
 @celery.task
 def async_email(data):
     with app.app_context():
-        msg = Message(data['body'], sender='kav993@gmail.com', recipients=[data['email']])
+        msg = Message(body=data.get('body'),
+            subject=data.get('subject'),
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[data.get('email')])
         mail.send(msg)
 
 
