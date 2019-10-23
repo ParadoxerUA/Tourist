@@ -1,6 +1,6 @@
 from flask import Flask
 from apps import APPS
-from flask_sqlalchemy import SQLAlchemy
+from database import set_db
 
 
 def _setup_blueprints(main_app, app_list):
@@ -10,18 +10,11 @@ def _setup_blueprints(main_app, app_list):
         main_app.register_blueprint(app, url_prefix=f'/api/{app.name}')
 
 
-def _set_db(main_app):
-    from database import db
-    # import your models below
-    main_app.db = SQLAlchemy(main_app)
-    db.init_app(main_app)
-
-
 def create_app(config):
     main_app = Flask(__name__)
     main_app.config.from_object(config)
     _setup_blueprints(main_app, APPS)
-    _set_db(main_app)
+    set_db(main_app)
     return main_app
 
 
@@ -29,4 +22,3 @@ if __name__ == '__main__':
     from config import DebugConfig
     app = create_app(DebugConfig)
     app.run()
-
