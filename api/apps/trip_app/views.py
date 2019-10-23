@@ -4,12 +4,12 @@ from .schemas.trip_schema import TripSchema
 from marshmallow import ValidationError
 
 
-class AddTripView(BaseView):
+class CreateTripView(BaseView):
     def post(self):
         try:
             result = TripSchema().load(request.json)
             data = [
-                current_app.blueprints['trip'].controllers.TripController.add_trip(result),
+                current_app.blueprints['trip'].controllers.TripController.create_trip(result),
             ]
             return self._get_response(data)
         except ValidationError as err:
