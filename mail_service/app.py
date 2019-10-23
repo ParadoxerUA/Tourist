@@ -13,13 +13,13 @@ mail = Mail(app)
 @celery.task
 def async_email(data):
     with app.app_context():
-        msg = Message(body=data.get('body'),
-            subject=data.get('subject'),
+        msg = Message(subject=data.get('subject'),
             sender=app.config['MAIL_USERNAME'],
-            recipients=[data.get('email')])
+            recipients=[data.get('recipient')],
+            html=data.get('body'))
         mail.send(msg)
 
 
 if __name__ == '__main__':
     from urls import *
-    app.run(debug=True)
+    app.run(debug=True, port='5001')

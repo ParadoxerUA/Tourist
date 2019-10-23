@@ -1,4 +1,3 @@
-from flask_mail import Message
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 subject_from_type = {
@@ -10,14 +9,13 @@ env = Environment(
 	autoescape=select_autoescape(['html']))
 
 
-def build_email(recipient, email_type='No response', **kwargs):
+def build_email(recipient, email_type, **kwargs):
 	email_data = {}
+
 	template = env.get_template(email_type + '.html')
 
 	email_data['body'] = template.render(**kwargs)
 	email_data['subject'] = subject_from_type[email_type]
-	email_data['recipient'] = kwargs.get('recipient')
+	email_data['recipient'] = recipient
 	
 	return email_data
-
-
