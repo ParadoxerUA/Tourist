@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, validates_schema, ValidationError, validate
 from .point_schema import PointSchema
 
+
 class TripInputSchema(Schema):
     name = fields.Str(validate=validate.Length(min=3, max=20), required=True)
     description = fields.Str(validate=validate.Length(max=500))
@@ -9,13 +10,14 @@ class TripInputSchema(Schema):
     status = fields.Bool()
 
     @validates_schema
-    def validate_date(self, data, **kwargs):
+    def _validate_date(self, data, **kwargs):
         start_date = data['start_date']
         end_date = data['end_date']
         if start_date > end_date:
             raise ValidationError("Start date can not be greater than end date")
 
+
 class TripSchema(Schema):
-    trip = fields.Nested(TripInputSchema)
+    trip = fields.Nested(TripInputSchema, required=True)
     points = fields.Nested(PointSchema, many=True)
 

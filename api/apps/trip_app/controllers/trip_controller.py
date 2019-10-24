@@ -1,5 +1,6 @@
 from ..models import Trip
 from .point_controller import PointController
+from flask import current_app
 
 class TripController:
 
@@ -11,7 +12,7 @@ class TripController:
     def create_trip(cls, data):
         data['id_admin'] = cls._get_session_user_id()
 
-        trip = Trip.create_trip(data["trip"])
+        trip = current_app.models.Trip.create_trip(data["trip"])
         for point in data["points"]:
             point['id_trip'] = trip.id
             PointController.create_point(point)

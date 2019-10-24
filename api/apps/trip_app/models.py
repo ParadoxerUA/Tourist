@@ -4,14 +4,14 @@ from database import db
 class Trip(db.Model):
     __tablename__ = 'trip'
     __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
+    trip_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(200))
-    start_date = db.Column(db.DateTime)
-    end_date = db.Column(db.DateTime)
-    status = db.Column(db.Boolean)
-    id_admin = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=False)
-    trip = db.relationship("UserProfile", foreign_keys=[id_admin])
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    status = db.Column(db.Boolean, default=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'))
+    points = db.relationship('api.apps.trip_app.models.Point')
 
     @classmethod
     def create_trip(cls, data):
@@ -27,12 +27,11 @@ class Trip(db.Model):
 class Point(db.Model):
     __tablename__ = 'point'
     __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.Integer, nullable=False)
+    point_id = db.Column(db.Integer, primary_key=True)
+    order_number = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    id_trip = db.Column(db.Integer, db.ForeignKey('trip.id'), nullable=False)
-    trip = db.relationship("Trip", foreign_keys=[id_trip])
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'))
 
     @classmethod
     def create_point(cls, data):
@@ -41,6 +40,5 @@ class Point(db.Model):
         db.session.commit()
         return point
 
-
     def __repr__(self):
-        return f'<Trip lat: {self.latitude} long {self.longitude}>'
+        return f'<Trip lat: {self.latitude} long: {self.longitude}>'

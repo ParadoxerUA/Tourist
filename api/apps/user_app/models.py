@@ -22,6 +22,7 @@ class User(db.Model):
     capacity = db.Column(db.Integer, nullable=False, default=20)
     uuid = db.Column(db.String(36), nullable=True)
     is_active = db.Column(db.Boolean, default=False)
+    trips = db.relationship('api.apps.trip_app.models.Trip')
 
     def __repr__(self):
         return f'<User {self.name}>'
