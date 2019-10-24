@@ -4,10 +4,10 @@ from flask import current_app, request
 
 class UserRegistrationView(BaseView):
     def post(self):
-        name = request.form['name']
-        surname = request.form.get('surname')
-        password = request.form['password']
-        email = request.form['email']
+        name = request.json['name']
+        surname = request.json.get('surname')
+        password = request.json['password']
+        email = request.json['email']
         data = [
             current_app.blueprints['user'].controllers.UserController.register_user(name=name, surname=surname,
                                                                                     password=password, email=email),

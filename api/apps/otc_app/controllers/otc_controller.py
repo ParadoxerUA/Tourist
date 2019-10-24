@@ -1,5 +1,5 @@
-from . import registration_otc
-from .otc_exceptions import *
+from apps.otc_app.otc import registration_otc
+from apps.otc_app.otc.otc_exceptions import *
 import redis
 
 
@@ -20,3 +20,17 @@ class OTCController():
             raise OTCUnavailableError()
 
         return otc_type.decode('utf8')
+
+    @classmethod
+    def is_otc_available(cls, otc):
+        try:
+            print(cls.get_otc_type(otc))
+            return True
+        except OTCUnavailableError:
+            return False
+
+    @classmethod
+    def get_registration_uuid(cls):
+        otc = registration_otc.RegistrationOTC()
+        otc.setup_otc()
+        return otc.get_otc()

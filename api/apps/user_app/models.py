@@ -34,6 +34,18 @@ class User(db.Model):
         db.session.commit()
         return user
 
+    def get_uuid(self):
+        return self.uuid
+
+    def set_uuid(self, uuid):
+        self.uuid = uuid
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_user(self):
+        db.session.delete(self)
+        db.session.commit()
+
     # @classmethod
     # def get_user_by_email(cls, email):
     #     user = cls.query.filter_by(email=email).first()
