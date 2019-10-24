@@ -1,4 +1,5 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
+import json
 
 subject_from_type = {
 	'email_confirmation': 'Sign up confirmation',
@@ -18,4 +19,4 @@ def build_email(recipient, email_type, **kwargs):
 	email_data['subject'] = subject_from_type[email_type]
 	email_data['recipient'] = recipient
 	
-	return email_data
+	return json.dumps(email_data)
