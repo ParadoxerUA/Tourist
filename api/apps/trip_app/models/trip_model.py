@@ -11,8 +11,8 @@ class Trip(db.Model):
     end_date = db.Column(db.Date)
     status = db.Column(db.Boolean, default=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'))
-    admin = db.relationship('apps.user_app.models.User', cascade='save-update, merge, delete')
-    points = db.relationship('apps.trip_app.models.Point', cascade='save-update, merge, delete')
+    admin = db.relationship('apps.user_app.models.user_model.User', cascade='save-update, merge, delete')
+    points = db.relationship('apps.trip_app.models.point_model.Point', cascade='save-update, merge, delete')
 
     @classmethod
     def create_trip(cls, data):
@@ -36,23 +36,3 @@ class Trip(db.Model):
 
     def __repr__(self):
         return f'<Trip {self.name}>'
-
-
-class Point(db.Model):
-    __tablename__ = 'point'
-    __table_args__ = {'extend_existing': True}
-    point_id = db.Column(db.Integer, primary_key=True)
-    order_number = db.Column(db.Integer, nullable=False)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'))
-
-    @classmethod
-    def create_point(cls, data):
-        point = cls(**data)
-        db.session.add(point)
-        db.session.commit()
-        return point
-
-    def __repr__(self):
-        return f'<Trip lat: {self.latitude} long: {self.longitude}>'

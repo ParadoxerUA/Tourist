@@ -1,7 +1,6 @@
 from helper_classes.base_view import BaseView
 from flask import current_app, request
-# from flask.request.exeptions import RequestException
-from .schemas.trip_schemas import TripSchema
+from .schemas.trip_schema import TripSchema
 from marshmallow import ValidationError
 
 
