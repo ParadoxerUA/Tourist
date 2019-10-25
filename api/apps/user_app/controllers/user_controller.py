@@ -1,4 +1,4 @@
-from apps.user_app.models import User, ValidationError
+from apps.user_app.models import User
 from helper_classes.email_builder.build_email import build_email
 import requests
 from flask import current_app
@@ -7,7 +7,8 @@ from flask import current_app
 class UserController:
     @classmethod
     def register_user(cls, name, email, password, surname=None):
-        user = User.get_user(email=email)
+
+        user = current_app.models.User.get_user_by_email(email=email)
 
         if user is None:
             user = User.create_user(
@@ -25,20 +26,21 @@ class UserController:
             )
             return 'user is registered'
         if current_app.blueprints['otc'].controllers.OTCController\
-            .is_otc_available(user.get_uuid()):
+            .is_otc_available(user.uuid):
             return 'uuid is valid'
 
         cls.setup_registration_otc(user)
         return 'uuid updated'
 
+
     @classmethod
     def activate_user(cls, user_id):
-        user = User.get_user(user_id=user_id)
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
         user.activate_user()
 
     @classmethod
     def change_capacity(cls, user_id, capacity):
-        user = User.get_user(user_id=user_id)
+        user = current_app.models.get_user_by_id(user_id=user_id)
         user.change_capacity(capacity)
 
     @classmethod

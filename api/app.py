@@ -7,6 +7,7 @@ def _setup_blueprints(main_app, app_list):
     for app in app_list:
         app.setup_urls()
         app.setup_controllers()
+        app.setup_models()
         main_app.register_blueprint(app, url_prefix=f'/api/{app.name}')
 
 
