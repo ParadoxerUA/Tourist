@@ -1,4 +1,3 @@
-from apps.user_app.models import User
 from helper_classes.email_builder.build_email import build_email
 from flask import current_app
 import celery
@@ -11,7 +10,7 @@ class UserController:
         user = current_app.models.User.get_user_by_email(email=email)
 
         if user is None:
-            user = User.create_user(
+            user = current_app.models.User.create_user(
                 name=name, email=email,
                 password=password, surname=surname
             )
@@ -20,7 +19,7 @@ class UserController:
 
         if user.is_active:
             user.delete_user()
-            User.create_user(
+            current_app.models.User.create_user(
                 name=name, email=email,
                 password=password, surname=surname
             )
