@@ -35,6 +35,18 @@ class User(db.Model):
         db.session.commit()
         return user
 
+    def get_uuid(self):
+        return self.uuid
+
+    def set_uuid(self, uuid):
+        self.uuid = uuid
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_user(self):
+        db.session.delete(self)
+        db.session.commit()
+
     # @classmethod
     # def get_user_by_email(cls, email):
     #     user = cls.query.filter_by(email=email).first()
@@ -69,9 +81,8 @@ class User(db.Model):
     def set_password(cls, password):
         return generate_password_hash(password)
 
-    @classmethod
-    def check_password(cls, password):
-        return check_password_hash(generate_password_hash(password), password)
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def activate_user(self):
         self.is_active = True
