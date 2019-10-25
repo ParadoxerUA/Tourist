@@ -4,6 +4,5 @@ marshmallow
 Flask-SQLAlchemy
 gunicorn
 celery
-flask_mail
 redis
 psycopg2
