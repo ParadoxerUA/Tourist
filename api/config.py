@@ -8,6 +8,7 @@ class DebugConfig:
     APPS = [
         'smoke_app',
         'user_app',
+        'trip_app',
         'role_app',
     ]
     CELERY_APP_NAME = 'tasks'
@@ -22,6 +23,7 @@ class ProductionConfig:
     APPS = [
         'api.smoke_app',
         'api.user_app',
+        'api.trip_app',
         'api.role_app',
     ]
     CELERY_APP_NAME = 'tasks'
