@@ -2,11 +2,6 @@ from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class ValidationError(Exception):
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
-
-
 class User(db.Model):
     """Model for user accounts."""
 
@@ -18,7 +13,7 @@ class User(db.Model):
     surname = db.Column(db.String(60), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
-    avatar = db.Column(db.LargeBinary)
+    avatar = db.Column(db.String(250), nullable=True)
     capacity = db.Column(db.Integer, nullable=False, default=20)
     uuid = db.Column(db.String(36), nullable=True)
     is_active = db.Column(db.Boolean, default=False)
@@ -34,9 +29,6 @@ class User(db.Model):
         db.session.commit()
         return user
 
-    def get_uuid(self):
-        return self.uuid
-
     def set_uuid(self, uuid):
         self.uuid = uuid
         db.session.add(self)
@@ -46,43 +38,25 @@ class User(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    # @classmethod
-    # def get_user_by_email(cls, email):
-    #     user = cls.query.filter_by(email=email).first()
-    #     if user is None:
-    #         raise ValidationError(f'There is no user with email={email}')
-    #     else:
-    #         return user
-    #
-    # @classmethod
-    # def get_user_by_id(cls, id):
-    #     user = cls.query.filter_by(user_id=id).first()
-    #     if user is None:
-    #         raise ValidationError(f'There is no user with id={id}')
-    #     else:
-    #         return user
-    #
-    # @classmethod
-    # def get_by_uuid(cls, uuid):
-    #     user = cls.query.filter_by(uuid).first()
-    #     if user is None:
-    #         raise ValidationError(f'There is no user with uuid={uuid}')
-    #     else:
-    #         return user
 
     @classmethod
-    def get_user(cls, **search_params):
-        '''returns user that matches data in search params'''
+    def get_user_by_id(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).first()
 
-        return User.query.filter_by(**search_params).first()
+    @classmethod
+    def get_user_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
+
+    @classmethod
+    def get_user_by_uuid(cls, uuid):
+        return User.query.filter_by(uuid=uuid).first()
 
     @classmethod
     def set_password(cls, password):
         return generate_password_hash(password)
 
-    @classmethod
-    def check_password(cls, password):
-        return check_password_hash(generate_password_hash(password), password)
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def activate_user(self):
         self.is_active = True
@@ -93,7 +67,3 @@ class User(db.Model):
         self.capacity = capacity
         db.session.add(self)
         db.session.commit()
-
-    @classmethod
-    def user_exists(cls, **search_params):
-        return bool(cls.query.filter_by(**search_params).first())

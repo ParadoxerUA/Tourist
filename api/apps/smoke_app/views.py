@@ -7,4 +7,5 @@ class SmokeView(BaseView):
         data = [
             current_app.blueprints['smoke'].controllers.SmokeController.get_message(),
         ]
+        
         return self._get_response(data)

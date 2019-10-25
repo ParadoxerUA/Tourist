@@ -1,13 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from helper_classes.model_registry import ModelRegistry
 db = SQLAlchemy()
 
 
 def set_db(main_app):
-    # import your models below
-    from apps.role_app.models import Role
-    from apps.user_app.models import User
 
+    model_registrator = ModelRegistry()
+    setattr(main_app, "models", model_registrator)
     db.init_app(main_app)
-    db.create_all()
-
+    setattr(main_app, "db", db)
