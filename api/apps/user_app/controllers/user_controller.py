@@ -18,16 +18,16 @@ class UserController:
             return 'user created'
 
         if user.is_active:
-            user.delete_user()
-            current_app.models.User.create_user(
-                name=name, email=email,
-                password=password, surname=surname
-            )
             return 'user is registered'
         if current_app.blueprints['otc'].controllers.OTCController\
-            .is_otc_available(user.uuid):
+            .is_otc_valid(user.uuid):
             return 'uuid is valid'
 
+        user.delete_user()
+        user = current_app.models.User.create_user(
+            name=name, email=email,
+            password=password, surname=surname
+        )
         cls.setup_registration_otc(user)
         return 'uuid updated'
 
