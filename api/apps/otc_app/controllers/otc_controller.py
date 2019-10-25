@@ -1,6 +1,7 @@
 from apps.otc_app.otc import registration_otc
 from apps.otc_app.otc.otc_exceptions import *
-import redis
+from flask import current_app
+from datetime import datetime
 
 
 class OTCController():
@@ -12,26 +13,16 @@ class OTCController():
             raise OTCTypeError()
 
     @classmethod
-    def get_otc_type(cls, otc):
-        # # with redis.Redis() as r:
-        # #     otc_type = r.get(otc)
-
-        # # if otc_type is None:
-        # #     raise OTCUnavailableError()
-
-        # return otc_type.decode('utf8')
-        return otc
-
-    @classmethod
-    def is_otc_available(cls, otc):
-        try:
-            print(cls.get_otc_type(otc))
-            return True
-        except OTCUnavailableError:
+    def is_otc_valid(cls, otc):
+        user = current_app.models.User.get_user_by_uuid(otc)
+        datetime_diff = datetime.utcnow() - user.registration_time
+        diff_in_hours = datetime_diff.total_seconds() / 3600
+        if diff_in_hours > 24:
             return False
+        return True
 
     @classmethod
     def get_registration_uuid(cls):
         otc = registration_otc.RegistrationOTC()
-        otc.setup_otc()
+        otc.create_otc()
         return otc.get_otc()

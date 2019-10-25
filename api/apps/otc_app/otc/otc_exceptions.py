@@ -6,5 +6,8 @@ class OTCTypeError(OTCBaseException):
     pass
 
 
-class OTCUnavailableError(OTCBaseException):
+class OTCOutdatedError(OTCBaseException):
+    pass
+
+class OTCNoneError(OTCBaseException):
     pass
