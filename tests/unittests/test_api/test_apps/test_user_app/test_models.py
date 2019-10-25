@@ -27,7 +27,7 @@ class UserModelTestCase(unittest.TestCase):
         self.assertEqual(user.name, 'name')
         self.assertEqual(user.surname, None)
         self.assertEqual(user.email, 'example@gmail.com')
-        self.assertTrue(User.check_password('password'))
+        self.assertTrue(user.check_password('password'))
         self.assertEqual(user.is_active, False)
         self.assertEqual(user.uuid, None)
 
@@ -35,7 +35,6 @@ class UserModelTestCase(unittest.TestCase):
         from api.apps.user_app.models import User
         user = User.create_user(name='Vasya', email='email', password='password')
         self.assertEqual(user.user_id, User.get_user(email='email').user_id)
-
 
     def test_activate_user(self):
         from api.apps.user_app.models import User
