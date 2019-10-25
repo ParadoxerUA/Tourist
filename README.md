@@ -19,6 +19,7 @@ Run in console
 
 > curl -GET localhost:5000/api/smoke/v1/smoke
 
+
 ## Migrations 
 
 from tourist/api run:
@@ -28,3 +29,9 @@ from tourist/api run:
 > python manage.py db migrate
 
 > python manage.py db upgrade
+
+## Celery usage
+
+Run in console from tourist/celery_service with active venv
+> celery worker -A app.app --loglevel=debug
+

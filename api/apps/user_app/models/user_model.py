@@ -1,5 +1,6 @@
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 
 class User(db.Model):
@@ -17,6 +18,7 @@ class User(db.Model):
     capacity = db.Column(db.Integer, nullable=False, default=20)
     uuid = db.Column(db.String(36), nullable=True)
     is_active = db.Column(db.Boolean, default=False)
+    registration_time = db.Column(db.DateTime, default=datetime.utcnow())
 
     def __repr__(self):
         return f'<User {self.name}>'
@@ -24,7 +26,7 @@ class User(db.Model):
     @classmethod
     def create_user(cls, name, email, password, surname=None):
         password_hash = cls.set_password(password)
-        user = cls(name=name, email=email, password_hash=password_hash, surname=surname)
+        user = cls(name=name, email=email, password_hash=password_hash, surname=surname, )
         db.session.add(user)
         db.session.commit()
         return user
