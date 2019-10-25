@@ -6,3 +6,8 @@ class MailServiceConfig:
     MAIL_USE_SSL = False
     MAIL_USERNAME = 'kav993@gmail.com'
     MAIL_PASSWORD = 'bqibanxccrgxqsqy'
+
+
+class CeleryConfig:
+    CELERY_APP_NAME = 'tasks'
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
