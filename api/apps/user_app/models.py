@@ -80,9 +80,8 @@ class User(db.Model):
     def set_password(cls, password):
         return generate_password_hash(password)
 
-    @classmethod
-    def check_password(cls, password):
-        return check_password_hash(generate_password_hash(password), password)
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def activate_user(self):
         self.is_active = True
