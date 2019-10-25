@@ -1,6 +1,5 @@
 import unittest
 from marshmallow import ValidationError
-from datetime import datetime, timezone
 
 
 class TestTripInputSchema(unittest.TestCase):

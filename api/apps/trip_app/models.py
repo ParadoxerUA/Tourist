@@ -11,7 +11,8 @@ class Trip(db.Model):
     end_date = db.Column(db.Date)
     status = db.Column(db.Boolean, default=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'))
-    points = db.relationship('api.apps.trip_app.models.Point')
+    admin = db.relationship('apps.user_app.models.User', cascade='save-update, merge, delete')
+    points = db.relationship('apps.trip_app.models.Point', cascade='save-update, merge, delete')
 
     @classmethod
     def create_trip(cls, data):
@@ -19,6 +20,19 @@ class Trip(db.Model):
         db.session.add(trip)
         db.session.commit()
         return trip
+    
+    @classmethod
+    def get_all_trips(cls):
+        return cls.query.all()
+    
+    @classmethod
+    def get_trip_by_id(cls, id):
+        return cls.query.filter_by(trip_id=id).first()
+
+    @classmethod
+    def update_trip(cls, id, data):
+        trip = cls.get_trip_by_id(id)
+        trip.update(**data)
 
     def __repr__(self):
         return f'<Trip {self.name}>'
