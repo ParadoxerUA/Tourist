@@ -19,8 +19,7 @@ class UserController:
 
         if user.is_active:
             return 'user is registered'
-        if current_app.blueprints['otc'].controllers.OTCController\
-            .is_otc_valid(user.uuid):
+        if user.is_uuid_valid():
             return 'uuid is valid'
 
         user.delete_user()
@@ -29,7 +28,7 @@ class UserController:
             password=password, surname=surname
         )
         cls.setup_registration_otc(user)
-        return 'uuid updated'
+        return 'user uuid updated'
 
 
     @classmethod

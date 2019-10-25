@@ -6,23 +6,24 @@ from datetime import datetime
 
 class OTCController():
     @classmethod
-    def create_OTC_instance(cls, otc_type):
+    def handle_uuid(cls, uuid, otc_type):
         if otc_type == 'user_registration':
-            return registration_otc.RegistrationOTC()
+            return cls._activate_user(uuid)
         else:
             raise OTCTypeError()
-
-    @classmethod
-    def is_otc_valid(cls, otc):
-        user = current_app.models.User.get_user_by_uuid(otc)
-        datetime_diff = datetime.utcnow() - user.registration_time
-        diff_in_hours = datetime_diff.total_seconds() / 3600
-        if diff_in_hours > 24:
-            return False
-        return True
 
     @classmethod
     def get_registration_uuid(cls):
         otc = registration_otc.RegistrationOTC()
         otc.create_otc()
         return otc.get_otc()
+
+    @classmethod
+    def _activate_user(cls, uuid):
+        user = current_app.models.User.get_user_by_uuid(uuid)
+        if user.is_active:
+            return 'user already activated'
+        if user.is_uuid_valid():
+            user.activate_user()
+            return 'user activated'
+        raise OTCOutdatedError()
