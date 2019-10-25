@@ -10,7 +10,7 @@ class LoginController:
     @classmethod
     def validate_fields(cls, email, password):
         error_message = {'non_field_errors': ['Incorrect email or password']}
-        user = User.get_user(email=email)
+        user = User.get_user_by_email(email=email)
 
         if not user or not user.check_password(password):
             raise ValidationError(error_message)

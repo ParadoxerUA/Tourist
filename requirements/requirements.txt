@@ -6,12 +6,10 @@
 #
 amqp==2.5.1               # via kombu
 billiard==3.6.1.0         # via celery
-blinker==1.4              # via flask-mail
 celery==4.3.0
 click==7.0                # via flask
 entrypoints==0.3          # via flake8
 flake8==3.7.8
-flask-mail==0.9.1
 flask-sqlalchemy==2.4.1
 flask==1.1.1
 gunicorn==19.9.0
@@ -28,6 +26,7 @@ pycodestyle==2.5.0        # via flake8
 pyflakes==2.1.1           # via flake8
 pytz==2019.3              # via celery
 redis==3.3.11
+six==1.12.0               # via flask-cors
 sqlalchemy==1.3.10        # via flask-sqlalchemy
 vine==1.3.0               # via amqp, celery
 werkzeug==0.16.0          # via flask
