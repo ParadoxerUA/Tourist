@@ -7,3 +7,5 @@ celery
 redis
 psycopg2
 flask-cors
+Flask-Migrate
+Flask-Script
