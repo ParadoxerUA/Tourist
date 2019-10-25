@@ -13,13 +13,14 @@ class OTCController():
 
     @classmethod
     def get_otc_type(cls, otc):
-        with redis.Redis() as r:
-            otc_type = r.get(otc)
+        # # with redis.Redis() as r:
+        # #     otc_type = r.get(otc)
 
-        if otc_type is None:
-            raise OTCUnavailableError()
+        # # if otc_type is None:
+        # #     raise OTCUnavailableError()
 
-        return otc_type.decode('utf8')
+        # return otc_type.decode('utf8')
+        return otc
 
     @classmethod
     def is_otc_available(cls, otc):
