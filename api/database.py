@@ -4,7 +4,6 @@ db = SQLAlchemy()
 
 
 def set_db(main_app):
-
     model_registrator = ModelRegistry()
     setattr(main_app, "models", model_registrator)
     db.init_app(main_app)
