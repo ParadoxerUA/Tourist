@@ -42,6 +42,7 @@ class TestLoginController(unittest.TestCase):
 
     def test_login(self):
         user = self.user_model.create_user(name='Tania', email='correct_email@yahoo.com', password='correct_password')
+        user.activate_user()
         user_data = {
             'email': 'correct_email@yahoo.com',
             'password': 'correct_password'

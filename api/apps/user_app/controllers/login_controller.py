@@ -15,6 +15,9 @@ class LoginController:
         if not user or not user.check_password(password):
             raise ValidationError(error_message)
 
+        if not user.is_active:
+            raise ValidationError({'non_field_errors': ['Your account is not active']})
+
         return user
 
     @classmethod
