@@ -1,26 +1,28 @@
 import unittest
 import json
 from unittest.mock import patch
+from tests.unittests.basic_test import BasicTest
+import sys
+
+if not "./api" in sys.path:
+    sys.path.append("./api")
+    
+from apps.trip_app.controllers.trip_controller import TripController
 
 
-class TestCreateTripView(unittest.TestCase):
-
-    def setUp(self):
-        import sys
-
-        sys.path.append("./api")
-        from api.app import create_app
-        from api.config import DebugConfig
-        app = create_app(DebugConfig)
-        self.test_client = app.test_client()
-        self.data = {
+class TestCreateTripView(BasicTest):
+    
+    @classmethod
+    def setUpClass(cls):
+        super(TestCreateTripView, cls).setUpClass()
+        cls.data = {
             "name": "name",
             "description": "desc",
             "start_date": "2011-10-05T14:48:00.000Z",
             "end_date": "2011-10-05T14:48:00.000Z"
             }
 
-    @patch('apps.trip_app.controllers.TripController.create_trip')
+    @patch.object(TripController, 'create_trip')
     def test_create_trip_success(self, create_trip):
         create_trip.return_value = self.data
         response = self.test_client.post('api/trip/v1/create_trip', 

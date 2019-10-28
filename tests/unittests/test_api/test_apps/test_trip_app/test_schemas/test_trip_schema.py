@@ -1,17 +1,18 @@
 import unittest
 from marshmallow import ValidationError
+import sys
+
+if not "./api" in sys.path:
+    sys.path.append("./api")
 
 
 class TestTripSchema(unittest.TestCase):
-    def setUp(self):
-        import sys
-        sys.path.append("./api")
-        from app import create_app
-        from config import DebugConfig
+    
+    @classmethod
+    def setUpClass(cls):
+        super(TestTripSchema, cls).setUpClass()
         from apps.trip_app.schemas.trip_schema import TripSchema
-        app = create_app(DebugConfig)
-        self.test_client = app.test_client()
-        self.trip_schema = TripSchema()
+        cls.trip_schema = TripSchema()
 
     def test_validate_incorrect_date_range(self):
         data = {

@@ -1,26 +1,27 @@
 import unittest, redis, json
 from unittest.mock import patch
+from tests.unittests.basic_test import BasicTest
 import sys
-sys.path.append("./api")
+
+if not "./api" in sys.path:
+    sys.path.append("./api")
+    
 from apps.trip_app.controllers.trip_controller import TripController
 from apps.trip_app.models.trip_model import Trip
 from apps.trip_app.models.point_model import Point
 from apps.user_app.models.user_model import User
 
 
-class TestTripController(unittest.TestCase):
-    def setUp(self):
-        import sys
-        sys.path.append("./api")
-        from app import create_app
-        from config import DebugConfig
-        from apps.trip_app.controllers.trip_controller import TripController
-        app = create_app(DebugConfig)
-        self.test_client = app.test_client()
-        self.trip_controller = TripController()
+class TestTripController(BasicTest):
+
+    @classmethod
+    def setUpClass(cls):
+        super(TestTripController, cls).setUpClass()
+        cls.trip_controller = TripController()
 
     @patch.object(User, 'get_user_by_id', side_effect=lambda x: x)
     def test_get_session_user(self, get_user_by_id):
+
         session_id = 1
         user_id = 1
         with redis.Redis() as redis_client:
@@ -42,4 +43,4 @@ class TestTripController(unittest.TestCase):
         self.assertTrue(_get_session_user.called)
         self.assertTrue(create_trip.called)
         self.assertTrue(create_point.called)
-        self.assertEqual(result, 1)        
+        self.assertEqual(result, 1)
