@@ -1,11 +1,9 @@
 import unittest
-import sys
 from unittest.mock import Mock, MagicMock
+from tests.unittests.basic_test import BasicTest
 
-sys.path.append("./api")
 
-
-class TestOTCController(unittest.TestCase):
+class TestOTCController(BasicTest):
     def test_handle_uuid(self):
         from apps.otc_app.controllers import OTCController
         from apps.otc_app.otc import otc_exceptions
@@ -22,12 +20,11 @@ class TestOTCController(unittest.TestCase):
         from apps.otc_app.controllers import OTCController
         from apps.otc_app.otc import otc_exceptions
         from app import create_app
-        from api.config import DebugConfig
-        app = create_app(DebugConfig)
+        from config import DebugConfig
 
-        app.models.User = Mock()
-        user = app.models.User.create_user()
-        app.models.User.get_user_by_uuid = MagicMock(return_value=user)
+        self.app.models.User = Mock()
+        user = self.app.models.User.create_user()
+        self.app.models.User.get_user_by_uuid = MagicMock(return_value=user)
         user.activate_user = MagicMock(return_value=None)
 
         user.is_active = True
