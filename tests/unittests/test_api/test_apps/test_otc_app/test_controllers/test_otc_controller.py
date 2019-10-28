@@ -1,7 +1,6 @@
 import unittest
-from unittest.mock import MagicMock
 import sys
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 sys.path.append("./api")
 
@@ -18,7 +17,7 @@ class TestOTCController(unittest.TestCase):
         )
         with self.assertRaises(otc_exceptions.OTCTypeError):
             OTCController.handle_uuid('uuid', 'some_type')
-    
+
     def test__activate_user(self):
         from apps.otc_app.controllers import OTCController
         from apps.otc_app.otc import otc_exceptions
