@@ -28,6 +28,6 @@ class LoginView(BaseView):
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
 
-        response = self._get_response(data=list())
+        response = self._get_response(data=session_id)
         response.headers['Authorization'] = session_id
         return response
