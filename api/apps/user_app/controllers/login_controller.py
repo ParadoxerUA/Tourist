@@ -33,7 +33,6 @@ class LoginController:
             'started_at': started_at,
             'expired_at': expired_at,
         }
-        print(f'{session_id}\n'*10)
         with redis.Redis() as redis_client:
             redis_client.set(session_id, json.dumps(session_data))
 
