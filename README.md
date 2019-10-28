@@ -32,6 +32,9 @@ from tourist/api run:
 
 ## Celery usage
 
+Start redis
+> sudo service redis-server start
+
 Run in console from tourist/celery_service with active venv
 > celery worker -A app.app --loglevel=debug
 
