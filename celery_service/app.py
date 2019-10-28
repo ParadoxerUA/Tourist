@@ -6,11 +6,6 @@ import smtplib
 import json
 
 
-mail = smtplib.SMTP(
-        host=MailServiceConfig.MAIL_SERVER,
-        port=MailServiceConfig.MAIL_PORT
-)
-
 app = Celery(
     CeleryConfig.CELERY_APP_NAME,
     broker=CeleryConfig.CELERY_BROKER_URL
@@ -19,6 +14,12 @@ app = Celery(
 
 @app.task
 def async_email(data):
+    mail = smtplib.SMTP(
+        host=MailServiceConfig.MAIL_SERVER,
+        port=MailServiceConfig.MAIL_PORT
+    )
+
+
     msg = MIMEMultipart()
 
     msg['From'] = MailServiceConfig.MAIL_USERNAME

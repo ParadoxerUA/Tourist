@@ -1,37 +1,29 @@
 from apps.otc_app.otc import registration_otc
 from apps.otc_app.otc.otc_exceptions import *
-import redis
+from flask import current_app
+from datetime import datetime
 
 
 class OTCController():
     @classmethod
-    def create_OTC_instance(cls, otc_type):
+    def handle_uuid(cls, uuid, otc_type):
         if otc_type == 'user_registration':
-            return registration_otc.RegistrationOTC()
+            return cls._activate_user(uuid)
         else:
             raise OTCTypeError()
 
     @classmethod
-    def get_otc_type(cls, otc):
-        # # with redis.Redis() as r:
-        # #     otc_type = r.get(otc)
-
-        # # if otc_type is None:
-        # #     raise OTCUnavailableError()
-
-        # return otc_type.decode('utf8')
-        return otc
-
-    @classmethod
-    def is_otc_available(cls, otc):
-        try:
-            print(cls.get_otc_type(otc))
-            return True
-        except OTCUnavailableError:
-            return False
-
-    @classmethod
     def get_registration_uuid(cls):
         otc = registration_otc.RegistrationOTC()
-        otc.setup_otc()
+        otc.create_otc()
         return otc.get_otc()
+
+    @classmethod
+    def _activate_user(cls, uuid):
+        user = current_app.models.User.get_user_by_uuid(uuid)
+        if user.is_active:
+            return 'user already activated'
+        if user.is_uuid_valid():
+            user.activate_user()
+            return 'user activated'
+        raise OTCOutdatedError()
