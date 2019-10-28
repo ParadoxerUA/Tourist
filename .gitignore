@@ -14,4 +14,5 @@ dist/
 build/
 *.egg-info/
 .idea/dump.db
+api/migrations/
 .idea/

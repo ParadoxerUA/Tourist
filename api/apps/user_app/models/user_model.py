@@ -69,3 +69,10 @@ class User(db.Model):
         self.capacity = capacity
         db.session.add(self)
         db.session.commit()
+
+    def is_uuid_valid(self):
+        datetime_diff = datetime.utcnow() - self.registration_time
+        diff_in_hours = datetime_diff.total_seconds() / 3600
+        if diff_in_hours > 24:
+            return False
+        return True
