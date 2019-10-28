@@ -8,7 +8,10 @@ class OTCController():
     @classmethod
     def handle_uuid(cls, uuid, otc_type):
         if otc_type == 'user_registration':
-            return cls._activate_user(uuid)
+            try:
+                return cls._activate_user(uuid)
+            except OTCOutdatedError:
+                return 'uuid outdated'
         else:
             raise OTCTypeError()
 
