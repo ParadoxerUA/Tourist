@@ -24,7 +24,6 @@ class UserRegistrationTestCase(unittest.TestCase):
     def test_registration(self):
         data = {"name": "test", "email": "test", "password": "password"}
         response = self.test_client.post('/api/user/v1/register', content_type='application/json', data=data)
-        print(response.json)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json.get["status"], 409)
 

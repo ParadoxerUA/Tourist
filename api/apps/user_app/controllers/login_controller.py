@@ -15,6 +15,9 @@ class LoginController:
         if not user or not user.check_password(password):
             raise ValidationError(error_message)
 
+        if not user.is_active:
+            raise ValidationError({'non_field_errors': ['Your account is not active']})
+
         return user
 
     @classmethod
@@ -33,7 +36,6 @@ class LoginController:
             'started_at': started_at,
             'expired_at': expired_at,
         }
-        print(f'{session_id}\n'*10)
         with redis.Redis() as redis_client:
             redis_client.set(session_id, json.dumps(session_data))
 

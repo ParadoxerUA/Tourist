@@ -1,17 +1,18 @@
 import unittest
 from marshmallow import ValidationError
+import sys
+
+if not "./api" in sys.path:
+    sys.path.append("./api")
 
 
-class TestTripInputSchema(unittest.TestCase):
-    def setUp(self):
-        import sys
-        sys.path.append("./api")
-        from app import create_app
-        from config import DebugConfig
-        from apps.trip_app.schemas.trip_schemas import TripInputSchema
-        app = create_app(DebugConfig)
-        self.test_client = app.test_client()
-        self.trip_input_shema = TripInputSchema()
+class TestTripSchema(unittest.TestCase):
+    
+    @classmethod
+    def setUpClass(cls):
+        super(TestTripSchema, cls).setUpClass()
+        from apps.trip_app.schemas.trip_schema import TripSchema
+        cls.trip_schema = TripSchema()
 
     def test_validate_incorrect_date_range(self):
         data = {
@@ -19,11 +20,11 @@ class TestTripInputSchema(unittest.TestCase):
             'end_date': '2019-11-11T00:00:00.000Z',
         }
         with self.assertRaises(ValidationError):
-            self.trip_input_shema._validate_date(data)
+            self.trip_schema._validate_date(data)
 
     def test_validate_correct_date_range(self):
         data = {
             'start_date': '2019-11-11T00:00:00.000Z',
             'end_date': '2019-11-11T00:00:00.000Z',
         }
-        self.assertEqual(self.trip_input_shema._validate_date(data), None)
+        self.assertEqual(self.trip_schema._validate_date(data), None)
