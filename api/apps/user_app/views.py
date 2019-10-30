@@ -1,3 +1,4 @@
+import redis
 from flask import current_app, request
 from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
@@ -31,3 +32,13 @@ class LoginView(BaseView):
         response = self._get_response(data=session_id)
         response.headers['Authorization'] = session_id
         return response
+
+
+class LogoutView(BaseView):
+    def post(self):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return self._get_response(data={'message': 'No authorization header provided.'}, status_code=403)
+        with redis.Redis() as redis_client:
+            redis_client.delete(auth_header)
+            return self._get_response(data={'message': 'You successfully logged out.'}, status_code=200)
