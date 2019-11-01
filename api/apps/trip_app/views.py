@@ -2,6 +2,7 @@ from helper_classes.base_view import BaseView
 from flask import current_app, request
 from .schemas.trip_schema import TripSchema
 from marshmallow import ValidationError
+from helper_classes.auth_decorator import login_required
 
 
 class CreateTripView(BaseView):
@@ -17,6 +18,7 @@ class CreateTripView(BaseView):
             data = [str(err)]
             return self._get_response(data, status_code=400)
 
+    @login_required
     def patch(self):
         trip_id = request.json['trip_id']
         new_uuid = current_app.blueprints['trip'].controllers.TripController.refresh_trip(trip_id)
