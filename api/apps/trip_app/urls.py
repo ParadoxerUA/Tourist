@@ -1,5 +1,5 @@
 from . import views
 
 urls = {
-    '/v1/create_trip': views.CreateTripView.as_view('create_trip'),
+    '/v1/trip': views.CreateTripView.as_view('trip'),
 }

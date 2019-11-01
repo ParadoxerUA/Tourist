@@ -1,6 +1,6 @@
 from .point_controller import PointController
 from flask import current_app
-import redis, json
+import redis, json, uuid
 
 
 class TripController:
@@ -21,4 +21,12 @@ class TripController:
         data['points'] = points
         data['admin'] = admin
         trip = current_app.models.Trip.create_trip(data)
+        trip.set_uuid(str(uuid.uuid1()))
         return trip.trip_id
+
+    @staticmethod
+    def refresh_trip(trip_id):
+        trip = current_app.models.Trip.query.filter_by(trip_id=trip_id).first()
+        trip.set_uuid(str(uuid.uuid1()))
+        return trip.trip_uuid
+

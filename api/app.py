@@ -2,9 +2,6 @@ from flask import Flask
 from apps import APPS
 from database import set_db
 
-# only for development
-from flask_cors import CORS
-
 
 def _setup_blueprints(main_app, app_list):
     for app in app_list:
@@ -20,13 +17,14 @@ def create_app(config):
     _setup_blueprints(main_app, APPS)
     main_app.app_context().push()
     set_db(main_app)
-
-    #only for development
-    CORS(main_app)
     return main_app
 
 
 if __name__ == '__main__':
     from config import DebugConfig
     app = create_app(DebugConfig)
+    #only for development
+    from flask_cors import CORS
+    CORS(app)
+
     app.run()

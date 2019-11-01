@@ -1,6 +1,12 @@
 from database import db
 
 
+trip_user_table = db.Table('trip-user',
+    db.Column('trip_id', db.Integer, db.ForeignKey('trip.trip_id'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('user_profile.user_id'), primary_key=True)
+)
+
+
 class Trip(db.Model):
     __tablename__ = 'trip'
     __table_args__ = {'extend_existing': True}
@@ -10,9 +16,13 @@ class Trip(db.Model):
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     status = db.Column(db.Boolean, default=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
     admin = db.relationship('apps.user_app.models.user_model.User', cascade='save-update, merge, delete')
     points = db.relationship('apps.trip_app.models.point_model.Point', cascade='save-update, merge, delete')
+    trip_uuid = db.Column(db.String(36), unique=True)
+
+    users = db.relationship('User', secondary=trip_user_table, lazy=True,
+        backref=db.backref('trips', lazy=True))
 
     @classmethod
     def create_trip(cls, data):
@@ -20,11 +30,11 @@ class Trip(db.Model):
         db.session.add(trip)
         db.session.commit()
         return trip
-    
+
     @classmethod
     def get_all_trips(cls):
         return cls.query.all()
-    
+
     @classmethod
     def get_trip_by_id(cls, id):
         return cls.query.filter_by(trip_id=id).first()
@@ -33,6 +43,13 @@ class Trip(db.Model):
     def update_trip(cls, id, data):
         trip = cls.get_trip_by_id(id)
         trip.update(**data)
+
+    def set_uuid(self, trip_uuid):
+        self.trip_uuid = trip_uuid
+        db.session.add(self)
+        db.session.commit()
+        return self.trip_uuid
+
 
     def __repr__(self):
         return f'<Trip {self.name}>'
