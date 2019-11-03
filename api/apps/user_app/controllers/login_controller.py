@@ -1,16 +1,14 @@
-import uuid
-import time
-import json
-import redis
+import uuid, time, json, redis, facebook
 from marshmallow import ValidationError
-from apps.user_app.models import User
+from flask import current_app
 
 
 class LoginController:
     @classmethod
     def validate_fields(cls, email, password):
         error_message = {'non_field_errors': ['Incorrect email or password']}
-        user = User.get_user_by_email(email=email)
+
+        user = current_app.models.User.get_user_by_email(email=email)
 
         if not user or not user.check_password(password):
             raise ValidationError(error_message)
@@ -24,6 +22,32 @@ class LoginController:
     def login(cls, data):
         user = cls.validate_fields(**data)
         return cls._create_session(user=user)
+    
+    @classmethod
+    def login_with_social(cls, user_id, token):
+        user_data = cls._authorize_with_fb(user_id, token)
+        
+        user = current_app.models.User.get_user_by_email(email=user_data['email'])
+
+        if not user:
+            user = current_app.models.User.create_user(name=user_data['first_name'], 
+                                                        surname = user_data['last_name'],
+                                                        email=user_data['email'],
+                                                        avatar=user_data['picture']['data']['url'], 
+                                                        is_active=True)
+        elif not user.is_active:
+            user.activate_user()
+        
+        return cls._create_session(user=user)
+
+    @staticmethod
+    def _authorize_with_fb(user_id, token):
+        try:
+            graph = facebook.GraphAPI(access_token=token)
+            user_data = graph.get_object(id=user_id, fields='first_name, last_name, email, picture')
+            return user_data
+        except facebook.GraphAPIError as e:
+            raise ValidationError(e.message)
 
     @classmethod
     def _create_session(cls, user):

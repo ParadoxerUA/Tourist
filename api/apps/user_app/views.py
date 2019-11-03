@@ -3,6 +3,7 @@ from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
 from helper_classes.base_view import BaseView
+import facebook
 
 
 class UserRegistrationView(BaseView):
@@ -31,3 +32,13 @@ class LoginView(BaseView):
         response = self._get_response(data=session_id)
         response.headers['Authorization'] = session_id
         return response
+
+class SocialLoginView(BaseView):
+    def post(self):
+
+        try:
+            user_data = request.json
+            data = current_app.blueprints['user'].controllers.LoginController.login_with_social(**user_data)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
+        return self._get_response(data)

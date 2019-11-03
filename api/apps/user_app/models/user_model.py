@@ -13,7 +13,7 @@ class User(db.Model):
     name = db.Column(db.String(15), nullable=False)
     surname = db.Column(db.String(60), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(100), nullable=False)
+    password_hash = db.Column(db.String(100), nullable=True)
     avatar = db.Column(db.String(250), nullable=True)
     capacity = db.Column(db.Integer, nullable=False, default=20)
     uuid = db.Column(db.String(36), nullable=True)
@@ -24,9 +24,10 @@ class User(db.Model):
         return f'<User {self.name}>'
 
     @classmethod
-    def create_user(cls, name, email, password, surname=None):
-        password_hash = cls.set_password(password)
-        user = cls(name=name, email=email, password_hash=password_hash, surname=surname, )
+    def create_user(cls, name, email, password=None, surname=None, is_active=False, avatar=None):
+        password_hash = cls.set_password(password) if password else None
+        user = cls(name=name, email=email, password_hash=password_hash, 
+                    surname=surname, is_active=is_active, avatar=avatar)
         db.session.add(user)
         db.session.commit()
         return user

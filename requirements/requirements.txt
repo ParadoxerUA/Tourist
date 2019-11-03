@@ -8,8 +8,11 @@ alembic==1.2.1            # via flask-migrate
 amqp==2.5.1               # via kombu
 billiard==3.6.1.0         # via celery
 celery==4.3.0
+certifi==2019.9.11        # via requests
+chardet==3.0.4            # via requests
 click==7.0                # via flask
 entrypoints==0.3          # via flake8
+facebook-sdk==3.1.0
 flake8==3.7.8
 flask-cors==3.0.8
 flask-migrate==2.5.2
@@ -17,6 +20,7 @@ flask-script==2.0.6
 flask-sqlalchemy==2.4.1
 flask==1.1.1
 gunicorn==19.9.0
+idna==2.8                 # via requests
 importlib-metadata==0.23  # via kombu
 itsdangerous==1.1.0       # via flask
 jinja2==2.10.3            # via flask
@@ -33,8 +37,10 @@ python-dateutil==2.8.0    # via alembic
 python-editor==1.0.4      # via alembic
 pytz==2019.3              # via celery
 redis==3.3.11
+requests==2.22.0          # via facebook-sdk
 six==1.12.0               # via flask-cors, python-dateutil
 sqlalchemy==1.3.10        # via alembic, flask-sqlalchemy
+urllib3==1.25.6           # via requests
 vine==1.3.0               # via amqp, celery
 werkzeug==0.16.0          # via flask
 zipp==0.6.0               # via importlib-metadata
