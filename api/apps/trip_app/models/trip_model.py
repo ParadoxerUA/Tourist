@@ -20,7 +20,6 @@ class Trip(db.Model):
     admin = db.relationship('apps.user_app.models.user_model.User', cascade='save-update, merge, delete')
     points = db.relationship('apps.trip_app.models.point_model.Point', cascade='save-update, merge, delete')
     trip_uuid = db.Column(db.String(36), unique=True)
-
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
         backref=db.backref('trips', lazy=True))
 
@@ -36,12 +35,8 @@ class Trip(db.Model):
         return cls.query.all()
 
     @classmethod
-    def get_trip_by_id(cls, id):
-        return cls.query.filter_by(trip_id=id).first()
-
-    @classmethod
     def update_trip(cls, id, data):
-        trip = cls.get_trip_by_id(id)
+        trip = cls.query.filter_by(trip_id=id).first()
         trip.update(**data)
 
     def set_uuid(self, trip_uuid):
@@ -50,6 +45,18 @@ class Trip(db.Model):
         db.session.commit()
         return self.trip_uuid
 
+    def get_public_data(self):
+        public_data = {
+            'admin_id': self.admin_id,
+            'description': self.description,
+            'end_date': self.end_date,
+            'start_date': self.start_date,
+            'name': self.name,
+            'trip_id': self.trip_id,
+            'users': self.users,
+            'points': list(self.points),
+        }
+        return public_data
 
     def __repr__(self):
         return f'<Trip {self.name}>'
