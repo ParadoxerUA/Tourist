@@ -33,13 +33,4 @@ class TripView(BaseView):
         else:
             return self._get_response('You have no rights', status_code=400)
 
-
-class TripsView(BaseView):
-    @login_required
-    def get(self):
-        user_trips = current_app.blueprints['trip'].controllers.TripController.get_user_trips(g.user_id)
-        return self._get_response(user_trips, status_code=200)
-
-    @login_required
-    def post(self):
-        pass
+def TripsListView(BaseView)
