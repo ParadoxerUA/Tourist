@@ -59,7 +59,7 @@ class LoginController:
             'name': raw_data['first_name'],
             'surname': raw_data['last_name'],
             'email': raw_data['email'],
-            'avatar': raw_data['picture']
+            'avatar': raw_data['picture']['data']['url']
         }
         return user_data
 
