@@ -33,14 +33,14 @@ class TripController:
             return None
 
     @classmethod
-    def get_trip_data(cls, trip_id, user_id):
+    def get_trip_data(cls, trip_id, user_id, fields):
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.query.filter_by(trip_id=trip_id).first()
-        trip_data = trip.get_public_data()
+        trip_data = trip.get_fields(*fields)
         if trip.admin == user:
-            trip_data['trip_uuid'] = trip.trip_uuid
             return trip_data
         else:
+            del trip_data['trip_uuid']
             return trip_data
 
     @classmethod
@@ -55,3 +55,13 @@ class TripController:
             trip.get_trip_details() for trip in user.trips
         ]
         return trips_details
+
+    @classmethod
+    def user_to_trip(cls, trip_uuid, user_id):
+        user = cls._get_session_user(user_id)
+        trip = current_app.models.Trip.query.filter_by(trip_uuid=trip_uuid).first()
+        try:
+            trip.join_user(user)
+            return f'{user.email} assign to trip.trip_id={trip.trip_id}'
+        except:
+            return None

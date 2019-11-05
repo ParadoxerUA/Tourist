@@ -17,8 +17,7 @@ class TripView(BaseView):
             return self._get_response(data, status_code=400)
 
     @login_required
-    def patch(self):
-        trip_id = request.json['trip_id']
+    def patch(self, trip_id):
         new_uuid = current_app.blueprints['trip'].controllers.TripController.refresh_trip_uuid(trip_id, g.user_id )
         if new_uuid:
             return self._get_response(new_uuid, status_code=200)
@@ -27,7 +26,8 @@ class TripView(BaseView):
 
     @login_required
     def get(self, trip_id):
-        trip_data = current_app.blueprints['trip'].controllers.TripController.get_trip_data(trip_id, g.user_id)
+        fields = request.args.get('fields').split(',')
+        trip_data = current_app.blueprints['trip'].controllers.TripController.get_trip_data(trip_id, g.user_id, fields)
         if trip_data:
             return self._get_response(trip_data, status_code=200)
         else:
