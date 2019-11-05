@@ -57,6 +57,7 @@ class Trip(db.Model):
             'trip_id': self.trip_id,
             'users': users_pub_data,
             'points': self.points,
+            'status': self.start_date,
         }
         return public_data
 
