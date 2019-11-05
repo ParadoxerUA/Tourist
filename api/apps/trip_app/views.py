@@ -26,7 +26,8 @@ class TripView(BaseView):
 
     @login_required
     def get(self, trip_id):
-        trip_data = current_app.blueprints['trip'].controllers.TripController.get_trip_data(trip_id, g.user_id)
+        fields = request.args.get('fields').split(',')
+        trip_data = current_app.blueprints['trip'].controllers.TripController.get_trip_data(trip_id, g.user_id, fields)
         if trip_data:
             return self._get_response(trip_data, status_code=200)
         else:

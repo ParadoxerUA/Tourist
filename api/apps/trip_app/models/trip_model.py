@@ -27,6 +27,7 @@ class Trip(db.Model):
     @classmethod
     def create_trip(cls, data):
         trip = cls(**data)
+        trip.users.append(trip.admin)
         db.session.add(trip)
         db.session.commit()
         return trip
@@ -52,19 +53,22 @@ class Trip(db.Model):
         db.session.commit()
         return user
 
-    def get_public_data(self):
-        users_pub_data = list(map(lambda user: user.get_public_data(), self.users))
-        public_data = {
-            'admin_id': self.admin_id,
-            'description': self.description,
-            'end_date': self.end_date,
-            'start_date': self.start_date,
-            'name': self.name,
-            'trip_id': self.trip_id,
-            'users': users_pub_data,
-            'points': self.points,
-            'status': self.start_date,
-        }
+    def get_fields(self, *args):
+        public_data = {}
+        # users_pub_data = [user.get_public_data() for user in self.users]
+        for field in args:
+            public_data[field] = getattr(self, field)
+        # public_data = {
+        #     'admin_id': self.admin_id,
+        #     'description': self.description,
+        #     'end_date': self.end_date,
+        #     'start_date': self.start_date,
+        #     'name': self.name,
+        #     'trip_id': self.trip_id,
+        #     'users': users_pub_data,
+        #     'points': self.points,
+        #     'status': self.start_date,
+        # }
         return public_data
 
     def __repr__(self):
