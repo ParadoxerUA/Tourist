@@ -53,11 +53,15 @@ class Trip(db.Model):
         db.session.commit()
         return user
 
+    # tofix
     def get_fields(self, *args):
         public_data = {}
         for field in args:
-            if field == 'users':
-                public_data[field] = [user.get_public_data() for user in self.users]
+            if field in ['users', 'admin']:
+                try:
+                    public_data[field] = [field.get_public_data() for field in getattr(self, field)]
+                except:
+                    public_data[field] = getattr(self, field).get_public_data()
             else:
                 public_data[field] = getattr(self, field)
         return public_data
