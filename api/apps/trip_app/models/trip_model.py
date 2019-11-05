@@ -55,20 +55,11 @@ class Trip(db.Model):
 
     def get_fields(self, *args):
         public_data = {}
-        # users_pub_data = [user.get_public_data() for user in self.users]
         for field in args:
-            public_data[field] = getattr(self, field)
-        # public_data = {
-        #     'admin_id': self.admin_id,
-        #     'description': self.description,
-        #     'end_date': self.end_date,
-        #     'start_date': self.start_date,
-        #     'name': self.name,
-        #     'trip_id': self.trip_id,
-        #     'users': users_pub_data,
-        #     'points': self.points,
-        #     'status': self.start_date,
-        # }
+            if field == 'users':
+                public_data[field] = [user.get_public_data() for user in self.users]
+            else:
+                public_data[field] = getattr(self, field)
         return public_data
 
     def __repr__(self):

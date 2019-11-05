@@ -79,10 +79,12 @@ class User(db.Model):
 
     def  get_public_data(self):
         public_data = {
-            "avatar": self.avatar,
-            "capacity": self.capacity,
+            "user_id": self.uuid,
             "name": self.name,
             "surname": self.surname,
-            "user_id": self.user_id,
+            "email": self.email,
+            "avatar": self.avatar,
+            "capacity": self.capacity,
         }
         return public_data
+        
