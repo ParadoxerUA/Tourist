@@ -32,5 +32,3 @@ class TripView(BaseView):
             return self._get_response(trip_data, status_code=200)
         else:
             return self._get_response('You have no rights', status_code=400)
-
-def TripsListView(BaseView)
