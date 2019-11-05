@@ -43,3 +43,7 @@ class TripController:
         else:
             return trip_data
 
+    @classmethod
+    def get_user_trips(cls, user_id):
+        user = cls._get_session_user(user_id)
+        return user.trips

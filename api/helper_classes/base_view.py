@@ -20,7 +20,7 @@ class BaseView(MethodView):
             data_dict = dict(data)
             # will delete private methods from dict
             for key in data:
-                if key.startswith('_'):
+                if key.startswith(('_')):
                     del data_dict[key]
             return {key:self._serialize(value) for (key, value) in data_dict.items()}
     
@@ -32,3 +32,5 @@ class BaseView(MethodView):
             return data.__dict__
         except AttributeError:
             return data
+
+

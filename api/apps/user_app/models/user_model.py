@@ -76,3 +76,13 @@ class User(db.Model):
         if diff_in_hours > 24:
             return False
         return True
+
+    def  get_public_data(self):
+        public_data = {
+            "avatar": self.avatar,
+            "capacity": self.capacity,
+            "name": self.name,
+            "surname": self.surname,
+            "user_id": self.user_id,
+        }
+        return public_data

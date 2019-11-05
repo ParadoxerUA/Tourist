@@ -17,6 +17,7 @@ class Trip(db.Model):
     end_date = db.Column(db.Date)
     status = db.Column(db.Boolean, default=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
+    # Need tofix CASCADE parametr
     admin = db.relationship('apps.user_app.models.user_model.User', cascade='save-update, merge, delete')
     points = db.relationship('apps.trip_app.models.point_model.Point', cascade='save-update, merge, delete')
     trip_uuid = db.Column(db.String(36), unique=True)
@@ -46,6 +47,7 @@ class Trip(db.Model):
         return self.trip_uuid
 
     def get_public_data(self):
+        users_pub_data = list(map(lambda user: user.get_public_data(), self.users))
         public_data = {
             'admin_id': self.admin_id,
             'description': self.description,
@@ -53,8 +55,8 @@ class Trip(db.Model):
             'start_date': self.start_date,
             'name': self.name,
             'trip_id': self.trip_id,
-            'users': self.users,
-            'points': list(self.points),
+            'users': users_pub_data,
+            'points': self.points,
         }
         return public_data
 
