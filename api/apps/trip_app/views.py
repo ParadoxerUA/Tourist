@@ -7,7 +7,7 @@ from helper_classes.auth_decorator import login_required
 
 class TripView(BaseView):
     @login_required
-    def post(self, trip_id):
+    def post(self):
         try:
             trip_data = TripSchema().load(request.json)
             data = current_app.blueprints['trip'].controllers.TripController.create_trip(trip_data, g.user_id)
