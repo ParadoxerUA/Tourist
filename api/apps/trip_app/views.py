@@ -17,14 +17,6 @@ class TripView(BaseView):
             return self._get_response(data, status_code=400)
 
     @login_required
-    def patch(self, trip_id):
-        new_uuid = current_app.blueprints['trip'].controllers.TripController.refresh_trip_uuid(trip_id, g.user_id )
-        if new_uuid:
-            return self._get_response(new_uuid, status_code=200)
-        else:
-            return self._get_response('You have no rights', status_code=400)
-
-    @login_required
     def get(self, trip_id):
         fields = request.args.get('fields').split(',')
         trip_data = current_app.blueprints['trip'].controllers.TripController.get_trip_data(trip_id, g.user_id, fields)
@@ -34,7 +26,7 @@ class TripView(BaseView):
             return self._get_response('You have no rights', status_code=400)
 
 
-class TripUsersView(BaseView):
+class TripManageView(BaseView):
     @login_required
     def post(self, trip_uuid):
         response = current_app.blueprints['trip'].controllers.TripController.user_to_trip(trip_uuid, g.user_id)
@@ -42,3 +34,11 @@ class TripUsersView(BaseView):
             return self._get_response(response, status_code=200)
         else:
             return self._get_response('Couldnt asign user to trip', status_code=400)
+
+    @login_required
+    def patch(self, trip_id):
+        new_uuid = current_app.blueprints['trip'].controllers.TripController.refresh_trip_uuid(trip_id, g.user_id )
+        if new_uuid:
+            return self._get_response(new_uuid, status_code=200)
+        else:
+            return self._get_response('You have no rights', status_code=400)
