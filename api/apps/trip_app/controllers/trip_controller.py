@@ -47,3 +47,11 @@ class TripController:
     def get_user_trips(cls, user_id):
         user = cls._get_session_user(user_id)
         return user.trips
+
+    @classmethod
+    def get_trips_details(cls, user_id):
+        user = cls._get_session_user(user_id)
+        trips_details = [
+            trip.get_trip_details() for trip in user.trips
+        ]
+        return trips_details
