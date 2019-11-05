@@ -47,3 +47,13 @@ class TripController:
     def get_user_trips(cls, user_id):
         user = cls._get_session_user(user_id)
         return user.trips
+
+    @classmethod
+    def user_to_trip(cls, trip_uuid, user_id):
+        user = cls._get_session_user(user_id)
+        trip = current_app.models.Trip.query.filter_by(trip_uuid=trip_uuid).first()
+        try:
+            trip.join_user(user)
+            return f'{user.email} assign to trip.trip_id={trip.trip_id}'
+        except:
+            return None

@@ -46,6 +46,12 @@ class Trip(db.Model):
         db.session.commit()
         return self.trip_uuid
 
+    def join_user(self, user):
+        self.users.append(user)
+        db.session.add(self)
+        db.session.commit()
+        return user
+
     def get_public_data(self):
         users_pub_data = list(map(lambda user: user.get_public_data(), self.users))
         public_data = {
