@@ -1,5 +1,5 @@
 from flask.views import MethodView
-from flask import jsonify, make_response
+from flask import jsonify, make_response, current_app
 from datetime import datetime
 
 
@@ -15,7 +15,22 @@ class BaseView(MethodView):
     def _serialize(self, data):
         if isinstance(data, list):
             return [self._serialize(item) for item in data]
+
+        elif isinstance(data, dict):
+            data_dict = dict(data)
+            # will delete private methods from dict
+            for key in data:
+                if key.startswith(('_')):
+                    del data_dict[key]
+            return {key:self._serialize(value) for (key, value) in data_dict.items()}
+    
+        elif isinstance(data, current_app.db.Model):
+            data_dict = dict(data.__dict__)
+            return self._serialize(data_dict)
+
         try:
             return data.__dict__
         except AttributeError:
             return data
+
+
