@@ -2,6 +2,7 @@ from flask import current_app, request
 from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
+from apps.user_app.schemas.social_login_schema import SocialLoginSchema
 from helper_classes.base_view import BaseView
 import facebook
 
@@ -36,7 +37,7 @@ class LoginView(BaseView):
 class SocialLoginView(BaseView):
     def post(self):
         try:
-            user_data = request.json
+            user_data = SocialLoginSchema().load(data=request.json)
             data = current_app.blueprints['user'].controllers.LoginController.login_with_social(user_data)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)

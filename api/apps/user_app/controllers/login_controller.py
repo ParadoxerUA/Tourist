@@ -28,7 +28,7 @@ class LoginController:
     
     @classmethod
     def login_with_social(cls, data):
-        user_data = cls._authorize_user(token=data['authToken'], provider=data['provider'])
+        user_data = cls._authorize_user(token=data['auth_token'], provider=data['provider'])
         
         user = current_app.models.User.get_user_by_email(email=user_data['email'])
 
