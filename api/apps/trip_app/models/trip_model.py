@@ -15,7 +15,7 @@ class Trip(db.Model):
     description = db.Column(db.String(200))
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
-    status = db.Column(db.Boolean, default=True)
+    status = db.Column(db.String(20), default='Open')
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
     # Need tofix CASCADE parametr
     admin = db.relationship('apps.user_app.models.user_model.User', cascade='save-update, merge, delete')

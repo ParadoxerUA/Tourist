@@ -7,7 +7,7 @@ class TripSchema(Schema):
     description = fields.Str(validate=validate.Length(max=500))
     start_date = fields.DateTime()
     end_date = fields.DateTime()
-    status = fields.Bool()
+    status = fields.String(validate=validate.Length(min=1, max=20))
     points = fields.Nested(PointSchema, many=True)
 
     @validates_schema
