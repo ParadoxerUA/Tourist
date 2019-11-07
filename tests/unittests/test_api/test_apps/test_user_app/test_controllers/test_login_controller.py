@@ -1,22 +1,17 @@
-import unittest
 import json
 import redis
 from marshmallow import ValidationError
+from tests.unittests.basic_test import BasicTest
 
 
-class TestLoginController(unittest.TestCase):
-    def setUp(self):
-        import sys
-        sys.path.append('./api')
-
-        from api.app import create_app
-        from api.config import DebugConfig
-        create_app(DebugConfig)
-
+class TestLoginController(BasicTest):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
         from apps.user_app.controllers.login_controller import LoginController
         from apps.user_app.models import User
-        self.user_model = User
-        self.login_controller = LoginController()
+        cls.user_model = User
+        cls.login_controller = LoginController()
 
     def tearDown(self):
         from api.database import db
