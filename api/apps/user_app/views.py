@@ -36,7 +36,6 @@ class LoginView(BaseView):
         response.headers['Authorization'] = session_id
         return response
 
-<<<<<<< HEAD
 class SocialLoginView(BaseView):
     def post(self):
         try:
@@ -45,7 +44,6 @@ class SocialLoginView(BaseView):
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
         return self._get_response(data)
-=======
 
 class LogoutView(BaseView):
     def post(self):
@@ -66,4 +64,3 @@ class UserProfileView(BaseView):
         user_profile_data = user_profile_controller.get_user_profile(user_id=g.user_id)
 
         return self._get_response(data=user_profile_data)
->>>>>>> development
