@@ -25,7 +25,7 @@ class User(db.Model):
 
     @classmethod
     def create_user(cls, name, email, password=None, surname=None, is_active=False, avatar=None):
-        password_hash = cls.generate_password_hash(password) if password else None
+        password_hash = generate_password_hash(password) if password else None
         user = cls(name=name, email=email, password_hash=password_hash, 
                     surname=surname, is_active=is_active, avatar=avatar)
         db.session.add(user)
