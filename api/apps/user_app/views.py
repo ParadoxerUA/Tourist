@@ -1,8 +1,10 @@
-from flask import current_app, request
+import redis
+from flask import current_app, request, g
 from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
 from helper_classes.base_view import BaseView
+from helper_classes.auth_decorator import login_required
 
 
 class UserRegistrationView(BaseView):
@@ -31,3 +33,24 @@ class LoginView(BaseView):
         response = self._get_response(data=session_id)
         response.headers['Authorization'] = session_id
         return response
+
+
+class LogoutView(BaseView):
+    def post(self):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return self._get_response(data={'message': 'No authorization header provided.'}, status_code=403)
+
+        with redis.Redis() as redis_client:
+            redis_client.delete(auth_header)
+
+        return self._get_response(data={'message': 'You successfully logged out.'})
+
+
+class UserProfileView(BaseView):
+    @login_required
+    def get(self):
+        user_profile_controller = current_app.blueprints['user'].controllers.UserProfileController
+        user_profile_data = user_profile_controller.get_user_profile(user_id=g.user_id)
+
+        return self._get_response(data=user_profile_data)
