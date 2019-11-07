@@ -41,6 +41,10 @@ class Trip(db.Model):
         trip = cls.query.filter_by(trip_id=id).first()
         trip.update(**data)
 
+    @classmethod
+    def get_trip_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
+
     def set_uuid(self, trip_uuid):
         self.trip_uuid = trip_uuid
         db.session.add(self)

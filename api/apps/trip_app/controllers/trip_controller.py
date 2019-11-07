@@ -25,7 +25,7 @@ class TripController:
     @classmethod
     def refresh_trip_uuid(cls, trip_id, user_id):
         user = cls._get_session_user(user_id)
-        trip = current_app.models.Trip.query.filter_by(trip_id=trip_id).first()
+        trip = current_app.models.Trip.get_trip_by_id(trip_id)
         if trip.admin == user:
             trip.set_uuid(str(uuid.uuid1()))
             return trip.trip_uuid
@@ -37,11 +37,9 @@ class TripController:
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.query.filter_by(trip_id=trip_id).first()
         trip_data = trip.get_fields(*fields)
-        if trip.admin == user:
-            return trip_data
-        else:
+        if trip.admin != user and trip_data.get('trip_uuid'):
             del trip_data['trip_uuid']
-            return trip_data
+        return trip_data
 
     @classmethod
     def get_user_trips(cls, user_id):
