@@ -21,9 +21,12 @@ class Trip(db.Model):
         backref=db.backref('trip', lazy=True))
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
-    backref=db.backref('trips', lazy=True))
+                            backref=db.backref('trips', lazy=True))
+    equipment = db.relationship('apps.equipment_app.models.equipment_model.Equipment',
+                         backref=db.backref('trip'),
+                         cascade='all, delete, delete-orphan',
+                         single_parent=True)
     roles = db.relationship('Role', backref='trip', lazy=True)
-
 
     @classmethod
     def get_trip_by_id(cls, trip_id):
