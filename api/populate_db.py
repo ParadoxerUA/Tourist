@@ -23,15 +23,19 @@ def create_users(from_number, amount):
         created_users.append(user)
     return created_users
 
-# def create_trips(from_number, amount, admin=None):
+# Doenst work for now
+# def create_trips(from_number, amount, admin=users[0]):
 #     created_trips = []
 #     for i in range(from_number, from_number + amount):
 #         trip = Trip.create_trip(
-#             name="name",
+#             name=f'trip-{i}',
 #             description="desc",
 #             start_date="2014-12-22T03:12:58.019077+00:00",
 #             end_date="2015-12-22T03:12:58.019077+00:00",
+#             admin=admin,
 #         )
+#         created_trips.append(trip)
+#     return created_trips
 
 
 # to create 5 new users
