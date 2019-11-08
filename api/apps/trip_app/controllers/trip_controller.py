@@ -40,7 +40,10 @@ class TripController:
         if trip.admin == user:
             return trip_data
         else:
-            del trip_data['trip_uuid']
+            try:
+                del trip_data['trip_uuid']
+            except KeyError:
+                pass
             return trip_data
 
     @classmethod
