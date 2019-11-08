@@ -7,6 +7,7 @@ def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         token = request.headers.get('Authorization')
+        g.user_id = None
         with redis.Redis() as redis_client:
             user = redis_client.get(token) # return bytes
         if not user:

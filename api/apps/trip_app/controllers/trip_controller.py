@@ -55,3 +55,7 @@ class TripController:
             return 'User assigned to trip'
         except:
             return None
+
+    @classmethod
+    def delete_user_from_trip(self, trip_id, user_id):
+        pass

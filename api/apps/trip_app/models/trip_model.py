@@ -60,9 +60,14 @@ class Trip(db.Model):
         db.session.commit()
         return user
 
+    def delete_user(self, user):
+        pass
+
     # tofix
     def get_fields(self, *args):
         public_data = {}
+        if not args:
+            args = self.__dict__
         for field in args:
             if field in ['users', 'admin']:
                 try:
