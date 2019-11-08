@@ -21,11 +21,16 @@ class Trip(db.Model):
     points = db.relationship('apps.trip_app.models.point_model.Point', cascade='all, delete, delete-orphan')
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
-        backref=db.backref('trips', lazy=True))
+                            backref=db.backref('trips', lazy=True))
     eq = db.relationship('apps.eq_app.models.eq_model.Eq',
                          backref=db.backref('trip'),
                          cascade='all, delete, delete-orphan',
                          single_parent=True)
+    roles = db.relationship('Role', backref='trip', lazy=True)
+
+    @classmethod
+    def get_trip_by_id(cls, trip_id):
+        return cls.query.filter_by(trip_id=trip_id).first()
 
     @classmethod
     def create_trip(cls, data):
@@ -43,6 +48,14 @@ class Trip(db.Model):
     def update_trip(cls, id, data):
         trip = cls.query.filter_by(trip_id=id).first()
         trip.update(**data)
+
+    @classmethod
+    def get_trip_by_id(cls, trip_id):
+        return cls.query.filter_by(trip_id=trip_id).first()
+
+    @classmethod
+    def get_trip_by_uuid(cls, trip_uuid):
+        return cls.query.filter_by(trip_uuid=trip_uuid).first()
 
     def set_uuid(self, trip_uuid):
         self.trip_uuid = trip_uuid
