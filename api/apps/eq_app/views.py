@@ -35,3 +35,14 @@ class EqView(BaseView):
             return self._get_response(data=err.messages, status_code=400)
 
         return self._get_response(f"{data} was successfully deleted", status_code=200)
+
+    def post(self):
+        """Return response on post request"""
+
+        try:
+            eq_data = EqSchema().load(request.json)
+            data = current_app.blueprints['eq'].controllers.EqController.create_eq(eq_data)
+        except ValidationError as err:
+            return self._get_response(data=err.messages, status_code=400)
+
+        return self._get_response(f"{data} was successfully added", status_code=201)

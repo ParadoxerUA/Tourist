@@ -1,4 +1,5 @@
 from apps.eq_app.models import Eq
+from flask import current_app
 
 
 class EqController:
@@ -17,3 +18,8 @@ class EqController:
     def delete_eq(cls, eq_id):
         eq_data = Eq.delete_eq(eq_id)
         return eq_data
+
+    @classmethod
+    def create_eq(cls, data):
+        data = Eq.create_eq(data)
+        return data
