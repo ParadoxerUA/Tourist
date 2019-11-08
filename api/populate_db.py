@@ -6,9 +6,11 @@ db = app.db
 
 User = app.models.User
 Trip = app.models.Trip
+Point = app.models.Point
 
 users = User.query.all()
 trips = Trip.query.all()
+points = Point.query.all()
 
 def create_users(from_number, amount):
     '''to create 2 new users:\n

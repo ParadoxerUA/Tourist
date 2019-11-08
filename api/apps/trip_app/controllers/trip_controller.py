@@ -13,12 +13,11 @@ class TripController:
     @classmethod
     def create_trip(cls, data, user_id):
         admin = cls._get_session_user(user_id)
-        points = []
-        for point in data['points']:
-            points.append(PointController.create_point(point))
-        data['points'] = points
         data['admin'] = admin
+        points = data.pop('points', None)
         trip = current_app.models.Trip.create_trip(data)
+        for point in points:
+            PointController.create_point(point, trip)
         trip.set_uuid(str(uuid.uuid1()))
         return trip.trip_id
 
