@@ -17,8 +17,8 @@ class Trip(db.Model):
     end_date = db.Column(db.Date)
     status = db.Column(db.String(20), default='Open')
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
-    admin = db.relationship('apps.user_app.models.user_model.User', backref=db.backref('tripss', cascade='all, delete, delete-orphan'))
-    points = db.relationship('apps.trip_app.models.point_model.Point', cascade='all, delete, delete-orphan')
+    points = db.relationship('Point', cascade='all, delete, delete-orphan', lazy=True, 
+        backref=db.backref('trip', lazy=True))
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
         backref=db.backref('trips', lazy=True))
