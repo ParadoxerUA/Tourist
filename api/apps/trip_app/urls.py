@@ -10,6 +10,7 @@ urls = {
 methods = {
     '/v1/trip/<int:trip_id>': ['GET'],
     '/v1/trip': ['POST'],
-    '/v1/manage_trip': ['PATCH'],
-    '/v1/manage_trip/<string:trip_uuid>': ['POST']
+    # i think we dont need it, but not quite sure
+    # '/v1/manage_trip': ['PATCH'],
+    # '/v1/manage_trip/<string:trip_uuid>': ['POST']
 }
