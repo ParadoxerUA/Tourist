@@ -52,7 +52,7 @@ class TripController:
     def get_trips_details(cls, user_id):
         user = cls._get_session_user(user_id)
         trips_details = [
-            trip.get_trip_details() for trip in user.trips
+            trip.get_trip_details(user_id) for trip in user.trips
         ]
         return trips_details
 

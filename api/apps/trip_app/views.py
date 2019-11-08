@@ -37,4 +37,6 @@ class TripView(BaseView):
 class TripsListView(BaseView):
     @login_required
     def get(self):
-        return self._get_response('Get works')
+        trips_list = current_app.blueprints['trip'].controllers.\
+            TripController.get_trips_details(g.user_id)
+        return self._get_response(trips_list)
