@@ -1,5 +1,5 @@
 from .point_controller import PointController
-from flask import current_app
+from flask import current_app, g
 import uuid
 
 
@@ -56,8 +56,10 @@ class TripController:
             return None
 
     @classmethod
-    def delete_user_from_trip(self, trip_id, user_id):
-        user = cls._get_session_user(user_id)
+    def delete_user_from_trip(cls, trip_id, user_to_delete):
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
+        if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
+            return None
+        user = cls._get_session_user(user_to_delete)
         return trip.delete_user(user)
 

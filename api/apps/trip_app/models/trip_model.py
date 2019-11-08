@@ -1,7 +1,7 @@
 from database import db
 
 
-trip_user_table = db.Table('trip-user',
+trip_user_table = db.Table('trip_user',
     db.Column('trip_id', db.Integer, db.ForeignKey('trip.trip_id'), primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user_profile.user_id'), primary_key=True)
 )
@@ -71,10 +71,11 @@ class Trip(db.Model):
 
     def delete_user(self, user):
         if user in self.users:
+            user_id = user.user_id
             self.users.remove(user)
             db.session.add(self)
             db.session.commit()
-            return user
+            return user_id
         else:
             return None
 
@@ -82,7 +83,8 @@ class Trip(db.Model):
     def get_fields(self, args):
         public_data = {}
         if not args:
-            args = self.__dict__
+            args = list(self.__dict__.keys())
+            args.extend(['users', 'admin'])
         for field in args:
             if field in ['users', 'admin']:
                 try:
