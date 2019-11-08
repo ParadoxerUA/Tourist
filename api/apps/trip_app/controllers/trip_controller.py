@@ -58,4 +58,7 @@ class TripController:
 
     @classmethod
     def delete_user_from_trip(self, trip_id, user_id):
-        pass
+        user = cls._get_session_user(user_id)
+        trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
+        return trip.delete_user(user)
+

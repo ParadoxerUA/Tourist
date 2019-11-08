@@ -56,4 +56,10 @@ class TripManageView(BaseView):
     @login_required
     def delete(self, trip_id):
         user_to_delete = request.args.get('user_id')
-        result = self.trip_controller.delete_user_from_trip(trip_id, g.user_id)
+        if not user_to_delete:
+            user_to_delete = g.user_id
+        result = self.trip_controller.delete_user_from_trip(trip_id, user_to_delete)
+        if result:
+            return self._get_response(result, status_code=200)
+        else:
+            return self._get_response('User delete failed', status_code=400)

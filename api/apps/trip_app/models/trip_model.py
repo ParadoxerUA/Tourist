@@ -67,7 +67,13 @@ class Trip(db.Model):
         return user
 
     def delete_user(self, user):
-        pass
+        if user in self.users:
+            self.users.remove(user)
+            db.session.add(self)
+            db.session.commit()
+            return user
+        else:
+            return None
 
     # tofix
     def get_fields(self, *args):
