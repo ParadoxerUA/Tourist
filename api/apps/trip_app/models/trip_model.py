@@ -50,10 +50,6 @@ class Trip(db.Model):
         trip.update(**data)
 
     @classmethod
-    def get_trip_by_id(cls, trip_id):
-        return cls.query.filter_by(trip_id=trip_id).first()
-
-    @classmethod
     def get_trip_by_uuid(cls, trip_uuid):
         return cls.query.filter_by(trip_uuid=trip_uuid).first()
 
@@ -94,6 +90,24 @@ class Trip(db.Model):
             else:
                 public_data[field] = getattr(self, field)
         return public_data
+
+    def get_trip_details(self, user_id):
+        trip_details = self.get_fields(
+            ['admin', 'start_date',
+            'end_date', 'name',
+            'status', 'users', 'trip_id']
+        )
+        trip_details['participants'] = len(trip_details['users'])
+        del(trip_details['users'])
+        if self.admin_id == user_id:
+            trip_details['admin'] = '*'
+        else:
+            trip_details['admin'] = trip_details['admin'].name
+        trip_details['start_date'] = str(trip_details['start_date'])
+        trip_details['end_date'] = str(trip_details['end_date'])
+        trip_details['id'] = self.trip_id
+
+        return trip_details
 
     def __repr__(self):
         return f'<Trip {self.name}>'

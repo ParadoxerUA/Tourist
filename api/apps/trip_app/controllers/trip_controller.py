@@ -46,6 +46,14 @@ class TripController:
         return user.trips
 
     @classmethod
+    def get_trips_details(cls, user_id):
+        user = cls._get_session_user(user_id)
+        trips_details = [
+            trip.get_trip_details(user_id) for trip in user.trips
+        ]
+        return trips_details
+
+    @classmethod
     def user_to_trip(cls, trip_uuid, user_id):
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
