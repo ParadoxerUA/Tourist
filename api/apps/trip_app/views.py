@@ -37,7 +37,7 @@ class TripManageView(BaseView):
 
     @login_required
     def patch(self, trip_id):
-        new_uuid = current_app.blueprints['trip'].controllers.TripController.refresh_trip_uuid(trip_id, g.user_id )
+        new_uuid = current_app.blueprints['trip'].controllers.TripController.refresh_trip_uuid(trip_id, g.user_id)
         if new_uuid:
             return self._get_response(new_uuid, status_code=200)
         else:

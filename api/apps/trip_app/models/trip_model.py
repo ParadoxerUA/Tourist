@@ -21,7 +21,13 @@ class Trip(db.Model):
     points = db.relationship('apps.trip_app.models.point_model.Point', cascade='all, delete, delete-orphan')
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
-        backref=db.backref('trips', lazy=True))
+    backref=db.backref('trips', lazy=True))
+    roles = db.relationship('Role', backref='trip', lazy=True)
+
+
+    @classmethod
+    def get_trip_by_id(cls, trip_id):
+        return cls.query.filter_by(trip_id=trip_id).first()
 
     @classmethod
     def create_trip(cls, data):
