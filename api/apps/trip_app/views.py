@@ -32,14 +32,12 @@ class TripView(BaseView):
             return self._get_response('You have no rights', status_code=400)
 
 
-<<<<<<< HEAD
 class TripsListView(BaseView):
     @login_required
     def get(self):
         trips_list = current_app.blueprints['trip'].controllers.\
             TripController.get_trips_details(g.user_id)
         return self._get_response(trips_list)
-=======
 class TripManageView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
@@ -71,4 +69,3 @@ class TripManageView(BaseView):
             return self._get_response(result, status_code=200)
         else:
             return self._get_response('User delete failed', status_code=400)
->>>>>>> development
