@@ -76,7 +76,7 @@ class Trip(db.Model):
             return None
 
     # tofix
-    def get_fields(self, *args):
+    def get_fields(self, args):
         public_data = {}
         if not args:
             args = self.__dict__
