@@ -22,7 +22,7 @@ class Trip(db.Model):
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
                             backref=db.backref('trips', lazy=True))
-    eq = db.relationship('apps.eq_app.models.eq_model.Eq',
+    equipment = db.relationship('apps.equipment_app.models.equipment_model.Equipment',
                          backref=db.backref('trip'),
                          cascade='all, delete, delete-orphan',
                          single_parent=True)
