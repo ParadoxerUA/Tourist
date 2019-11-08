@@ -15,11 +15,10 @@ class Trip(db.Model):
     description = db.Column(db.String(200))
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
-    status = db.Column(db.Boolean, default=True)
+    status = db.Column(db.String(20), default='Open')
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
-    # Need tofix CASCADE parametr
-    admin = db.relationship('apps.user_app.models.user_model.User', cascade='save-update, merge, delete')
-    points = db.relationship('apps.trip_app.models.point_model.Point', cascade='save-update, merge, delete')
+    admin = db.relationship('apps.user_app.models.user_model.User', backref=db.backref('tripss', cascade='all, delete, delete-orphan'))
+    points = db.relationship('apps.trip_app.models.point_model.Point', cascade='all, delete, delete-orphan')
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
     backref=db.backref('trips', lazy=True))
@@ -46,6 +45,14 @@ class Trip(db.Model):
     def update_trip(cls, id, data):
         trip = cls.query.filter_by(trip_id=id).first()
         trip.update(**data)
+
+    @classmethod
+    def get_trip_by_id(cls, trip_id):
+        return cls.query.filter_by(trip_id=trip_id).first()
+
+    @classmethod
+    def get_trip_by_uuid(cls, trip_uuid):
+        return cls.query.filter_by(trip_uuid=trip_uuid).first()
 
     def set_uuid(self, trip_uuid):
         self.trip_uuid = trip_uuid

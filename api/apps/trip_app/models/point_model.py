@@ -20,14 +20,3 @@ class Point(db.Model):
     def __repr__(self):
         return f'<Trip lat: {self.latitude} long: {self.longitude}>'
 
-
-    # Well, kinda useless methode for points, but i leave it here anyway
-    # feel free to uncoment it
-
-    # def get_public_data(self):
-    #     public_data = {
-    #         'order_number': self.order_number,
-    #         'latitude': self.latitude,
-    #         'longitude': self.longitude,
-    #     }
-    #     return public_data

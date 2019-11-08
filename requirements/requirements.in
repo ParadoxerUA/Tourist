@@ -9,3 +9,5 @@ psycopg2
 flask-cors
 Flask-Migrate
 Flask-Script
+facebook-sdk
+google-auth
