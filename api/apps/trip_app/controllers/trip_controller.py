@@ -35,9 +35,9 @@ class TripController:
     @classmethod
     def get_trip_data(cls, trip_id, user_id, fields):
         user = cls._get_session_user(user_id)
-        trip = current_app.models.Trip.query.filter_by(trip_id=trip_id).first()
+        trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
         trip_data = trip.get_fields(*fields)
-        if trip.admin != user and trip_data.get('trip_uuid'):
+        if trip_data.get('trip_uuid') and trip.admin != user:
             del trip_data['trip_uuid']
         return trip_data
 
@@ -49,9 +49,9 @@ class TripController:
     @classmethod
     def user_to_trip(cls, trip_uuid, user_id):
         user = cls._get_session_user(user_id)
-        trip = current_app.models.Trip.query.filter_by(trip_uuid=trip_uuid).first()
+        trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
         try:
             trip.join_user(user)
-            return f'{user.email} assign to trip.trip_id={trip.trip_id}'
+            return 'User assigned to trip'
         except:
             return None
