@@ -8,15 +8,15 @@ class Point(db.Model):
     order_number = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'))
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
 
     @classmethod
-    def create_point(cls, data):
-        point = cls(**data)
+    def create_point(cls, data, trip):
+        point = cls(**data, trip=trip)
         db.session.add(point)
         db.session.commit()
         return point
 
     def __repr__(self):
-        return f'<Trip lat: {self.latitude} long: {self.longitude}>'
+        return f'<Point lat: {self.latitude} long: {self.longitude}>'
 
