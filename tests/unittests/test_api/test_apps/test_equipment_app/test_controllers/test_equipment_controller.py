@@ -14,10 +14,7 @@ class TestEquipmentController(BasicTest):
 
     def setUp(self):
         self.Equipment = EquipmentController()
-
-    @patch.object(Equipment, 'get_equipment_by_id')
-    def test_get_equipment_data(self, get_equipment_by_id):
-        equipment_data = {
+        self.equipment_data = {
             'equipment_id': 1,
             'name': 'Apple',
             'weight': 1,
@@ -25,12 +22,14 @@ class TestEquipmentController(BasicTest):
             'trip_id': 1
         }
 
+    @patch.object(Equipment, 'get_equipment_by_id')
+    def test_get_equipment_data(self, get_equipment_by_id):
         equipment_mock = Mock()
-        equipment_mock.equipment_id = equipment_data['equipment_id']
-        equipment_mock.name = equipment_data['name']
-        equipment_mock.weight = equipment_data['weight']
-        equipment_mock.quantity = equipment_data['quantity']
-        equipment_mock.trip_id = equipment_data['trip_id']
+        equipment_mock.equipment_id = self.equipment_data['equipment_id']
+        equipment_mock.name = self.equipment_data['name']
+        equipment_mock.weight = self.equipment_data['weight']
+        equipment_mock.quantity = self.equipment_data['quantity']
+        equipment_mock.trip_id = self.equipment_data['trip_id']
 
         get_equipment_by_id.return_value = equipment_mock
         result = self.Equipment.get_equipment_data(equipment_id=1)
