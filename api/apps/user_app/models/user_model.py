@@ -19,6 +19,8 @@ class User(db.Model):
     uuid = db.Column(db.String(36), nullable=True)
     is_active = db.Column(db.Boolean, default=False)
     registration_time = db.Column(db.DateTime, default=datetime.utcnow())
+    admin_trips = db.relationship('Trip', lazy=True, 
+        cascade='all, delete, delete-orphan', backref=db.backref('admin', lazy=True))
 
     def __repr__(self):
         return f'<User {self.name}>'
@@ -78,7 +80,7 @@ class User(db.Model):
 
     def  get_public_data(self):
         public_data = {
-            "user_id": self.uuid,
+            "user_id": self.user_id,
             "name": self.name,
             "surname": self.surname,
             "email": self.email,

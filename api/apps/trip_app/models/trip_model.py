@@ -1,7 +1,7 @@
 from database import db
 
 
-trip_user_table = db.Table('trip-user',
+trip_user_table = db.Table('trip_user',
     db.Column('trip_id', db.Integer, db.ForeignKey('trip.trip_id'), primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user_profile.user_id'), primary_key=True)
 )
@@ -17,11 +17,20 @@ class Trip(db.Model):
     end_date = db.Column(db.Date)
     status = db.Column(db.String(20), default='Open')
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
-    admin = db.relationship('apps.user_app.models.user_model.User', backref=db.backref('tripss', cascade='all, delete, delete-orphan'))
-    points = db.relationship('apps.trip_app.models.point_model.Point', cascade='all, delete, delete-orphan')
+    points = db.relationship('Point', cascade='all, delete, delete-orphan', lazy=True, 
+        backref=db.backref('trip', lazy=True))
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
-        backref=db.backref('trips', lazy=True))
+                            backref=db.backref('trips', lazy=True))
+    equipment = db.relationship('apps.equipment_app.models.equipment_model.Equipment',
+                         backref=db.backref('trip'),
+                         cascade='all, delete, delete-orphan',
+                         single_parent=True)
+    roles = db.relationship('Role', backref='trip', lazy=True)
+
+    @classmethod
+    def get_trip_by_id(cls, trip_id):
+        return cls.query.filter_by(trip_id=trip_id).first()
 
     @classmethod
     def create_trip(cls, data):
@@ -40,6 +49,10 @@ class Trip(db.Model):
         trip = cls.query.filter_by(trip_id=id).first()
         trip.update(**data)
 
+    @classmethod
+    def get_trip_by_uuid(cls, trip_uuid):
+        return cls.query.filter_by(trip_uuid=trip_uuid).first()
+
     def set_uuid(self, trip_uuid):
         self.trip_uuid = trip_uuid
         db.session.add(self)
@@ -52,9 +65,22 @@ class Trip(db.Model):
         db.session.commit()
         return user
 
+    def delete_user(self, user):
+        if user in self.users:
+            user_id = user.user_id
+            self.users.remove(user)
+            db.session.add(self)
+            db.session.commit()
+            return user_id
+        else:
+            return None
+
     # tofix
-    def get_fields(self, *args):
+    def get_fields(self, args):
         public_data = {}
+        if not args:
+            args = list(self.__dict__.keys())
+            args.extend(['users', 'admin'])
         for field in args:
             if field in ['users', 'admin']:
                 try:
@@ -64,6 +90,24 @@ class Trip(db.Model):
             else:
                 public_data[field] = getattr(self, field)
         return public_data
+
+    def get_trip_details(self, user_id):
+        trip_details = self.get_fields(
+            ['admin', 'start_date',
+            'end_date', 'name',
+            'status', 'users', 'trip_id']
+        )
+        trip_details['participants'] = len(trip_details['users'])
+        del(trip_details['users'])
+        if self.admin_id == user_id:
+            trip_details['admin'] = '*'
+        else:
+            trip_details['admin'] = trip_details['admin'].name
+        trip_details['start_date'] = str(trip_details['start_date'])
+        trip_details['end_date'] = str(trip_details['end_date'])
+        trip_details['id'] = self.trip_id
+
+        return trip_details
 
     def __repr__(self):
         return f'<Trip {self.name}>'
