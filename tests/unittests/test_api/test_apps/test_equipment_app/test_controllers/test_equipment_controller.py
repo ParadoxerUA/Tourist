@@ -42,5 +42,20 @@ class TestEquipmentController(BasicTest):
     def test_delete_equipment(self):
         pass
 
-    def test_create_equipment(self):
-        pass
+    @patch.object(Equipment, 'create_equipment')
+    def test_create_equipment(self, create_equipment):
+        equipment_mock_1 = Mock()
+        equipment_mock_1.equipment_id = self.equipment_data['equipment_id']
+        equipment_mock_1.name = self.equipment_data['name']
+        equipment_mock_1.weight = self.equipment_data['weight']
+        equipment_mock_1.quantity = self.equipment_data['quantity']
+        equipment_mock_1.trip_id = self.equipment_data['trip_id']
+
+        equipment_mock_2 = Mock()
+        equipment_mock_2.equipment_id = self.equipment_data['equipment_id']
+
+        create_equipment.return_value = equipment_mock_1
+        result = self.Equipment.create_equipment(self.equipment_data)
+
+        self.assertEqual(result, equipment_mock_1)
+        self.assertNotEqual(result, equipment_mock_2)
