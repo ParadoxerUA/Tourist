@@ -45,7 +45,6 @@ class Equipment(db.Model):
         equipment = cls.get_equipment_by_id(id)
         db.session.delete(equipment)
         db.session.commit()
-        return equipment
 
     def __repr__(self):
         return f'Equipment: {self.name}'
