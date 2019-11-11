@@ -102,7 +102,7 @@ class Trip(db.Model):
         if self.admin_id == user_id:
             trip_details['admin'] = '*'
         else:
-            trip_details['admin'] = trip_details['admin'].name
+            trip_details['admin'] = trip_details['admin']['name']
         trip_details['start_date'] = str(trip_details['start_date'])
         trip_details['end_date'] = str(trip_details['end_date'])
         trip_details['id'] = self.trip_id
