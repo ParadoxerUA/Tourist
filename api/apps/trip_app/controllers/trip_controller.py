@@ -77,5 +77,6 @@ class TripController:
             'trip_id': trip_id,
             'start_date': start_date,
             'end_date': end_date,
+            'status': status,
         }
-        current_app.models.Trip.update_trip(trip_id, data)
+        current_app.models.Trip.update_trip_list_data(trip_id, data)
