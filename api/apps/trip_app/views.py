@@ -38,6 +38,18 @@ class TripsListView(BaseView):
         trips_list = current_app.blueprints['trip'].controllers.\
             TripController.get_trips_details(g.user_id)
         return self._get_response(trips_list)
+
+    @login_required
+    def post(self, trip_id):
+        trip_data = request.json
+        start_date = trip_data['start_date']
+        end_date = trip_data['end_date']
+        status = trip_data['status']
+        current_app.blueprints['trip'].controllers.\
+            TripController.update_trip_list_data(trip_id, start_date, end_date, status)
+        return 'trip updated'
+
+
 class TripManageView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
