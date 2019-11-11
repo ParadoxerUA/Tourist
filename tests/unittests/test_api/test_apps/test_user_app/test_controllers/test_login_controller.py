@@ -4,6 +4,7 @@ import sys
 from unittest.mock import patch, Mock
 from marshmallow import ValidationError
 from tests.unittests.basic_test import BasicTest
+from unittest.mock import Mock, MagicMock
 
 if not "./api" in sys.path:
     sys.path.append("./api")
@@ -21,6 +22,11 @@ class TestLoginController(BasicTest):
             'email': 'some_email@yahoo.com',
             'password': 'some_password'
         }
+        cls._authorize_user_patcher = patch.object(LoginController, '_authorize_user')
+        cls._create_session_patcher = patch.object(LoginController, '_create_session', side_effect=lambda user: user)
+        cls.user_model_patcher = patch.object(cls.app.models, 'User')
+        cls.user = Mock()
+        cls.social_data = {'auth_token': '', 'provider': ''}
 
     @patch.object(User, 'get_user_by_email', return_value=None)
     def test_incorrect_email(self, get_user_by_email):
@@ -54,3 +60,69 @@ class TestLoginController(BasicTest):
         result = json.loads(result)
         self.assertEqual(result['user_id'], user_mock.user_id)
         self.assertEqual((result['expired_at'] - result['started_at']), 24 * 60 * 60)
+
+
+    def test_login_with_social_active_user(self):
+        self.start_patch()
+
+        self.user.is_active = True
+        self.app.models.User.get_user_by_email.return_value = self.user
+
+        result = self.login_controller.login_with_social(self.social_data)
+
+        self.assertEqual(self.app.models.User.get_user_by_email.called, True)
+        self.assertEqual(self.app.models.User.create_user.called, False)
+        self.assertEqual(self.app.models.User.activate_user.called, False)
+        self.assertEqual(result, self.user)
+        self.assertEqual(result.is_active, True)
+        
+        self.stop_patch()
+
+    def test_login_with_social_not_active_user(self):
+        self.start_patch()
+
+        self.user.is_active = False
+        self.app.models.User.get_user_by_email.return_value = self.user
+
+        def activate_user():
+            self.user.is_active = True
+
+        self.user.activate_user.side_effect = activate_user
+        result = self.login_controller.login_with_social(self.social_data)
+
+        self.assertEqual(self.app.models.User.get_user_by_email.called, True)
+        self.assertEqual(self.app.models.User.create_user.called, False)
+        self.assertEqual(self.user.activate_user.called, True)
+        self.assertEqual(result, self.user)
+        self.assertEqual(result.is_active, True)
+
+        self.stop_patch()
+
+    def test_login_with_social_new_user(self):
+        self.start_patch()
+
+        self.app.models.User.get_user_by_email.return_value = None
+        self.app.models.User.create_user.return_value = self.user
+        self.user.is_active = True
+
+        result = self.login_controller.login_with_social(self.social_data)
+
+        self.assertEqual(self.app.models.User.get_user_by_email.called, True)
+        self.assertEqual(self.app.models.User.create_user.called, True)
+        self.assertEqual(self.user.activate_user.called, False)
+        self.assertEqual(result, self.user)
+        self.assertEqual(result.is_active, True)
+
+        self.stop_patch()
+
+    @classmethod
+    def start_patch(cls):
+        cls.user_model_patcher.start()
+        cls._authorize_user_patcher.start()
+        cls._create_session_patcher.start()
+
+    @classmethod
+    def stop_patch(cls):
+        cls._authorize_user_patcher.stop()
+        cls._create_session_patcher.stop()
+        cls.user_model_patcher.stop()
