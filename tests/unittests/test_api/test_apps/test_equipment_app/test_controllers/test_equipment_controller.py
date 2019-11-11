@@ -36,8 +36,18 @@ class TestEquipmentController(BasicTest):
 
         self.assertEqual(result, equipment_mock)
 
-    def test_update_equipment(self):
-        pass
+    @patch.object(Equipment, 'update_equipment')
+    def test_update_equipment(self, update_equipment):
+        new_data = {
+            'name': 'Orange',
+            'weight': 2,
+            'quantity': 4
+        }
+        update_equipment.return_value = None
+        equipment_id = 1
+        result = self.Equipment.update_equipment(equipment_id, new_data)
+
+        self.assertEqual(result, None)
 
     def test_delete_equipment(self):
         pass
