@@ -49,8 +49,12 @@ class TestEquipmentController(BasicTest):
 
         self.assertEqual(result, None)
 
-    def test_delete_equipment(self):
-        pass
+    @patch.object(Equipment, 'delete_equipment')
+    def test_delete_equipment(self, delete_equipment):
+        delete_equipment.return_value = None
+        result = self.Equipment.delete_equipment(equipment_id=1)
+
+        self.assertEqual(result, None)
 
     @patch.object(Equipment, 'create_equipment')
     def test_create_equipment(self, create_equipment):
