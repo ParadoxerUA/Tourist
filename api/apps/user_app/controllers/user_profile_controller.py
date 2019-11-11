@@ -6,6 +6,7 @@ class UserProfileController:
     def get_user_profile(user_id):
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         user_profile_data = {
+            'user_id': user_id,
             'avatar': user.avatar if user.avatar else 'http://localhost:5000/static/images/user_avatar.png',
             'name': user.name,
             'surname': user.surname,
