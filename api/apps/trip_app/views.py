@@ -38,6 +38,7 @@ class TripsListView(BaseView):
         trips_list = current_app.blueprints['trip'].controllers.\
             TripController.get_trips_details(g.user_id)
         return self._get_response(trips_list)
+
 class TripManageView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
