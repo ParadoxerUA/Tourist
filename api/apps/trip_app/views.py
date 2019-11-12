@@ -40,7 +40,7 @@ class TripsListView(BaseView):
         return self._get_response(trips_list, status_code=200)
 
     @login_required
-    def post(self, trip_id):
+    def patch(self, trip_id):
         trip_data = request.json
         start_date = trip_data['start_date']
         end_date = trip_data['end_date']
