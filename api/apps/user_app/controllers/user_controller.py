@@ -12,7 +12,8 @@ class UserController:
         if user is None:
             user = current_app.models.User.create_user(
                 name=name, email=email,
-                password=password, surname=surname
+                password=password, surname=surname,
+                avatar='http://localhost:5000/static/images/user_avatar.png'
             )
             cls.setup_registration_otc(user)
             return 'user created'
