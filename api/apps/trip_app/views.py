@@ -29,7 +29,7 @@ class TripView(BaseView):
         if trip_data:
             return self._get_response(trip_data, status_code=200)
         else:
-            return self._get_response('You have no rights', status_code=400)
+            return self._get_response('User not assign to requested trip', status_code=400)
 
 
 class TripsListView(BaseView):
@@ -39,18 +39,19 @@ class TripsListView(BaseView):
             TripController.get_trips_details(g.user_id)
         return self._get_response(trips_list)
 
+
 class TripManageView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
 
-
+    # assign user to trip
     @login_required
     def get(self, trip_uuid):
         response = self.trip_controller.user_to_trip(trip_uuid, g.user_id)
         if response:
             return self._get_response(response, status_code=200)
         else:
-            return self._get_response('Couldnt asign user to trip', status_code=400)
+            return self._get_response('Couldnt assign user to trip', status_code=400)
 
     @login_required
     def patch(self, trip_id):
@@ -58,7 +59,7 @@ class TripManageView(BaseView):
         if new_uuid:
             return self._get_response(new_uuid, status_code=200)
         else:
-            return self._get_response('You have no rights', status_code=400)
+            return self._get_response('You are not admin of given trip', status_code=400)
 
     @login_required
     def delete(self, trip_id):
