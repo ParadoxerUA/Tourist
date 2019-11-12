@@ -70,7 +70,7 @@ class LoginController:
         try:
             response = authed_session.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
         except GoogleAuthError:
-            ValidationError('Invalid auth token')
+            raise ValidationError('Invalid auth token')
 
         raw_data = json.loads(response.text)
         user_data = {

@@ -56,7 +56,7 @@ class TripManageView(BaseView):
 
 
     @login_required
-    def post(self, trip_uuid):
+    def get(self, trip_uuid):
         response = self.trip_controller.user_to_trip(trip_uuid, g.user_id)
         if response:
             return self._get_response(response, status_code=200)

@@ -89,7 +89,7 @@ class Trip(db.Model):
         public_data = {}
         if not args:
             args = list(self.__dict__.keys())
-            args.extend(['users', 'admin'])
+            args.extend(['users', 'admin', 'points'])
         for field in args:
             if field in ['users', 'admin']:
                 try:
