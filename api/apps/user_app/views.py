@@ -60,7 +60,8 @@ class LogoutView(BaseView):
 class UserProfileView(BaseView):
     @login_required
     def get(self):
-        user_profile_controller = current_app.blueprints['user'].controllers.UserProfileController
+        user_profile_controller = current_app.blueprints['user'].controllers.UserController
         user_profile_data = user_profile_controller.get_user_profile(user_id=g.user_id)
 
         return self._get_response(data=user_profile_data)
+        
