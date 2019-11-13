@@ -12,7 +12,8 @@ class UserController:
         if user is None:
             user = current_app.models.User.create_user(
                 name=name, email=email,
-                password=password, surname=surname
+                password=password, surname=surname,
+                avatar='http://localhost:5000/static/images/user_avatar.png'
             )
             cls.setup_registration_otc(user)
             return 'user created'
@@ -53,3 +54,16 @@ class UserController:
         content = {'username': user.name, 'uuid': uuid}
         email_data = build_email(user.email, em_type, **content)
         celery_app.send_task('app.async_email', kwargs={'data': email_data})
+
+    @staticmethod
+    def get_user_profile(user_id):
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        user_profile_data = {
+            'user_id': user_id,
+            'avatar': user.avatar if user.avatar else 'http://localhost:5000/static/images/user_avatar.png',
+            'name': user.name,
+            'surname': user.surname,
+            'email': user.email,
+            'capacity': user.capacity
+        }
+        return user_profile_data
