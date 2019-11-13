@@ -71,3 +71,12 @@ class TripController:
         user = cls._get_session_user(user_to_delete)
         return trip.delete_user(user)
 
+    @classmethod
+    def update_trip_list_data(cls, trip_id, start_date, end_date, status):
+        data = {
+            'trip_id': trip_id,
+            'start_date': start_date,
+            'end_date': end_date,
+            'status': status,
+        }
+        current_app.models.Trip.update_trip_list_data(trip_id, data)
