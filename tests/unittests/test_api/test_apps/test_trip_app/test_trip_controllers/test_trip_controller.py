@@ -47,16 +47,19 @@ class TestTripController(BasicTest):
         new_uuid = TripController.refresh_trip_uuid(trip_id, user_id)
         self.assertEqual(new_uuid, None)
 
-    def test_get_trip_data(self):
+    def test_get_trip_data_success(self):
         trip_id = user_id = 1
         fields_uuid = ['trip_uuid', 'field-1', 'field-2'] #<trip-uuid> - private field, should be deleted from trip_data if user != admin
         fields = ['field-1', 'field-2'] # for aditional recheck
         trip = self.Trip.create_trip()
         self.Trip.get_trip_by_id.return_value = trip
-        trip.get_fields = lambda *args: {arg:1 for arg in args}
+        trip.get_fields = lambda args: {arg:1 for arg in args}
+        trip.users = [1,]
         trip_data_1 = TripController.get_trip_data(trip_id, user_id, fields_uuid)
         trip_data_2 = TripController.get_trip_data(trip_id, user_id, fields)
         self.assertEqual(trip_data_1, trip_data_2)
+        self.assertEqual(True, bool(trip_data_2))
+        self.assertEqual(bool(trip_data_1), True)
 
     def test_user_to_trip_success(self):
         trip_uuid = user_id = 1
