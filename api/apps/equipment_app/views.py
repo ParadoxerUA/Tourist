@@ -25,7 +25,7 @@ class EquipmentView(BaseView):
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
 
-        return self._get_response(f"Successfully updated", status_code=200)
+        return self._get_response("Successfully updated", status_code=200)
 
     def delete(self, equipment_id):
         """"Return response on delete request"""
@@ -35,7 +35,7 @@ class EquipmentView(BaseView):
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
 
-        return self._get_response(f"Successfully deleted", status_code=200)
+        return self._get_response("Successfully deleted", status_code=200)
 
     def post(self):
         """Return response on post request"""
