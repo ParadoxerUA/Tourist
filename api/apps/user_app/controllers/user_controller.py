@@ -1,4 +1,5 @@
 from helper_classes.email_builder.build_email import build_email
+from marshmallow import ValidationError
 from flask import current_app
 import celery
 
@@ -19,7 +20,7 @@ class UserController:
             return 'user created'
 
         if user.is_active:
-            return 'user is registered'
+            raise ValidationError('User is already registered')
         if user.is_uuid_valid():
             return 'uuid is valid'
 
@@ -60,10 +61,22 @@ class UserController:
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         user_profile_data = {
             'user_id': user_id,
-            'avatar': user.avatar if user.avatar else 'http://localhost:5000/static/images/user_avatar.png',
+            'avatar': user.avatar,
             'name': user.name,
             'surname': user.surname,
             'email': user.email,
             'capacity': user.capacity
         }
         return user_profile_data
+
+    @classmethod
+    def change_password(cls, user_id, new_password, old_password=None):
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        if not user.password_is_set() or (old_password and user.check_password(old_password)):
+            user.set_password(new_password)
+            return 'Your password was updated'
+        else:
+            raise ValidationError('Wrong password')
+
+
+            

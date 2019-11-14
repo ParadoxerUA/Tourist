@@ -4,6 +4,7 @@ from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
 from apps.user_app.schemas.social_login_schema import SocialLoginSchema
+from apps.user_app.schemas.change_password_schema import ChangePasswordSchema
 from helper_classes.base_view import BaseView
 import facebook
 from helper_classes.auth_decorator import login_required
@@ -60,8 +61,18 @@ class LogoutView(BaseView):
 class UserProfileView(BaseView):
     @login_required
     def get(self):
-        user_profile_controller = current_app.blueprints['user'].controllers.UserController
-        user_profile_data = user_profile_controller.get_user_profile(user_id=g.user_id)
+        user_controller = current_app.blueprints['user'].controllers.UserController
+        user_profile_data = user_controller.get_user_profile(user_id=g.user_id)
 
         return self._get_response(data=user_profile_data)
+
+    @login_required
+    def patch(self):
+        try:
+            password_data = ChangePasswordSchema().load(data=request.json)
+            user_controller = current_app.blueprints['user'].controllers.UserController
+            data = user_controller.change_password(user_id=g.user_id, **password_data)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
         
+        return self._get_response(data=data)

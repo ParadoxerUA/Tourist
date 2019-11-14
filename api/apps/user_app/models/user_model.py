@@ -57,9 +57,13 @@ class User(db.Model):
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+        db.session.commit()
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def password_is_set(self):
+        return self.password_hash is not None
 
     def activate_user(self):
         self.is_active = True
