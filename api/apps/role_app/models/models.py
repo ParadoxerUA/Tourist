@@ -7,6 +7,7 @@ class Role(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
+    color = db.Column(db.String(7), nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
 
     def __repr__(self):
