@@ -9,8 +9,18 @@ class RoleController:
         return trip
 
     @staticmethod
-    def create_role(data):
-        role = current_app.models.Role.create_role(data)
+    def _get_user(user_id):
+        user = current_app.models.User.get_user_by_id(user_id)
+        return user
+
+    @classmethod
+    def create_role(cls, data, user_id):
+        user = cls._get_user(user_id)
+        trip = cls._get_trip(data['trip_id'])
+        if user == trip.admin:
+            role = current_app.models.Role.create_role(data)
+        else:
+            role = None
         return role
 
     @classmethod

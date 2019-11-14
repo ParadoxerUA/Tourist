@@ -35,6 +35,8 @@ class TripController:
     def get_trip_data(cls, trip_id, user_id, fields):
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
+        if user not in trip.users:
+            return None
         trip_data = trip.get_fields(fields)
         if trip_data.get('trip_uuid') and trip.admin != user:
             del trip_data['trip_uuid']
@@ -71,3 +73,12 @@ class TripController:
         user = cls._get_session_user(user_to_delete)
         return trip.delete_user(user)
 
+    @classmethod
+    def update_trip_list_data(cls, trip_id, start_date, end_date, status):
+        data = {
+            'trip_id': trip_id,
+            'start_date': start_date,
+            'end_date': end_date,
+            'status': status,
+        }
+        current_app.models.Trip.update_trip_list_data(trip_id, data)

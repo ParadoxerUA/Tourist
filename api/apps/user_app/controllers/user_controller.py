@@ -77,6 +77,4 @@ class UserController:
             return 'Your password was updated'
         else:
             raise ValidationError('Wrong password')
-
-
-            
+ 

@@ -50,6 +50,15 @@ class Trip(db.Model):
         trip.update(**data)
 
     @classmethod
+    def update_trip_list_data(cls, id, data):
+        trip = cls.query.filter_by(trip_id=id).first()
+        trip.end_date = data['end_date']
+        trip.start_date = data['start_date']
+        trip.status = data['status']
+        db.session.add(trip)
+        db.session.commit()
+
+    @classmethod
     def get_trip_by_uuid(cls, trip_uuid):
         return cls.query.filter_by(trip_uuid=trip_uuid).first()
 
@@ -80,7 +89,7 @@ class Trip(db.Model):
         public_data = {}
         if not args:
             args = list(self.__dict__.keys())
-            args.extend(['users', 'admin', 'points'])
+            args.extend(['users', 'admin', 'points', 'roles'])
         for field in args:
             if field in ['users', 'admin']:
                 try:

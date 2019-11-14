@@ -9,7 +9,7 @@ from google.auth.exceptions import GoogleAuthError
 class LoginController:
     @classmethod
     def validate_fields(cls, email, password):
-        error_message = {'non_field_errors': ['Incorrect email or password']}
+        error_message = 'Incorrect email or password'
 
         user = current_app.models.User.get_user_by_email(email=email)
 
@@ -17,7 +17,7 @@ class LoginController:
             raise ValidationError(error_message)
 
         if not user.is_active:
-            raise ValidationError({'non_field_errors': ['Your account is not active']})
+            raise ValidationError('Your account is not active')
 
         return user
 
