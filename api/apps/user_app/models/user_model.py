@@ -2,6 +2,8 @@ from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+BASE_AVATAR_LINK = 'http://localhost:5000/static/images/user_avatar.png'
+
 
 class User(db.Model):
     """Model for user accounts."""
@@ -26,7 +28,8 @@ class User(db.Model):
         return f'<User {self.name}>'
 
     @classmethod
-    def create_user(cls, name, email, password=None, surname=None, is_active=False, avatar=None):
+    def create_user(cls, name, email, password=None, surname=None,
+                    is_active=False, avatar=BASE_AVATAR_LINK):
         password_hash = generate_password_hash(password) if password else None
         user = cls(name=name, email=email, password_hash=password_hash, 
                     surname=surname, is_active=is_active, avatar=avatar)
