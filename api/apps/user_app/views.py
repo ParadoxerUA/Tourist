@@ -11,7 +11,7 @@ from helper_classes.auth_decorator import login_required
 
 class UserRegistrationView(BaseView):
     def post(self):
-
+        # tofix
         request_data = request.json
         try:
             UserRegisterSchema().load(request_data)
