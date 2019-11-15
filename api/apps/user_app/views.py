@@ -64,4 +64,3 @@ class UserProfileView(BaseView):
         user_profile_data = user_profile_controller.get_user_profile(user_id=g.user_id)
 
         return self._get_response(data=user_profile_data)
-        
