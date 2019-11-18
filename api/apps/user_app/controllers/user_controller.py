@@ -49,7 +49,7 @@ class UserController:
             current_app.config['CELERY_APP_NAME'],
             broker=current_app.config['CELERY_BROKER_URL'])
         uuid = current_app.blueprints['otc'].controllers.\
-            OTCController.create_registration_uuid()
+            OtcController.create_registration_uuid()
         user.set_uuid(uuid)
         em_type = 'email_confirmation'
         content = {'username': user.name, 'uuid': uuid}
