@@ -3,7 +3,7 @@ from .point_schema import PointSchema
 
 
 class TripSchema(Schema):
-    name = fields.Str(validate=validate.Length(min=3, max=20), required=True)
+    name = fields.Str(validate=validate.Length(min=3, max=30), required=True)
     description = fields.Str(validate=validate.Length(max=500))
     start_date = fields.DateTime()
     end_date = fields.DateTime()
