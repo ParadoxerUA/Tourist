@@ -1,6 +1,6 @@
-from .otc_controller import OTCController
+from .otc_controller import OtcController
 
 
 controllers = [
-    OTCController,
+    OtcController,
 ]
