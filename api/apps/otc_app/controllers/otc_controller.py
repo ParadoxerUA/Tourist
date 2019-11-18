@@ -13,7 +13,7 @@ class OtcController():
         cls.redis_client = redis.Redis()
         otc_type = cls.redis_client.get(uuid)
     
-        if otc_type == False:
+        if otc_type == None:
             raise OtcNoneError('specified uuid does not exist')
 
         otc_type = otc_type.decode('utf-8')
