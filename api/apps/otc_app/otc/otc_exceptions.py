@@ -1,13 +1,16 @@
-class OTCBaseException(Exception):
+class OtcBaseException(Exception):
     pass
 
 
-class OTCTypeError(OTCBaseException):
+class OtcTypeError(OtcBaseException):
     pass
 
 
-class OTCOutdatedError(OTCBaseException):
+class OtcOutdatedError(OtcBaseException):
     pass
 
-class OTCNoneError(OTCBaseException):
+class OtcNoneError(OtcBaseException):
+    pass
+
+class OtcInsertionError(OtcBaseException):
     pass
