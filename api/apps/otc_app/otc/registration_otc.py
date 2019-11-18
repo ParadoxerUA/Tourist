@@ -1,8 +1,8 @@
 from uuid import uuid4 
-from .base_otc import BaseOTC
+from .base_otc import BaseOtc
 
 
-class RegistrationOTC(BaseOTC):
+class RegistrationOtc(BaseOtc):
     def __init__(self):
         super().__init__('user_registration')
 
