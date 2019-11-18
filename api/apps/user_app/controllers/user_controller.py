@@ -22,7 +22,7 @@ class UserController:
         if user.is_active:
             raise ValidationError('User is already registered')
         if user.is_uuid_valid():
-            return 'uuid is valid'
+            raise ValidationError('uuid is valid')
 
         user.delete_user()
         user = current_app.models.User.create_user(
@@ -49,7 +49,7 @@ class UserController:
             current_app.config['CELERY_APP_NAME'],
             broker=current_app.config['CELERY_BROKER_URL'])
         uuid = current_app.blueprints['otc'].controllers.\
-            OTCController.get_registration_uuid()
+            OTCController.create_registration_uuid()
         user.set_uuid(uuid)
         em_type = 'email_confirmation'
         content = {'username': user.name, 'uuid': uuid}

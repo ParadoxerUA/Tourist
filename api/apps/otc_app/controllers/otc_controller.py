@@ -16,7 +16,7 @@ class OTCController():
             raise OTCTypeError()
 
     @classmethod
-    def get_registration_uuid(cls):
+    def create_registration_uuid(cls):
         otc = registration_otc.RegistrationOTC()
         otc.create_otc()
         return otc.get_otc()
