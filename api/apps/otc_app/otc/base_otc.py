@@ -14,4 +14,4 @@ class BaseOTC:
         return self._otc_type
 
     def create_otc(self):
-        pass
+        raise NotImplementedError
