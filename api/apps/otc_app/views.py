@@ -3,12 +3,9 @@ from flask import current_app
 
 
 class OTCView(BaseView):
-    def get(self, uuid):
+    def patch(self, uuid):
         data = [
             current_app.blueprints['otc'].controllers\
             .OTCController.handle_uuid(uuid, 'user_registration'),
         ]
         return self._get_response(data)
-
-    def post(self):
-        pass
