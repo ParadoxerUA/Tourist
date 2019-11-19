@@ -31,3 +31,12 @@ class RoleView(BaseView):
         current_app.blueprints['role'].controllers.RoleController.delete_role(role_name, trip_id)
         return 'Deleted'
 
+    @login_required
+    def put(self, role_id, user_id):
+        result = self.role_controller.toggle_role(role_id, user_id, g.user_id)
+        if result:
+            return self._get_response(result, status_code=201)
+        else:
+            return self._get_response('Assigning role failed', status_code=400)
+
+
