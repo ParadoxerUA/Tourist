@@ -2,13 +2,10 @@ from helper_classes.base_view import BaseView
 from flask import current_app
 
 
-class OTCView(BaseView):
-    def get(self, uuid):
+class OtcView(BaseView):
+    def patch(self, uuid):
         data = [
             current_app.blueprints['otc'].controllers\
-            .OTCController.handle_uuid(uuid, 'user_registration'),
+            .OtcController.handle_uuid(uuid),
         ]
         return self._get_response(data)
-
-    def post(self):
-        pass

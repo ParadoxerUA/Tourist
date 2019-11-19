@@ -3,21 +3,21 @@ from unittest.mock import Mock, MagicMock
 from tests.unittests.basic_test import BasicTest
 
 
-class TestOTCController(BasicTest):
+class TestOtcController(BasicTest):
     def test_handle_uuid(self):
-        from apps.otc_app.controllers import OTCController
+        from apps.otc_app.controllers import OtcController
         from apps.otc_app.otc import otc_exceptions
 
-        OTCController._activate_user = MagicMock(return_value=True)
+        OtcController._activate_user = MagicMock(return_value=True)
         self.assertEqual(
-            OTCController.handle_uuid('uuid', 'user_registration'),
+            OtcController.handle_uuid('uuid', 'user_registration'),
             True
         )
-        with self.assertRaises(otc_exceptions.OTCTypeError):
-            OTCController.handle_uuid('uuid', 'some_type')
+        with self.assertRaises(otc_exceptions.OtcTypeError):
+            OtcController.handle_uuid('uuid', 'some_type')
 
     def test__activate_user(self):
-        from apps.otc_app.controllers import OTCController
+        from apps.otc_app.controllers import OtcController
         from apps.otc_app.otc import otc_exceptions
         from app import create_app
         from config import DebugConfig
@@ -28,13 +28,13 @@ class TestOTCController(BasicTest):
         user.activate_user = MagicMock(return_value=None)
 
         user.is_active = True
-        self.assertEqual(OTCController._activate_user('uuid'), 'user already activated')
+        self.assertEqual(OtcController._activate_user('uuid'), 'user already activated')
 
         user.is_active = False
         user.is_uuid_valid = MagicMock(return_value=True)
-        self.assertEqual(OTCController._activate_user('uuid'), 'user activated')
+        self.assertEqual(OtcController._activate_user('uuid'), 'user activated')
 
-        with self.assertRaises(otc_exceptions.OTCOutdatedError):
+        with self.assertRaises(otc_exceptions.OtcOutdatedError):
             user.is_uuid_valid = MagicMock(return_value=False)
             user.is_active = False
-            OTCController._activate_user('uuid')
+            OtcController._activate_user('uuid')
