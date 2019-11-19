@@ -28,6 +28,7 @@ class UserController:
             raise ValidationError('uuid is valid')
 
         user.delete_user()
+        # tofix
         user = current_app.models.User.create_user(
             name=name, email=email,
             password=password, surname=surname
