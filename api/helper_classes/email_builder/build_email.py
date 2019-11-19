@@ -19,4 +19,4 @@ def build_email(recipient, email_type, **kwargs):
 	email_data['subject'] = subject_from_type[email_type]
 	email_data['recipient'] = recipient
 	
-	return json.dumps(email_data)
+	return email_data

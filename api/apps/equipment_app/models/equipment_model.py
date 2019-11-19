@@ -9,7 +9,7 @@ class Equipment(db.Model):
 
     equipment_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    weight = db.Column(db.Integer, nullable=False)
+    weight = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
 
