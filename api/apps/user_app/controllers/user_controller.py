@@ -20,9 +20,9 @@ class UserController:
             return 'user created'
 
         if user.is_active:
-            raise ValidationError('User is already registered')
+            return 'User is already registered'
         if user.is_uuid_valid():
-            raise ValidationError('uuid is valid')
+            return 'uuid is valid'
 
         user.delete_user()
         # tofix
