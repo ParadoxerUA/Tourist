@@ -9,7 +9,6 @@ class OtcController():
     @classmethod
     def handle_uuid(cls, uuid):
         redis_client = redis.Redis()
-        print(uuid)
         otc_type = redis_client.get(uuid)
     
         if otc_type is None:
