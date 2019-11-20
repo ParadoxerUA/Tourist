@@ -30,3 +30,7 @@ class TestOtcController(BasicTest):
             
         with self.assertRaises(otc_exceptions.OtcTypeError):
             self.app.blueprints['otc'].controllers.OtcController.handle_uuid('uuid')
+
+        redis_client.delete('uuid')
+        redis_client.delete('uuid1')
+        redis_client.delete('uuid2')
