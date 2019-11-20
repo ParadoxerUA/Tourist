@@ -31,7 +31,7 @@ class TripController:
         trip = current_app.models.Trip.get_trip_by_id(trip_id)
         if trip.admin == user:
             trip_uuid = current_app.blueprints['otc'].controllers\
-                .OtcController.create_trip_link_uuid()
+                .OtcController.create_trip_link_uuid(current_uuid=trip.trip_uuid)
             trip.set_uuid(trip_uuid)
             return trip.trip_uuid
         else:
