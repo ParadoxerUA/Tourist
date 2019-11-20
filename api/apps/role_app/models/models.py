@@ -11,6 +11,7 @@ class Role(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
+    color = db.Column(db.String(7), nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
     users = db.relationship('User', secondary=role_user_table, lazy=True,
         backref=db.backref('roles', lazy=True))
