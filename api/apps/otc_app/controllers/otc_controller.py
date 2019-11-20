@@ -31,7 +31,11 @@ class OtcController():
         return cls._setup_otc(otc)
 
     @classmethod
-    def create_trip_link_uuid(cls):
+    def create_trip_link_uuid(cls, *, current_uuid=None):
+        if current_uuid:
+            redis_client = redis.Redis()
+            redis_client.delete(current_uuid)
+
         otc = trip_link_otc.TripLinkOtc()
         return cls._setup_otc(otc)
 
