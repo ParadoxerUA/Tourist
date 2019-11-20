@@ -47,8 +47,10 @@ class UserController:
 
     @classmethod
     def change_capacity(cls, user_id, capacity):
-        user = current_app.models.get_user_by_id(user_id=user_id)
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
         user.change_capacity(capacity)
+
+        return user.capacity
 
     @classmethod
     def setup_registration_otc(cls, user):
