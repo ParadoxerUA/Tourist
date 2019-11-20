@@ -10,8 +10,6 @@ class UserController:
 
         user = current_app.models.User.get_user_by_email(email=email)
 
-        print(user)
-
         if user is None:
             user = current_app.models.User.create_user(
                 name=name, email=email,
@@ -19,7 +17,6 @@ class UserController:
                 avatar='http://localhost:5000/static/images/user_avatar.png'
             )
             cls.setup_registration_otc(user)
-            print("hello")
             return 'user created'
 
         if user.is_active:
@@ -65,7 +62,6 @@ class UserController:
         em_type = 'email_confirmation'
         content = {'username': user.name, 'uuid': uuid}
         email_data = build_email(user.email, em_type, **content)
-        print(email_data)
         celery_app.send_task('app.async_email', kwargs = email_data)
 
     @staticmethod
