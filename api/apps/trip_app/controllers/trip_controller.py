@@ -66,14 +66,14 @@ class TripController:
         try:
             user_id = g.user_id
         except:
-            raise ValidationError('user is not authorized')
+            raise ValidationError('User is not authorized')
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
         try:
             trip.join_user(user)
             return 'User assigned to trip', 200
         except:
-            return 'Couldn`t     assign user to trip', 400
+            return 'Couldn`t assign user to trip', 400
 
     @classmethod
     def delete_user_from_trip(cls, trip_id, user_to_delete):
