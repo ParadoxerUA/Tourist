@@ -8,3 +8,7 @@ urls = {
     '/v1/logout': views.LogoutView.as_view('logout'),
     '/v1/user-profile': views.UserProfileView.as_view('user_profile'),
 }
+
+methods = {
+    '/v1/user-profile': ['GET', 'PATCH'],
+}
