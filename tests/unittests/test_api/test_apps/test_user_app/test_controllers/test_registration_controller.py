@@ -21,7 +21,7 @@ class TestUserRegistrationController(BasicTest):
         self.User.get_user_by_email.return_value = user 
         user.is_active = True
         result = UserController.register_user("name", "email", "password", "surname")
-        self.assertEqual(result, "user is registered")
+        self.assertEqual(result, "User is already registered")
 
     def test_not_activated_user(self):
 
@@ -41,4 +41,15 @@ class TestUserRegistrationController(BasicTest):
         self.assertEqual(result, "user uuid updated")
         self.assertTrue(user.delete_user.called)
 
-        
+    def test_activate_user(self):
+        self.app.models.User = Mock()
+        user = self.app.models.User.create_user()
+        self.app.models.User.get_user_by_uuid = MagicMock(return_value=user)
+        user.activate_user = MagicMock(return_value=None)
+
+        user.is_active = True
+        self.assertEqual(UserController.activate_user('uuid'), ('user already activated', 409))
+
+        user.is_active = False
+        user.is_uuid_valid = MagicMock(return_value=True)
+        self.assertEqual(UserController.activate_user('uuid'), ('user activated', 200))

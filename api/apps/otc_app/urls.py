@@ -1,5 +1,5 @@
 from . import views
 
 urls = {
-    '/v1/reg_confirmation/<string:uuid>': views.OTCView.as_view('otc')
+    '/v1/otc/<string:uuid>': views.OtcView.as_view('otc')
 }

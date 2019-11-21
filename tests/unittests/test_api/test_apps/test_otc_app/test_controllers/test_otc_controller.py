@@ -1,40 +1,36 @@
 import unittest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, patch
 from tests.unittests.basic_test import BasicTest
+from apps.user_app.controllers.user_controller import UserController
+from apps.trip_app.controllers.trip_controller import TripController 
+import redis
 
 
-class TestOTCController(BasicTest):
+class TestOtcController(BasicTest):
     def test_handle_uuid(self):
-        from apps.otc_app.controllers import OTCController
         from apps.otc_app.otc import otc_exceptions
 
-        OTCController._activate_user = MagicMock(return_value=True)
-        self.assertEqual(
-            OTCController.handle_uuid('uuid', 'user_registration'),
-            True
-        )
-        with self.assertRaises(otc_exceptions.OTCTypeError):
-            OTCController.handle_uuid('uuid', 'some_type')
 
-    def test__activate_user(self):
-        from apps.otc_app.controllers import OTCController
-        from apps.otc_app.otc import otc_exceptions
-        from app import create_app
-        from config import DebugConfig
+        redis_client = redis.Redis()
+        redis_client.set('uuid1', 'user_registration')
+        redis_client.set('uuid2', 'trip_link')
+        redis_client.set('uuid', 'some_type')
 
-        self.app.models.User = Mock()
-        user = self.app.models.User.create_user()
-        self.app.models.User.get_user_by_uuid = MagicMock(return_value=user)
-        user.activate_user = MagicMock(return_value=None)
+        with patch.object(UserController, 'activate_user', return_value='user_registration'):
+            self.assertEqual(
+                self.app.blueprints['otc'].controllers.OtcController.handle_uuid('uuid1'),
+                'user_registration'
+            )
 
-        user.is_active = True
-        self.assertEqual(OTCController._activate_user('uuid'), 'user already activated')
+        with patch.object(TripController, 'user_to_trip', return_value='trip_link'):
+            self.assertEqual(
+                self.app.blueprints['otc'].controllers.OtcController.handle_uuid('uuid2'),
+                'trip_link'
+            )
+            
+        with self.assertRaises(otc_exceptions.OtcTypeError):
+            self.app.blueprints['otc'].controllers.OtcController.handle_uuid('uuid')
 
-        user.is_active = False
-        user.is_uuid_valid = MagicMock(return_value=True)
-        self.assertEqual(OTCController._activate_user('uuid'), 'user activated')
-
-        with self.assertRaises(otc_exceptions.OTCOutdatedError):
-            user.is_uuid_valid = MagicMock(return_value=False)
-            user.is_active = False
-            OTCController._activate_user('uuid')
+        redis_client.delete('uuid')
+        redis_client.delete('uuid1')
+        redis_client.delete('uuid2')

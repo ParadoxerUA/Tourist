@@ -11,7 +11,7 @@ from helper_classes.auth_decorator import login_required
 
 class UserRegistrationView(BaseView):
     def post(self):
-
+        # tofix
         request_data = request.json
         try:
             UserRegisterSchema().load(request_data)
@@ -64,3 +64,11 @@ class UserProfileView(BaseView):
         user_profile_data = user_profile_controller.get_user_profile(user_id=g.user_id)
 
         return self._get_response(data=user_profile_data)
+
+    @login_required
+    def patch(self):
+        capacity = request.json
+        user_profile_controller = current_app.blueprints['user'].controllers.UserController
+        user_capacity = user_profile_controller.change_capacity(user_id=g.user_id, capacity=capacity)
+
+        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
