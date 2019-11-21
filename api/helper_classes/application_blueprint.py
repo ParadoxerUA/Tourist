@@ -4,7 +4,7 @@ from helper_classes.model_registry import ModelRegistry
 
 
 class ApplicationBlueprint(Blueprint):
-    def __init__(self, name, import_name, controllers_list, urls_dict, models_list=None, *, methods=None):
+    def __init__(self, name, import_name, controllers_list, *, urls_dict=None, models_list=None, methods=None):
         super().__init__(name, import_name)
         self.controllers_list = controllers_list
         self.models_list = models_list
@@ -25,10 +25,11 @@ class ApplicationBlueprint(Blueprint):
                 self.add_url_rule(rule, view_func=class_view)
 
     def setup_urls(self):
-        if self.methods is None:
-            self._setup_plain_urls()
-        else:
-            self._setup_method_urls()
+        if self.urls_dict is not None:
+            if self.methods is None:
+                self._setup_plain_urls()
+            else:
+                self._setup_method_urls()
 
     def setup_controllers(self):
         controller_registry = ControllerRegistry()

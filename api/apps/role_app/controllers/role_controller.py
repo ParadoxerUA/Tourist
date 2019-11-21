@@ -19,9 +19,9 @@ class RoleController:
         return role
 
     @classmethod
-    def create_role(cls, data, user_id):
+    def create_role(cls, trip_id, data, user_id):
         user = cls._get_user(user_id)
-        trip = cls._get_trip(data['trip_id'])
+        trip = cls._get_trip(trip_id)
         if user == trip.admin:
             role = current_app.models.Role.create_role(data)
         else:
@@ -34,11 +34,11 @@ class RoleController:
         return trip.roles
 
     @classmethod
-    def toggle_role(cls, role_id, user_id, admin_id):
+    def toggle_role(cls, trip_id, role_id, user_id, admin_id):
         role = cls._get_role(role_id)
         user = cls._get_user(user_id)
         admin = cls._get_user(admin_id)
-        trip = cls._get_trip(role.trip_id)
+        trip = cls._get_trip(trip_id)
         if trip.admin == admin and user in trip.users:
             return role.toggle_role(user)
         else:

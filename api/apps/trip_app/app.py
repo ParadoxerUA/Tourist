@@ -3,4 +3,4 @@ from .urls import urls, methods
 from .controllers import controllers
 from .models import models
 
-app = ApplicationBlueprint('trip', __name__, controllers, urls, models, methods=methods)
+app = ApplicationBlueprint('trip', __name__, controllers, urls_dict=urls, models_list=models, methods=methods)
