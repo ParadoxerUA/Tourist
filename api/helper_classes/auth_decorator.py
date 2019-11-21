@@ -16,3 +16,17 @@ def login_required(f):
         g.user_id = json.loads(user)['user_id']
         return f(*args, **kwargs)
     return wrap
+
+def otc_authorization(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return f(*args, **kwargs)
+        with redis.Redis() as redis_client:
+            user = redis_client.get(token) # return bytes
+        if not user:
+            raise ValidationError('Invalid Authorization token')
+        g.user_id = json.loads(user)['user_id']
+        return f(*args, **kwargs)
+    return wrap

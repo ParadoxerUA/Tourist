@@ -10,8 +10,6 @@ class UserController:
 
         user = current_app.models.User.get_user_by_email(email=email)
 
-        print(user)
-
         if user is None:
             user = current_app.models.User.create_user(
                 name=name, email=email,
@@ -19,13 +17,12 @@ class UserController:
                 avatar='http://localhost:5000/static/images/user_avatar.png'
             )
             cls.setup_registration_otc(user)
-            print("hello")
             return 'user created'
 
         if user.is_active:
-            raise ValidationError('User is already registered')
+            return 'User is already registered'
         if user.is_uuid_valid():
-            raise ValidationError('uuid is valid')
+            return 'uuid is valid'
 
         user.delete_user()
         # tofix
@@ -38,9 +35,15 @@ class UserController:
 
 
     @classmethod
-    def activate_user(cls, user_id):
-        user = current_app.models.User.get_user_by_id(user_id=user_id)
-        user.activate_user()
+    def activate_user(cls, user_uuid):
+        user = current_app.models.User.get_user_by_uuid(user_uuid)
+
+        if user.is_active:
+            return 'user already activated', 409
+        if user.is_uuid_valid():
+            user.activate_user()
+            return 'user activated', 200
+        return 'uuid outdated', 409
 
     @classmethod
     def change_capacity(cls, user_id, capacity):
@@ -53,7 +56,8 @@ class UserController:
     def setup_registration_otc(cls, user):
         celery_app = celery.Celery(
             current_app.config['CELERY_APP_NAME'],
-            broker=current_app.config['CELERY_BROKER_URL'])
+            broker=current_app.config['CELERY_BROKER_URL']
+        )
         uuid = current_app.blueprints['otc'].controllers.\
             OtcController.create_registration_uuid()
         user.set_uuid(uuid)
@@ -74,4 +78,3 @@ class UserController:
             'capacity': user.capacity
         }
         return user_profile_data
-          
