@@ -19,6 +19,7 @@ class EquipmentController:
         return equipment_data
 
     @classmethod
-    def create_equipment(cls, data):
+    def create_equipment(cls, trip_id, data):
+        data["trip_id"] = trip_id
         data = Equipment.create_equipment(data)
         return data

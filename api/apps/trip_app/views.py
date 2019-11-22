@@ -7,7 +7,7 @@ from marshmallow import ValidationError
 from helper_classes.auth_decorator import login_required
 
 
-class TripView(BaseView):
+class TripsView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
 
@@ -23,6 +23,17 @@ class TripView(BaseView):
             return self._get_response(data, status_code=400)
 
     @login_required
+    def get(self):
+        trips_list = current_app.blueprints['trip'].controllers.\
+            TripController.get_trips_details(g.user_id)
+        return self._get_response(trips_list, status_code=200)
+
+
+class SingleTripView(BaseView):
+    def __init__(self):
+        self.trip_controller = current_app.blueprints['trip'].controllers.TripController
+
+    @login_required
     def get(self, trip_id):
         fields = request.args.get('fields')
         if fields:
@@ -33,16 +44,8 @@ class TripView(BaseView):
         else:
             return self._get_response('User not assign to requested trip', status_code=400)
 
-
-class TripsListView(BaseView):
     @login_required
-    def get(self):
-        trips_list = current_app.blueprints['trip'].controllers.\
-            TripController.get_trips_details(g.user_id)
-        return self._get_response(trips_list, status_code=200)
-
-    @login_required
-    def patch(self, trip_id):
+    def put(self, trip_id):
         trip_data = request.json
         start_date = trip_data['start_date']
         end_date = trip_data['end_date']
@@ -51,20 +54,6 @@ class TripsListView(BaseView):
             TripController.update_trip_list_data(trip_id, start_date, end_date, status)
         return self._get_response('trip updated', status_code=200)
 
-
-
-class TripManageView(BaseView):
-    def __init__(self):
-        self.trip_controller = current_app.blueprints['trip'].controllers.TripController
-
-    # assign user to trip
-    @login_required
-    def post(self, trip_uuid):
-        response = self.trip_controller.user_to_trip(trip_uuid, g.user_id)
-        if response:
-            return self._get_response(response, status_code=200)
-        else:
-            return self._get_response('Couldnt assign user to trip', status_code=400)
 
     @login_required
     def patch(self, trip_id):
