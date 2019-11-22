@@ -23,6 +23,7 @@ class RoleController:
         user = cls._get_user(user_id)
         trip = cls._get_trip(trip_id)
         if user == trip.admin:
+            data['trip_id'] = trip_id
             role = current_app.models.Role.create_role(data)
         else:
             role = None

@@ -17,7 +17,6 @@ def create_app(config):
     _setup_blueprints(main_app, APPS)
     main_app.app_context().push()
     set_db(main_app)
-    print(main_app.blueprints['trip'].urls_dict.keys())
     return main_app
 
 

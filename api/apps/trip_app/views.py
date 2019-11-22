@@ -111,8 +111,8 @@ class RoleView(BaseView):
         return 'Deleted'
 
     @login_required
-    def put(self, role_id, user_id):
-        result = self.role_controller.toggle_role(role_id, user_id, g.user_id)
+    def put(self, trip_id, role_id, user_id):
+        result = self.role_controller.toggle_role(trip_id, role_id, user_id, g.user_id)
         if result:
             return self._get_response(result, status_code=201)
         else:
