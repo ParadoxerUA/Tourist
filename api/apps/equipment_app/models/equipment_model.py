@@ -8,7 +8,7 @@ class Equipment(db.Model):
     __table_args__ = {'extend_existing': True}
 
     equipment_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(20), unique=True, nullable=False)
     weight = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
