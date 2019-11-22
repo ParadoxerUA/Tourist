@@ -12,6 +12,9 @@ class Equipment(db.Model):
     weight = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'),
+        nullable=True)
+    owner = db.relationship('User', backref='personal_stuff')
 
     @classmethod
     def create_equipment(cls, data):
