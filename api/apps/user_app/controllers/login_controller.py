@@ -93,6 +93,6 @@ class LoginController:
             'expired_at': expired_at,
         }
         with redis.Redis() as redis_client:
-            redis_client.set(session_id, json.dumps(session_data))
+            redis_client.set(session_id, json.dumps(session_data), ex=86400)
 
         return session_id
