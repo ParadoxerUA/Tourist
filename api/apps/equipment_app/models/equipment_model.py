@@ -12,6 +12,7 @@ class Equipment(db.Model):
     weight = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
 
     @classmethod
     def create_equipment(cls, data):
