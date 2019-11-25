@@ -46,11 +46,9 @@ class SocialLoginView(BaseView):
         return self._get_response(data)
 
 class LogoutView(BaseView):
+    @login_required
     def post(self):
         auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            return self._get_response(data={'message': 'No authorization header provided.'}, status_code=403)
-
         with redis.Redis() as redis_client:
             redis_client.delete(auth_header)
 
