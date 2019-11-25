@@ -24,7 +24,8 @@ class LoginController:
     @classmethod
     def login(cls, data):
         user = cls.validate_fields(**data)
-        return cls._create_session(user=user)
+        session_id = cls._create_session(user=user)
+        return (session_id, user.user_id)
     
     @classmethod
     def login_with_social(cls, data):

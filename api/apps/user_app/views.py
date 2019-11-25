@@ -28,11 +28,10 @@ class LoginView(BaseView):
     def post(self):
         try:
             user_data = LoginSchema().load(data=request.json)
-            session_id = current_app.blueprints['user'].controllers.LoginController.login(data=user_data)
+            session_id, user_id = current_app.blueprints['user'].controllers.LoginController.login(data=user_data)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
-
-        response = self._get_response(data=session_id)
+        response = self._get_response({"session_id": session_id, "user_id": user_id})
         response.headers['Authorization'] = session_id
         return response
 
