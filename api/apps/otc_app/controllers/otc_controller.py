@@ -2,12 +2,13 @@ from apps.otc_app.otc import registration_otc, trip_link_otc
 from apps.otc_app.otc.otc_exceptions import *
 from flask import current_app
 from datetime import datetime
+from marshmallow import ValidationError
 import redis
 
 
 class OtcController():
     @classmethod
-    def handle_uuid(cls, uuid):
+    def handle_uuid(cls, uuid, user_id):
         redis_client = redis.Redis()
         otc_type = redis_client.get(uuid)
     
@@ -20,7 +21,9 @@ class OtcController():
             redis_client.delete(uuid)
             return action_result
         if otc_type == 'trip_link':
-            return current_app.blueprints['trip'].controllers.TripController.user_to_trip(uuid)
+            if user_id is None:
+                raise ValidationError('user is not authorized')
+            return current_app.blueprints['trip'].controllers.TripController.user_to_trip(uuid, user_id)
 
         raise OtcTypeError
 

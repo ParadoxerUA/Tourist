@@ -62,11 +62,7 @@ class TripController:
         return trips_details
 
     @classmethod
-    def user_to_trip(cls, trip_uuid):
-        try:
-            user_id = g.user_id
-        except:
-            raise ValidationError('User is not authorized')
+    def user_to_trip(cls, trip_uuid, user_id):
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
         try:
