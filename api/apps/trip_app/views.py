@@ -2,6 +2,7 @@ from helper_classes.base_view import BaseView
 from flask import current_app, request, g
 from .schemas.trip_schema import TripSchema
 from marshmallow import ValidationError
+from werkzeug.exceptions import Unauthorized
 from helper_classes.auth_decorator import login_required
 
 
@@ -14,11 +15,9 @@ class TripsView(BaseView):
         try:
             trip_data = TripSchema().load(request.json)
             data = self.trip_controller.create_trip(trip_data, g.user_id)
-            # data = current_app.blueprints['trip'].controllers.TripController.create_trip(trip_data, g.user_id)
             return self._get_response(data, status_code=201)
-        except (ValidationError, Exception) as err:
-            data = [str(err)]
-            return self._get_response(data, status_code=400)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
 
     @login_required
     def get(self):
