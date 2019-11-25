@@ -49,5 +49,9 @@ class Equipment(db.Model):
         db.session.delete(equipment)
         db.session.commit()
 
+    def get_public_data(self):
+        if not self.owner_id:
+            return self
+
     def __repr__(self):
         return f'Equipment: {self.name}'

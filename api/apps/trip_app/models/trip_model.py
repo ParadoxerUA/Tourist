@@ -91,9 +91,9 @@ class Trip(db.Model):
             args = list(self.__dict__.keys())
             args.extend(['users', 'admin', 'points', 'roles'])
         for field in args:
-            if field in ['users', 'admin']:
+            if field in ['users', 'admin', 'equipment']:
                 try:
-                    public_data[field] = [field.get_public_data() for field in getattr(self, field)]
+                    public_data[field] = [field.get_public_data() for field in getattr(self, field) if field.get_public_data()]
                 except:
                     public_data[field] = getattr(self, field).get_public_data()
             else:
