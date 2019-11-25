@@ -85,7 +85,7 @@ class User(db.Model):
             return False
         return True
 
-    def  get_public_data(self):
+    def get_public_data(self):
         public_data = {
             "user_id": self.user_id,
             "name": self.name,
@@ -93,6 +93,7 @@ class User(db.Model):
             "email": self.email,
             "avatar": self.avatar,
             "capacity": self.capacity,
+            "roles": self.roles,
         }
         return public_data
         

@@ -1,5 +1,7 @@
 from .point_controller import PointController
 from flask import current_app, g
+from helper_classes.auth_decorator import login_required
+from marshmallow import ValidationError
 import uuid
 
 
@@ -18,7 +20,9 @@ class TripController:
         trip = current_app.models.Trip.create_trip(data)
         for point in points:
             PointController.create_point(point, trip)
-        trip.set_uuid(str(uuid.uuid1()))
+        trip_uuid = current_app.blueprints['otc'].controllers\
+            .OtcController.create_trip_link_uuid()
+        trip.set_uuid(trip_uuid)
         return trip.trip_id
 
     @classmethod
@@ -26,7 +30,9 @@ class TripController:
         user = cls._get_session_user(user_id)
         trip = current_app.models.Trip.get_trip_by_id(trip_id)
         if trip.admin == user:
-            trip.set_uuid(str(uuid.uuid1()))
+            trip_uuid = current_app.blueprints['otc'].controllers\
+                .OtcController.create_trip_link_uuid(current_uuid=trip.trip_uuid)
+            trip.set_uuid(trip_uuid)
             return trip.trip_uuid
         else:
             return None
@@ -61,9 +67,9 @@ class TripController:
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
         try:
             trip.join_user(user)
-            return 'User assigned to trip'
+            return 'User assigned to trip', 200
         except:
-            return None
+            return 'Couldn`t assign user to trip', 400
 
     @classmethod
     def delete_user_from_trip(cls, trip_id, user_to_delete):

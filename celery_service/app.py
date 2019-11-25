@@ -13,7 +13,7 @@ app = Celery(
 
 
 @app.task
-def async_email(data):
+def async_email(recipient, subject, body):
     mail = smtplib.SMTP(
         host=MailServiceConfig.MAIL_SERVER,
         port=MailServiceConfig.MAIL_PORT
@@ -23,10 +23,9 @@ def async_email(data):
     msg = MIMEMultipart()
 
     msg['From'] = MailServiceConfig.MAIL_USERNAME
-    data = json.loads(data)
-    msg['To'] = data['recipient']
-    msg['Subject'] = data['subject']
-    msg.attach(MIMEText(data['body'], 'html'))
+    msg['To'] = recipient
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'html'))
     mail.starttls()
     mail.login(msg['From'], MailServiceConfig.MAIL_PASSWORD)
     mail.sendmail(msg['From'], msg['To'], msg.as_string())
