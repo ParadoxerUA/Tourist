@@ -2,13 +2,12 @@ from . import views
 
 
 urls = {
-    '/v1/register': views.UserRegistrationView.as_view('register'),
+    '/v1/user': views.UserView.as_view('user'),
     '/v1/login': views.LoginView.as_view('login'),
-    '/v1/social_login': views.SocialLoginView.as_view('social_login'),
+    '/v1/login/social': views.SocialLoginView.as_view('social_login'),
     '/v1/logout': views.LogoutView.as_view('logout'),
-    '/v1/user-profile': views.UserProfileView.as_view('user_profile'),
 }
 
 methods = {
-    '/v1/user-profile': ['GET', 'PATCH'],
+    '/v1/user': ['POST', 'GET', 'PATCH'],
 }
