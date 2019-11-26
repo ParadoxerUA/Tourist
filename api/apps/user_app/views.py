@@ -35,11 +35,13 @@ class UserView(BaseView):
 
     @login_required
     def patch(self):
-        capacity = request.json
+        user_data = request.json
+        name = user_data['name']
+        surname = user_data['surname']
+        capacity = user_data['capacity']
         user_profile_controller = current_app.blueprints['user'].controllers.UserController
-        user_capacity = user_profile_controller.change_capacity(user_id=g.user_id, capacity=capacity)
-
-        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
+        user_profile_controller.change_user_data(user_id=g.user_id, capacity=capacity, name=name, surname=surname)
+        return self._get_response(f'User`s data updated', status_code=200)
 
 
 class LoginView(BaseView):

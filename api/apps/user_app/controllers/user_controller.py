@@ -53,6 +53,12 @@ class UserController:
         return user.capacity
 
     @classmethod
+    def change_user_data(cls, user_id, name, surname, capacity):
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        user.change_public_fields(name, surname, capacity)
+
+
+    @classmethod
     def setup_registration_otc(cls, user):
         celery_app = celery.Celery(
             current_app.config['CELERY_APP_NAME'],
