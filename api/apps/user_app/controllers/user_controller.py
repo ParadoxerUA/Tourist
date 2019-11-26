@@ -70,3 +70,12 @@ class UserController:
     def get_user_profile(user_id):
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         return user.get_public_data()
+
+    @classmethod
+    def change_password(cls, user_id, new_password, old_password=None):
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        if (not user.password_is_set()) or (old_password and user.check_password(old_password)):
+            user.set_password(new_password)
+            return 'Your password was updated'
+        else:
+            raise ValidationError('Wrong password')

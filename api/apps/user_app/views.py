@@ -4,6 +4,7 @@ from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
 from apps.user_app.schemas.social_login_schema import SocialLoginSchema
+from apps.user_app.schemas.change_password_schema import ChangePasswordSchema
 from helper_classes.base_view import BaseView
 import facebook
 from helper_classes.auth_decorator import login_required
@@ -36,10 +37,23 @@ class UserView(BaseView):
     @login_required
     def patch(self):
         capacity = request.json
-        user_profile_controller = current_app.blueprints['user'].controllers.UserController
-        user_capacity = user_profile_controller.change_capacity(user_id=g.user_id, capacity=capacity)
-
+        user_capacity = self.user_controller.change_capacity(user_id=g.user_id, capacity=capacity)
+        
         return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
+
+
+class ChangePasswordView(BaseView):
+    def __init__(self):
+        self.user_controller = current_app.blueprints['user'].controllers.UserController
+
+    @login_required
+    def put(self):
+        try:
+            password_data = ChangePasswordSchema().load(data=request.json)
+            data = self.user_controller.change_password(user_id=g.user_id, **password_data)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
+        return self._get_response(data=data)
 
 
 class LoginView(BaseView):
