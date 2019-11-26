@@ -94,6 +94,7 @@ class User(db.Model):
             "avatar": self.avatar,
             "capacity": self.capacity,
             "roles": self.roles,
+            "passwordIsSet": self.password_is_set(),
         }
         return public_data
         
