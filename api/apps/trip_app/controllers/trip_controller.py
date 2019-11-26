@@ -46,7 +46,6 @@ class TripController:
         trip_data = trip.get_fields(fields)
         if trip_data.get('trip_uuid') and trip.admin != user:
             del trip_data['trip_uuid']
-        print(trip_data)
         return (trip_data, 201)
 
     @classmethod
