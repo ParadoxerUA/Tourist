@@ -6,3 +6,4 @@ class EquipmentSchema(Schema):
     weight = fields.Float(required=True, validate=validate.Range(min=0))
     quantity = fields.Integer(required=True, validate=validate.Range(min=1))
     trip_id = fields.Integer(required=True, validate=validate.Range(min=1))
+    role_id = fields.Integer(validate=validate.Range(min=1))

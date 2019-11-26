@@ -15,6 +15,7 @@ class Role(db.Model):
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
     users = db.relationship('User', secondary=role_user_table, lazy=True,
         backref=db.backref('roles', lazy=True))
+    equipment = db.relationship('Equipment', backref=db.backref('role'), cascade='all, delete, delete-orphan', single_parent=True)
 
     def __repr__(self):
         return f'<Role: {self.name}>'
