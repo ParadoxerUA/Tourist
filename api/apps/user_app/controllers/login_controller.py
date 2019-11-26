@@ -37,8 +37,8 @@ class LoginController:
             user = current_app.models.User.create_user(**user_data, is_active=True)
         elif not user.is_active:
             user.activate_user()
-        
-        return cls._create_session(user=user)
+        session_id = cls._create_session(user=user)
+        return (session_id, user.user_id)
     
     @classmethod
     def _authorize_user(cls, token, provider):
