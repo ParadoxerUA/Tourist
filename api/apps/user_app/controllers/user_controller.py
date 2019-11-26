@@ -75,14 +75,15 @@ class UserController:
             'name': user.name,
             'surname': user.surname,
             'email': user.email,
-            'capacity': user.capacity
+            'capacity': user.capacity,
+            'passwordIsSet': user.password_is_set()
         }
         return user_profile_data
 
     @classmethod
     def change_password(cls, user_id, new_password, old_password=None):
         user = current_app.models.User.get_user_by_id(user_id=user_id)
-        if not user.password_is_set() or (old_password and user.check_password(old_password)):
+        if (not user.password_is_set()) or (old_password and user.check_password(old_password)):
             user.set_password(new_password)
             return 'Your password was updated'
         else:
