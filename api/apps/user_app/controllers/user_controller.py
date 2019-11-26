@@ -69,12 +69,4 @@ class UserController:
     @staticmethod
     def get_user_profile(user_id):
         user = current_app.models.User.get_user_by_id(user_id=user_id)
-        user_profile_data = {
-            'user_id': user_id,
-            'avatar': user.avatar,
-            'name': user.name,
-            'surname': user.surname,
-            'email': user.email,
-            'capacity': user.capacity
-        }
-        return user_profile_data
+        return user.get_public_data()
