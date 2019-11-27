@@ -1,10 +1,15 @@
 from helper_classes.email_builder.build_email import build_email
 from marshmallow import ValidationError
-from flask import current_app
+from flask import current_app, g
 import celery
 
 
 class UserController:
+    @staticmethod
+    def _get_user(user_id):
+        user = current_app.models.User.get_user_by_id(user_id)
+        return user
+
     @classmethod
     def register_user(cls, name, email, password, surname=None):
 
@@ -79,3 +84,11 @@ class UserController:
             return 'Your password was updated'
         else:
             raise ValidationError('Wrong password')
+
+    @classmethod
+    def delete_user_from_trip(cls, trip_id, user_to_delete):
+        trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
+        if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
+            return None
+        user = cls._get_user(user_to_delete)
+        return trip.delete_user(user)

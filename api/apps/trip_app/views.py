@@ -11,15 +11,6 @@ class TripsView(BaseView):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
 
     @login_required
-    def post(self):
-        try:
-            trip_data = TripSchema().load(request.json)
-            data = self.trip_controller.create_trip(trip_data, g.user_id)
-            return self._get_response(data, status_code=201)
-        except ValidationError as e:
-            return self._get_response(e.messages, status_code=400)
-
-    @login_required
     def get(self):
         trips_list = self.trip_controller.get_trips_details(g.user_id)
         return self._get_response(trips_list, status_code=200)
@@ -28,6 +19,15 @@ class TripsView(BaseView):
 class SingleTripView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
+
+    @login_required
+    def post(self):
+        try:
+            trip_data = TripSchema().load(request.json)
+            data = self.trip_controller.create_trip(trip_data, g.user_id)
+            return self._get_response(data, status_code=201)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
 
     @login_required
     def put(self, trip_id):
@@ -48,16 +48,17 @@ class SingleTripView(BaseView):
         else:
             return self._get_response('You are not admin of given trip', status_code=400)
 
-    @login_required
-    def delete(self, trip_id):
-        user_to_delete = request.args.get('user_id')
-        if not user_to_delete:
-            user_to_delete = g.user_id
-        result = self.trip_controller.delete_user_from_trip(trip_id, user_to_delete)
-        if result:
-            return self._get_response(result, status_code=200)
-        else:
-            return self._get_response('User delete failed', status_code=400)
+    # delete user from trip
+    # @login_required
+    # def delete(self, trip_id):
+    #     user_to_delete = request.args.get('user_id')
+    #     if not user_to_delete:
+    #         user_to_delete = g.user_id
+    #     result = self.trip_controller.delete_user_from_trip(trip_id, user_to_delete)
+    #     if result:
+    #         return self._get_response(result, status_code=200)
+    #     else:
+    #         return self._get_response('User delete failed', status_code=400)
 
     @login_required
     def get(self, trip_id):

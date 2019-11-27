@@ -8,13 +8,13 @@ import uuid
 class TripController:
 
     @staticmethod
-    def _get_session_user(user_id):
+    def _get_user(user_id):
         user = current_app.models.User.get_user_by_id(user_id)
         return user
 
     @classmethod
     def create_trip(cls, data, user_id):
-        admin = cls._get_session_user(user_id)
+        admin = cls._get_user(user_id)
         data['admin'] = admin
         points = data.pop('points', None)
         trip = current_app.models.Trip.create_trip(data)
@@ -27,7 +27,7 @@ class TripController:
 
     @classmethod
     def refresh_trip_uuid(cls, trip_id, user_id):
-        user = cls._get_session_user(user_id)
+        user = cls._get_user(user_id)
         trip = current_app.models.Trip.get_trip_by_id(trip_id)
         if trip.admin == user:
             trip_uuid = current_app.blueprints['otc'].controllers\
@@ -39,7 +39,7 @@ class TripController:
 
     @classmethod
     def get_trip_data(cls, trip_id, fields):
-        user = cls._get_session_user(g.user_id)
+        user = cls._get_user(g.user_id)
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
         if user not in trip.users:
             return ('You are not member of given trip', 400)
@@ -50,12 +50,12 @@ class TripController:
 
     @classmethod
     def get_user_trips(cls, user_id):
-        user = cls._get_session_user(user_id)
+        user = cls._get_user(user_id)
         return user.trips
 
     @classmethod
     def get_trips_details(cls, user_id):
-        user = cls._get_session_user(user_id)
+        user = cls._get_user(user_id)
         trips_details = [
             trip.get_trip_details(user_id) for trip in user.trips
         ]
@@ -63,21 +63,13 @@ class TripController:
 
     @classmethod
     def user_to_trip(cls, trip_uuid, user_id):
-        user = cls._get_session_user(user_id)
+        user = cls._get_user(user_id)
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
         try:
             trip.join_user(user)
             return 'User assigned to trip', 200
         except:
             return 'Couldn`t assign user to trip', 400
-
-    @classmethod
-    def delete_user_from_trip(cls, trip_id, user_to_delete):
-        trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
-        if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
-            return None
-        user = cls._get_session_user(user_to_delete)
-        return trip.delete_user(user)
 
     @classmethod
     def update_trip_list_data(cls, trip_id, start_date, end_date, status):
