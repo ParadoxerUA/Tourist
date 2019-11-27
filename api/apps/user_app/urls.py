@@ -9,5 +9,5 @@ urls = {
 }
 
 methods = {
-    '/v1/user': ['POST', 'GET', 'PATCH'],
+    '/v1/user': ['POST', 'GET', 'PATCH', 'PUT'],
 }

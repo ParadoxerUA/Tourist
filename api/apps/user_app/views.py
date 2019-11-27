@@ -35,6 +35,14 @@ class UserView(BaseView):
 
     @login_required
     def patch(self):
+        capacity = request.json
+        user_profile_controller = current_app.blueprints['user'].controllers.UserController
+        user_capacity = user_profile_controller.change_capacity(user_id=g.user_id, capacity=capacity)
+
+        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
+
+    @login_required
+    def put(self):
         user_data = request.json
         name = user_data['name']
         surname = user_data['surname']
