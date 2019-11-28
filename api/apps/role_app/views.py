@@ -24,17 +24,19 @@ class RoleView(BaseView):
         else:
             return self._get_response('Creating role failed', status_code=400)
 
-    # @login_required
-    def get(self, trip_id):
-        role_data = current_app.blueprints['role'].controllers.RoleController.get_roles(trip_id)
+    @login_required
+    def get(self, role_id):
+        role_data = self.role_controller.get_role(role_id)
         return self._get_response(role_data, status_code=200)
 
-    def delete(self, trip_id, role_name):
-        current_app.blueprints['role'].controllers.RoleController.delete_role(role_name, trip_id)
+    @login_required
+    def delete(self, role_id):
+        self.role_controller.delete_role(role_id)
         return 'Deleted'
 
     @login_required
-    def put(self, role_id, user_id):
+    def put(self, role_id):
+        user_id = request.json.get('user_id')
         result = self.role_controller.toggle_role(role_id, user_id, g.user_id)
         if result:
             return self._get_response(result, status_code=201)

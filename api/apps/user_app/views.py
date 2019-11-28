@@ -23,7 +23,6 @@ class UserView(BaseView):
             UserRegisterSchema().load(request_data)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=409)
-
         data = [
             self.user_controller.register_user(**request_data),
         ]
@@ -32,15 +31,7 @@ class UserView(BaseView):
     @login_required
     def get(self):
         user_data = self.user_controller.get_user_profile(user_id=g.user_id)
-
         return self._get_response(data=user_data)
-
-    @login_required
-    def patch(self):
-        capacity = request.json
-        user_capacity = self.user_controller.change_capacity(user_id=g.user_id, capacity=capacity)
-        
-        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
 
     # will update user fields
     @login_required
@@ -59,6 +50,12 @@ class UserView(BaseView):
             return self._get_response(result, status_code=200)
         else:
             return self._get_response('User delete failed', status_code=400)
+
+    @login_required
+    def patch(self):
+        capacity = request.json
+        user_capacity = self.user_controller.change_capacity(user_id=g.user_id, capacity=capacity)
+        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
 
 
 class ChangePasswordView(BaseView):
@@ -95,3 +92,13 @@ class AuthView(BaseView):
         else:
             session_id, user_id = self.login_controller.login(data=user_data)
         return self._get_response({"session_id": session_id, "user_id": user_id}, status_code=201)
+
+class UserTripsView(BaseView):
+    # tofix
+    def __init__(self):
+        self.trip_controller = current_app.blueprints['trip'].controllers.TripController
+
+    @login_required
+    def get(self):
+        trips_list = self.trip_controller.get_trips_details(g.user_id)
+        return self._get_response(trips_list, status_code=200)

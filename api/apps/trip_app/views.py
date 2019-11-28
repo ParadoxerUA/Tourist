@@ -6,16 +6,6 @@ from werkzeug.exceptions import Unauthorized
 from helper_classes.auth_decorator import login_required
 
 
-class TripsView(BaseView):
-    def __init__(self):
-        self.trip_controller = current_app.blueprints['trip'].controllers.TripController
-
-    @login_required
-    def get(self):
-        trips_list = self.trip_controller.get_trips_details(g.user_id)
-        return self._get_response(trips_list, status_code=200)
-
-
 class SingleTripView(BaseView):
     def __init__(self):
         self.trip_controller = current_app.blueprints['trip'].controllers.TripController
@@ -47,18 +37,6 @@ class SingleTripView(BaseView):
             return self._get_response(new_uuid, status_code=200)
         else:
             return self._get_response('You are not admin of given trip', status_code=400)
-
-    # delete user from trip
-    # @login_required
-    # def delete(self, trip_id):
-    #     user_to_delete = request.args.get('user_id')
-    #     if not user_to_delete:
-    #         user_to_delete = g.user_id
-    #     result = self.trip_controller.delete_user_from_trip(trip_id, user_to_delete)
-    #     if result:
-    #         return self._get_response(result, status_code=200)
-    #     else:
-    #         return self._get_response('User delete failed', status_code=400)
 
     @login_required
     def get(self, trip_id):

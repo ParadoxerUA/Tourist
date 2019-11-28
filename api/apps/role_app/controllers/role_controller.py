@@ -14,7 +14,7 @@ class RoleController:
         return user
 
     @staticmethod
-    def _get_role(role_id):
+    def get_role(role_id):
         role = current_app.models.Role.get_role_by_id(role_id)
         return role
 
@@ -29,13 +29,8 @@ class RoleController:
         return role
 
     @classmethod
-    def get_roles(cls, trip_id):
-        trip = cls._get_trip(trip_id)
-        return trip.roles
-
-    @classmethod
     def toggle_role(cls, role_id, user_id, admin_id):
-        role = cls._get_role(role_id)
+        role = cls.get_role(role_id)
         user = cls._get_user(user_id)
         admin = cls._get_user(admin_id)
         trip = cls._get_trip(role.trip_id)
@@ -45,5 +40,5 @@ class RoleController:
             return None
 
     @staticmethod
-    def delete_role(role_name, trip_id):
-        current_app.models.Role.delete_role(role_name, trip_id)
+    def delete_role(role_id):
+        current_app.models.Role.delete_role(role_id)
