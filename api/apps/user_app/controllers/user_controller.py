@@ -51,11 +51,9 @@ class UserController:
         return 'uuid outdated', 409
 
     @classmethod
-    def change_capacity(cls, user_id, capacity):
-        user = current_app.models.User.get_user_by_id(user_id=user_id)
-        user.change_capacity(capacity)
-
-        return user.capacity
+    def update_user(cls, user_id, data):
+        current_app.models.User.update_user(data, user_id=user_id)
+        return 'User was successfully updated', 200
 
     @classmethod
     def setup_registration_otc(cls, user):
@@ -81,9 +79,9 @@ class UserController:
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         if (not user.password_is_set()) or (old_password and user.check_password(old_password)):
             user.set_password(new_password)
-            return 'Your password was updated'
+            return 'Your password was updated', 200
         else:
-            raise ValidationError('Wrong password')
+            return 'Wrong password', 401
 
     @classmethod
     def delete_user_from_trip(cls, trip_id, user_to_delete):
