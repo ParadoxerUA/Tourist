@@ -47,6 +47,11 @@ class User(db.Model):
         db.session.commit()
 
     @classmethod
+    def update_user(cls, data, user_id=user_id):
+        cls.query.filter_by(user_id=user_id).update(data)
+        db.session.commit()
+
+    @classmethod
     def get_user_by_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()
 

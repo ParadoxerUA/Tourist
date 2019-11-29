@@ -4,7 +4,7 @@ from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
 from apps.user_app.schemas.social_login_schema import SocialLoginSchema
-from apps.user_app.schemas.change_password_schema import ChangePasswordSchema
+from apps.user_app.schemas.update_user_schema import UpdateUserSchema
 from helper_classes.base_view import BaseView
 import facebook
 from helper_classes.auth_decorator import login_required
@@ -53,34 +53,20 @@ class UserView(BaseView):
 
     @login_required
     def patch(self):
-        capacity = request.json
-        user_capacity = self.user_controller.change_capacity(user_id=g.user_id, capacity=capacity)
-        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
-
-class ChangePasswordView(BaseView):
-    def __init__(self):
-        self.user_controller = current_app.blueprints['user'].controllers.UserController
-
-    @login_required
-    def put(self):
         try:
-            password_data = ChangePasswordSchema().load(data=request.json)
-            data = self.user_controller.change_password(user_id=g.user_id, **password_data)
+            data = UpdateUserSchema().load(data=request.json)
+            if data.get('new_password', None):
+                message, status_code = self.user_controller.change_password(user_id=g.user_id, **data)
+            else:
+                message, status_code = self.user_controller.update_user(user_id=g.user_id, data=data)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
-        return self._get_response(data=data)
+        return self._get_response(data=message, status_code=status_code)
 
 
-class AuthView(BaseView):
+class LoginView(BaseView):
     def __init__(self):
         self.login_controller = current_app.blueprints['user'].controllers.LoginController
-
-    # logout
-    @login_required
-    def get(self):
-        with redis.Redis() as redis_client:
-            redis_client.delete(g.user_id)
-        return self._get_response(data={'message': 'You successfully logged out.'})
 
     def post(self):
         user_data = try_except(LoginSchema().load, SocialLoginSchema().load, request.json)
@@ -91,6 +77,14 @@ class AuthView(BaseView):
         else:
             session_id, user_id = self.login_controller.login(data=user_data)
         return self._get_response({"session_id": session_id, "user_id": user_id}, status_code=201)
+
+class LogoutView(BaseView):
+    @login_required
+    def post(self):
+        with redis.Redis() as redis_client:
+            redis_client.delete(g.user_id)
+            redis_client.delete(request.headers.get('Authorization'))
+        return self._get_response(data={'message': 'You successfully logged out.'})
 
 class UserTripsView(BaseView):
     def __init__(self):
