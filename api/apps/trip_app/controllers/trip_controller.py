@@ -28,7 +28,7 @@ class TripController:
         trip_uuid = current_app.blueprints['otc'].controllers\
             .OtcController.create_trip_link_uuid()
         trip.set_uuid(trip_uuid)
-        return trip.trip_id
+        return trip.trip_id, 201
 
     @classmethod
     def refresh_trip_uuid(cls, trip_id):

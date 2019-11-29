@@ -97,4 +97,7 @@ class User(db.Model):
             "passwordIsSet": self.password_is_set(),
         }
         return public_data
-        
+
+    def get_trips(self):
+        result = [trip.get_trip_details(self.user_id) for trip in self.trips]
+        return result

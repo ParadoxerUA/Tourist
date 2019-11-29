@@ -96,4 +96,4 @@ class UserController:
     @classmethod
     def get_trips(cls):
         user = cls._get_user(g.user_id)
-        return user.trips, 201
+        return user.get_trips(), 201
