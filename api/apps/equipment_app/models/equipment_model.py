@@ -12,6 +12,9 @@ class Equipment(db.Model):
     weight = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.trip_id'), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'),
+        nullable=True)
+    owner = db.relationship('User', backref='personal_stuff')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
 
     @classmethod
@@ -46,6 +49,10 @@ class Equipment(db.Model):
         equipment = cls.get_equipment_by_id(id)
         db.session.delete(equipment)
         db.session.commit()
+
+    def get_public_data(self):
+        if not self.owner_id:
+            return self
 
     def __repr__(self):
         return f'Equipment: {self.name}'

@@ -21,8 +21,7 @@ class TripsView(BaseView):
 
     @login_required
     def get(self):
-        trips_list = current_app.blueprints['trip'].controllers.\
-            TripController.get_trips_details(g.user_id)
+        trips_list = self.trip_controller.get_trips_details(g.user_id)
         return self._get_response(trips_list, status_code=200)
 
 
@@ -65,8 +64,5 @@ class SingleTripView(BaseView):
         fields = request.args.get('fields')
         if fields:
             fields = fields.split(',')
-        trip_data = self.trip_controller.get_trip_data(trip_id, g.user_id, fields)
-        if trip_data:
-            return self._get_response(trip_data, status_code=200)
-        else:
-            return self._get_response('User not assign to requested trip', status_code=400)
+        response, status_code = self.trip_controller.get_trip_data(trip_id, fields)
+        return self._get_response(response, status_code=status_code)
