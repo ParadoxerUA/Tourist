@@ -53,19 +53,6 @@ class TripController:
         return ('You are not member of given trip', 400)
 
     @classmethod
-    def get_user_trips(cls, user_id):
-        user = cls._get_user(user_id)
-        return user.trips
-
-    @classmethod
-    def get_trips_details(cls, user_id):
-        user = cls._get_user(user_id)
-        trips_details = [
-            trip.get_trip_details(user_id) for trip in user.trips
-        ]
-        return trips_details
-
-    @classmethod
     def user_to_trip(cls, trip_uuid, user_id):
         user = cls._get_user(user_id)
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)

@@ -72,7 +72,7 @@ class UserController:
         celery_app.send_task('app.async_email', kwargs = email_data)
 
     @staticmethod
-    def get_user_profile(user_id):
+    def get_profile(user_id):
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         return user.get_public_data()
 
@@ -92,3 +92,8 @@ class UserController:
             return None
         user = cls._get_user(user_to_delete)
         return trip.delete_user(user)
+
+    @classmethod
+    def get_trips(cls):
+        user = cls._get_user(g.user_id)
+        return user.trips, 201

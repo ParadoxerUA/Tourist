@@ -30,7 +30,7 @@ class UserView(BaseView):
 
     @login_required
     def get(self):
-        user_data = self.user_controller.get_user_profile(user_id=g.user_id)
+        user_data = self.user_controller.get_profile(user_id=g.user_id)
         return self._get_response(data=user_data)
 
     # will update user fields
@@ -93,12 +93,10 @@ class AuthView(BaseView):
         return self._get_response({"session_id": session_id, "user_id": user_id}, status_code=201)
 
 class UserTripsView(BaseView):
-    # tofix
     def __init__(self):
         self.user_controller = current_app.blueprints['user'].controllers.UserController
 
-    # todo
     @login_required
     def get(self):
-        trips_list, status_code = self.user_controller.get_trips_details()
+        trips_list, status_code = self.user_controller.get_trips()
         return self._get_response(trips_list, status_code=status_code)
