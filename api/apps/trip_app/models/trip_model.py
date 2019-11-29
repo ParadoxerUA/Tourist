@@ -44,18 +44,9 @@ class Trip(db.Model):
     def get_all_trips(cls):
         return cls.query.all()
 
-    @classmethod
-    def update_trip(cls, id, data):
-        trip = cls.query.filter_by(trip_id=id).first()
-        trip.update(**data)
-
-    @classmethod
-    def update_trip_list_data(cls, id, data):
-        trip = cls.query.filter_by(trip_id=id).first()
-        trip.end_date = data['end_date']
-        trip.start_date = data['start_date']
-        trip.status = data['status']
-        db.session.add(trip)
+    def update_trip(self, data):
+        self.update(**data)
+        db.session.add(self)
         db.session.commit()
 
     @classmethod
@@ -115,7 +106,6 @@ class Trip(db.Model):
         trip_details['start_date'] = str(trip_details['start_date'])
         trip_details['end_date'] = str(trip_details['end_date'])
         trip_details['id'] = self.trip_id
-
         return trip_details
 
     def __repr__(self):

@@ -57,7 +57,6 @@ class UserView(BaseView):
         user_capacity = self.user_controller.change_capacity(user_id=g.user_id, capacity=capacity)
         return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
 
-
 class ChangePasswordView(BaseView):
     def __init__(self):
         self.user_controller = current_app.blueprints['user'].controllers.UserController
@@ -96,9 +95,10 @@ class AuthView(BaseView):
 class UserTripsView(BaseView):
     # tofix
     def __init__(self):
-        self.trip_controller = current_app.blueprints['trip'].controllers.TripController
+        self.user_controller = current_app.blueprints['user'].controllers.UserController
 
+    # todo
     @login_required
     def get(self):
-        trips_list = self.trip_controller.get_trips_details(g.user_id)
-        return self._get_response(trips_list, status_code=200)
+        trips_list, status_code = self.user_controller.get_trips_details()
+        return self._get_response(trips_list, status_code=status_code)
