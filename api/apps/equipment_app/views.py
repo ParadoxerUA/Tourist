@@ -5,11 +5,14 @@ from marshmallow import ValidationError
 
 
 class EquipmentView(BaseView):
+    def __init__(self):
+        self.equipment_controller = current_app.blueprints['equipment'].controllers.EquipmentController
+
     def get(self, equipment_id):
         """Return response on get request"""
 
         try:
-            data = current_app.blueprints['equipment'].controllers.EquipmentController.get_equipment_data(equipment_id)
+            data = self.equipment_controller.get_equipment_data(equipment_id)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
 
@@ -20,8 +23,7 @@ class EquipmentView(BaseView):
 
         try:
             new_equipment_data = EquipmentSchema().load(request.json)
-            equipment_controller = current_app.blueprints['equipment'].controllers.EquipmentController
-            data = equipment_controller.update_equipment(equipment_id, new_equipment_data)
+            data = self.equipment_controller.update_equipment(equipment_id, new_equipment_data)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
 
@@ -31,7 +33,7 @@ class EquipmentView(BaseView):
         """"Return response on delete request"""
 
         try:
-            data = current_app.blueprints['equipment'].controllers.EquipmentController.delete_equipment(equipment_id)
+            data = self.equipment_controller.delete_equipment(equipment_id)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
 
@@ -45,7 +47,7 @@ class EquipmentView(BaseView):
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
 
-        data = current_app.blueprints['equipment'].controllers.EquipmentController.create_equipment(equipment_data)
+        data = self.equipment_controller.create_equipment(equipment_data)
         print("Debug from equipment app view post method")
         print(data)
         return self._get_response(data, status_code=201)

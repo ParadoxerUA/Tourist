@@ -63,11 +63,10 @@ class LoginView(BaseView):
     def post(self):
         try:
             user_data = LoginSchema().load(data=request.json)
-            session_id = self.login_controller.login(data=user_data)
+            session_id, user_id = self.login_controller.login(data=user_data)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
-        return self._get_response(data=session_id)
-
+        return self._get_response({"session_id": session_id, "user_id": user_id})
 
 class SocialLoginView(BaseView):
     def __init__(self):
@@ -76,10 +75,10 @@ class SocialLoginView(BaseView):
     def post(self):
         try:
             user_data = SocialLoginSchema().load(data=request.json)
-            session_id = self.login_controller.login_with_social(data=user_data)
+            session_id, user_id = self.login_controller.login_with_social(data=user_data)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
-        return self._get_response(data=session_id)
+        return self._get_response({"session_id": session_id, "user_id": user_id})
 
 
 class LogoutView(BaseView):

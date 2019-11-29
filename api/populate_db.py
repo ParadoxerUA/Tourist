@@ -8,11 +8,13 @@ User = app.models.User
 Trip = app.models.Trip
 Point = app.models.Point
 Role = app.models.Role
+Eq = app.models.Equipment
 
-users = User.query.all()
-trips = Trip.query.all()
-points = Point.query.all()
-roles = Role.query.all()
+users = User.query
+trips = Trip.query
+points = Point.query
+roles = Role.query
+eqs = Eq.query
 
 def create_users(from_number, amount):
     '''to create 2 new users:\n
@@ -22,7 +24,7 @@ def create_users(from_number, amount):
     created_users = []
     for i in range(from_number, from_number + amount):
         user = User.create_user(name=f'username-{i}', email=f'email-{i}@mail.com',
-            password='password321',surname=f'surname-{i}')
+        	password='password321',surname=f'surname-{i}')
         user.activate_user()
         created_users.append(user)
     return created_users
@@ -48,3 +50,7 @@ def create_users(from_number, amount):
 # user = User.query.first()
 # trip = Trip.query.first()
 
+u0 = users.all()[0]
+e0 = eqs.all()[0]
+e1 = eqs.all()[1]
+e2 = eqs.all()[2]

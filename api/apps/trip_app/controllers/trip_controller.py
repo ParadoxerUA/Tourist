@@ -38,15 +38,15 @@ class TripController:
             return None
 
     @classmethod
-    def get_trip_data(cls, trip_id, user_id, fields):
-        user = cls._get_session_user(user_id)
+    def get_trip_data(cls, trip_id, fields):
+        user = cls._get_session_user(g.user_id)
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
         if user not in trip.users:
-            return None
+            return ('You are not member of given trip', 400)
         trip_data = trip.get_fields(fields)
         if trip_data.get('trip_uuid') and trip.admin != user:
             del trip_data['trip_uuid']
-        return trip_data
+        return (trip_data, 201)
 
     @classmethod
     def get_user_trips(cls, user_id):
