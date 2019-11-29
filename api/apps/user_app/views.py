@@ -83,6 +83,7 @@ class LogoutView(BaseView):
     def post(self):
         with redis.Redis() as redis_client:
             redis_client.delete(g.user_id)
+            redis_client.delete(request.headers.get('Authorization'))
         return self._get_response(data={'message': 'You successfully logged out.'})
 
 class UserTripsView(BaseView):
