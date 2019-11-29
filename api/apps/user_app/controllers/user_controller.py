@@ -1,10 +1,15 @@
 from helper_classes.email_builder.build_email import build_email
 from marshmallow import ValidationError
-from flask import current_app
+from flask import current_app, g
 import celery
 
 
 class UserController:
+    @staticmethod
+    def _get_user(user_id):
+        user = current_app.models.User.get_user_by_id(user_id)
+        return user
+
     @classmethod
     def register_user(cls, name, email, password, surname=None):
 
@@ -46,11 +51,9 @@ class UserController:
         return 'uuid outdated', 409
 
     @classmethod
-    def change_capacity(cls, user_id, capacity):
-        user = current_app.models.User.get_user_by_id(user_id=user_id)
-        user.change_capacity(capacity)
-
-        return user.capacity
+    def update_user(cls, user_id, data):
+        current_app.models.User.update_user(data, user_id=user_id)
+        return 'User was successfully updated', 200
 
     @classmethod
     def setup_registration_otc(cls, user):
@@ -67,7 +70,7 @@ class UserController:
         celery_app.send_task('app.async_email', kwargs = email_data)
 
     @staticmethod
-    def get_user_profile(user_id):
+    def get_profile(user_id):
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         return user.get_public_data()
 
@@ -76,6 +79,19 @@ class UserController:
         user = current_app.models.User.get_user_by_id(user_id=user_id)
         if (not user.password_is_set()) or (old_password and user.check_password(old_password)):
             user.set_password(new_password)
-            return 'Your password was updated'
+            return 'Your password was updated', 200
         else:
-            raise ValidationError('Wrong password')
+            return 'Wrong password', 401
+
+    @classmethod
+    def delete_user_from_trip(cls, trip_id, user_to_delete):
+        trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
+        if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
+            return None
+        user = cls._get_user(user_to_delete)
+        return trip.delete_user(user)
+
+    @classmethod
+    def get_trips(cls):
+        user = cls._get_user(g.user_id)
+        return user.get_trips(), 201

@@ -1,11 +1,11 @@
-from marshmallow import Schema, fields, ValidationError, validates
+from marshmallow import Schema, fields, ValidationError, validates, validate
 import re
 
 
 class UserRegisterSchema(Schema):
 
-    name = fields.Str(required=True, error_messages={"required": "Name is required."})
-    surname = fields.Str()
+    name = fields.Str(required=True, validate=validate.Length(min=2, max=30))
+    surname = fields.Str(validate=validate.Length(min=2, max=30))
     email = fields.Email(required=True, error_messages={"required": "Email is required."})
     password = fields.Str(required=True, error_messages={"required": "Password is required."})
 
@@ -15,22 +15,6 @@ class UserRegisterSchema(Schema):
         pattern = re.compile(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$")
         if pattern.match(password) is None:
             raise ValidationError("Password should be at least 8 symbols long and have at least one digit and character")
-
-
-    @validates("name")
-    def validate_name_length(self, value):
-        if len(value) < 2:
-            raise ValidationError("Name is to short")
-        elif len(value) > 30:
-            raise ValidationError("Name is too long")
-
-    @validates("surname")
-    def validate_surname_length(self, value):
-        if value:
-            if len(value) < 2:
-                raise ValidationError("Surname is to short")
-            elif len(value) > 30:
-                raise ValidationError("Surname is too long")
 
 
 

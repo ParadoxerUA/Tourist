@@ -50,7 +50,3 @@ def create_users(from_number, amount):
 # user = User.query.first()
 # trip = Trip.query.first()
 
-u0 = users.all()[0]
-e0 = eqs.all()[0]
-e1 = eqs.all()[1]
-e2 = eqs.all()[2]
