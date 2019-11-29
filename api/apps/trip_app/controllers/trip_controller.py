@@ -12,9 +12,14 @@ class TripController:
         user = current_app.models.User.get_user_by_id(user_id)
         return user
 
+    @staticmethod
+    def _get_trip(trip_id):
+        trip = current_app.models.Trip.get_trip_by_id(trip_id)
+        return trip
+
     @classmethod
-    def create_trip(cls, data, user_id):
-        admin = cls._get_user(user_id)
+    def create_trip(cls, data):
+        admin = cls._get_user(g.user_id)
         data['admin'] = admin
         points = data.pop('points', None)
         trip = current_app.models.Trip.create_trip(data)
@@ -26,40 +31,26 @@ class TripController:
         return trip.trip_id
 
     @classmethod
-    def refresh_trip_uuid(cls, trip_id, user_id):
-        user = cls._get_user(user_id)
+    def refresh_trip_uuid(cls, trip_id):
+        user = cls._get_user(g.user_id)
         trip = current_app.models.Trip.get_trip_by_id(trip_id)
         if trip.admin == user:
             trip_uuid = current_app.blueprints['otc'].controllers\
                 .OtcController.create_trip_link_uuid(current_uuid=trip.trip_uuid)
             trip.set_uuid(trip_uuid)
-            return trip.trip_uuid
-        else:
-            return None
+            return trip.trip_uuid, 201
+        return 'You are not admin of current trip', 400
 
     @classmethod
     def get_trip_data(cls, trip_id, fields):
         user = cls._get_user(g.user_id)
-        trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
-        if user not in trip.users:
-            return ('You are not member of given trip', 400)
-        trip_data = trip.get_fields(fields)
-        if trip_data.get('trip_uuid') and trip.admin != user:
-            del trip_data['trip_uuid']
-        return (trip_data, 201)
-
-    @classmethod
-    def get_user_trips(cls, user_id):
-        user = cls._get_user(user_id)
-        return user.trips
-
-    @classmethod
-    def get_trips_details(cls, user_id):
-        user = cls._get_user(user_id)
-        trips_details = [
-            trip.get_trip_details(user_id) for trip in user.trips
-        ]
-        return trips_details
+        trip = cls._get_trip(trip_id)
+        if user in trip.users:
+            trip_data = trip.get_fields(fields)
+            if trip_data.get('trip_uuid') and trip.admin != user:
+                del trip_data['trip_uuid']
+            return trip_data, 201
+        return ('You are not member of given trip', 400)
 
     @classmethod
     def user_to_trip(cls, trip_uuid, user_id):
@@ -72,11 +63,10 @@ class TripController:
             return 'Couldn`t assign user to trip', 400
 
     @classmethod
-    def update_trip_list_data(cls, trip_id, start_date, end_date, status):
-        data = {
-            'trip_id': trip_id,
-            'start_date': start_date,
-            'end_date': end_date,
-            'status': status,
-        }
-        current_app.models.Trip.update_trip_list_data(trip_id, data)
+    def update_trip(cls, trip_id, trip_data):
+        trip = cls._get_trip(trip_id)
+        user = cls._get_user(g.user_id)
+        if user == trip.admin:
+            trip.update_trip(trip_data)
+            return 'Trip was updated', 201
+        return 'You are not admin of current trip', 400
