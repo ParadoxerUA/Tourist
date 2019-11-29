@@ -64,16 +64,9 @@ class UserView(BaseView):
         return self._get_response(data=message, status_code=status_code)
 
 
-class AuthView(BaseView):
+class LoginView(BaseView):
     def __init__(self):
         self.login_controller = current_app.blueprints['user'].controllers.LoginController
-
-    # logout
-    @login_required
-    def get(self):
-        with redis.Redis() as redis_client:
-            redis_client.delete(g.user_id)
-        return self._get_response(data={'message': 'You successfully logged out.'})
 
     def post(self):
         user_data = try_except(LoginSchema().load, SocialLoginSchema().load, request.json)
@@ -84,6 +77,13 @@ class AuthView(BaseView):
         else:
             session_id, user_id = self.login_controller.login(data=user_data)
         return self._get_response({"session_id": session_id, "user_id": user_id}, status_code=201)
+
+class LogoutView(BaseView):
+    @login_required
+    def post(self):
+        with redis.Redis() as redis_client:
+            redis_client.delete(g.user_id)
+        return self._get_response(data={'message': 'You successfully logged out.'})
 
 class UserTripsView(BaseView):
     def __init__(self):
