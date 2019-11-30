@@ -94,3 +94,13 @@ class UserTripsView(BaseView):
     def get(self):
         trips_list, status_code = self.user_controller.get_trips()
         return self._get_response(trips_list, status_code=status_code)
+
+
+class UserRolesView(BaseView):
+    def __init__(self):
+        self.user_controller = current_app.blueprints['user'].controllers.UserController
+
+    @login_required
+    def get(self):
+        roles, status_code = self.user_controller.get_roles()
+        return self._get_response(roles, status_code=status_code)
