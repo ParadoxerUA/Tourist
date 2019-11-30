@@ -95,3 +95,8 @@ class UserController:
     def get_trips(cls):
         user = cls._get_user(g.user_id)
         return user.get_trips(), 201
+
+    @classmethod
+    def get_roles(cls):
+        user = cls._get_user(g.user_id)
+        return user.get_roles(), 201

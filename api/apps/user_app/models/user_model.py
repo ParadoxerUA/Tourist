@@ -106,3 +106,7 @@ class User(db.Model):
     def get_trips(self):
         result = [trip.get_trip_details(self.user_id) for trip in self.trips]
         return result
+
+    def get_roles(self):
+        result = [role for role in self.roles]
+        return result
