@@ -85,6 +85,11 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def change_avatar_url(self, avatar):
+        self.avatar = avatar
+        db.session.add(self)
+        db.session.commit()
+
     def is_uuid_valid(self):
         datetime_diff = datetime.utcnow() - self.registration_time
         diff_in_hours = datetime_diff.total_seconds() / 3600
