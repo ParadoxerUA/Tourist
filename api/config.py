@@ -29,6 +29,6 @@ class ProductionConfig:
         'api.role_app',
         'api.equipment_app',
     ]
-    UPLOAD_FOLDER = "/var/www/images/user_avatar/"
+    UPLOAD_FOLDER = "/data/images/user_avatar/"
     CELERY_APP_NAME = 'tasks'
     CELERY_BROKER_URL = 'redis://localhost:6379/0'
