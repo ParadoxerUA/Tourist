@@ -10,24 +10,23 @@ class UserController:
         user = current_app.models.User.get_user_by_id(user_id)
         return user
 
+    # tofix
     @classmethod
     def register_user(cls, name, email, password, surname=None):
-
         user = current_app.models.User.get_user_by_email(email=email)
-
         if user is None:
             user = current_app.models.User.create_user(
                 name=name, email=email,
                 password=password, surname=surname,
                 avatar='http://localhost:5000/static/images/user_avatar.png'
             )
-            cls.setup_registration_otc(user)
-            return 'user created'
+            cls._setup_registration_otc(user)
+            return 'user created', 201
 
         if user.is_active:
-            return 'User is already registered'
+            return 'User is already registered', 401
         if user.is_uuid_valid():
-            return 'uuid is valid'
+            return 'uuid is valid', 402
 
         user.delete_user()
         # tofix
@@ -35,14 +34,13 @@ class UserController:
             name=name, email=email,
             password=password, surname=surname
         )
-        cls.setup_registration_otc(user)
-        return 'user uuid updated'
+        cls._setup_registration_otc(user)
+        return 'user uuid updated', 403
 
-
+    # need to OTC work
     @classmethod
     def activate_user(cls, user_uuid):
         user = current_app.models.User.get_user_by_uuid(user_uuid)
-
         if user.is_active:
             return 'user already activated', 409
         if user.is_uuid_valid():
@@ -51,12 +49,12 @@ class UserController:
         return 'uuid outdated', 409
 
     @classmethod
-    def update_user(cls, user_id, data):
-        current_app.models.User.update_user(data, user_id=user_id)
+    def update_user(cls, data):
+        current_app.models.User.update_user(data, user_id=g.user_id)
         return 'User was successfully updated', 200
 
     @classmethod
-    def setup_registration_otc(cls, user):
+    def _setup_registration_otc(cls, user):
         celery_app = celery.Celery(
             current_app.config['CELERY_APP_NAME'],
             broker=current_app.config['CELERY_BROKER_URL']
@@ -70,13 +68,13 @@ class UserController:
         celery_app.send_task('app.async_email', kwargs = email_data)
 
     @staticmethod
-    def get_profile(user_id):
-        user = current_app.models.User.get_user_by_id(user_id=user_id)
-        return user.get_public_data()
+    def get_profile():
+        user = current_app.models.User.get_user_by_id(user_id=g.user_id)
+        return user.get_public_data(), 201
 
     @classmethod
-    def change_password(cls, user_id, new_password, old_password=None):
-        user = current_app.models.User.get_user_by_id(user_id=user_id)
+    def change_password(cls, new_password, old_password=None):
+        user = cls._get_user(g.user_id)
         if (not user.password_is_set()) or (old_password and user.check_password(old_password)):
             user.set_password(new_password)
             return 'Your password was updated', 200
@@ -87,11 +85,12 @@ class UserController:
     def delete_user_from_trip(cls, trip_id, user_to_delete):
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
         if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
-            return None
+            return 'You have no rights', 401
         user = cls._get_user(user_to_delete)
-        return trip.delete_user(user)
+        return trip.delete_user(user), 201
 
     @classmethod
     def get_trips(cls):
         user = cls._get_user(g.user_id)
         return user.get_trips(), 201
+

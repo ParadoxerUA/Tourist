@@ -18,20 +18,17 @@ class UserView(BaseView):
 
     def post(self):
         # tofix
-        request_data = request.json
         try:
-            UserRegisterSchema().load(request_data)
+            request_data = UserRegisterSchema().load(request.json)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=409)
-        data = [
-            self.user_controller.register_user(**request_data),
-        ]
-        return self._get_response(data, status_code=201)
+        response, status_code = self.user_controller.register_user(**request_data)
+        return self._get_response(response, status_code=status_code)
 
     @login_required
     def get(self):
-        user_data = self.user_controller.get_profile(user_id=g.user_id)
-        return self._get_response(data=user_data)
+        user_data, status_code = self.user_controller.get_profile()
+        return self._get_response(user_data, status_code=status_code)
 
     # will update user fields
     @login_required
@@ -41,26 +38,21 @@ class UserView(BaseView):
     # delete user from trip
     @login_required
     def delete(self):
-        user_to_delete = request.args.get('user_id')
+        user_to_delete = request.args.get('user_id') or g.user_id
         trip_id = request.args.get('trip_id')
-        if not user_to_delete:
-            user_to_delete = g.user_id
-        result = self.user_controller.delete_user_from_trip(trip_id, user_to_delete)
-        if result:
-            return self._get_response(result, status_code=200)
-        else:
-            return self._get_response('User delete failed', status_code=400)
+        result, status_code = self.user_controller.delete_user_from_trip(trip_id, user_to_delete)
+        return self._get_response(result, status_code=status_code)
 
     @login_required
     def patch(self):
         try:
             data = UpdateUserSchema().load(data=request.json)
-            if data.get('new_password', None):
-                message, status_code = self.user_controller.change_password(user_id=g.user_id, **data)
-            else:
-                message, status_code = self.user_controller.update_user(user_id=g.user_id, data=data)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
+        if data.get('new_password'):
+            message, status_code = self.user_controller.change_password(**data)
+        else:
+            message, status_code = self.user_controller.update_user(data)
         return self._get_response(data=message, status_code=status_code)
 
 
@@ -84,7 +76,7 @@ class LogoutView(BaseView):
         with redis.Redis() as redis_client:
             redis_client.delete(g.user_id)
             redis_client.delete(request.headers.get('Authorization'))
-        return self._get_response(data={'message': 'You successfully logged out.'})
+        return self._get_response('You successfully logged out.')
 
 class UserTripsView(BaseView):
     def __init__(self):

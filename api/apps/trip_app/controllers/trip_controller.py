@@ -52,9 +52,10 @@ class TripController:
             return trip_data, 201
         return ('You are not member of given trip', 400)
 
+    # need for OTC work
     @classmethod
-    def user_to_trip(cls, trip_uuid, user_id):
-        user = cls._get_user(user_id)
+    def user_to_trip(cls, trip_uuid):
+        user = cls._get_user(g.user_id)
         trip = current_app.models.Trip.get_trip_by_uuid(trip_uuid=trip_uuid)
         try:
             trip.join_user(user)
