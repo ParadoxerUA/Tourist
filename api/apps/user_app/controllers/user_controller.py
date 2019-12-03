@@ -1,7 +1,11 @@
 from helper_classes.email_builder.build_email import build_email
 from marshmallow import ValidationError
-from flask import current_app
+from flask import current_app, send_from_directory
+import uuid
 import celery
+import os
+from pathlib import Path
+print("Directory Path:", Path().absolute())
 
 
 class UserController:
@@ -53,6 +57,33 @@ class UserController:
         return user.capacity
 
     @classmethod
+    def change_user_data(cls, user_id, name, surname, capacity):
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        user.change_public_fields(name, surname, capacity)
+
+    @classmethod
+    def save_user_avatar(cls, user_id, avatar):
+        allowed_extensions = {'png', 'jpg', 'jpeg'}
+        image_store_url = 'http://localhost:5000/api/user/v1/user/avatar'
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        prefix = uuid.uuid4()
+        file_format = avatar.filename[avatar.filename.rindex('.')+1:]
+        current_folder = Path().absolute()
+        full_path = os.path.join(str(current_folder) + current_app.config['UPLOAD_FOLDER'])
+        if not os.path.isdir(full_path):
+            os.makedirs(full_path)
+        if file_format in allowed_extensions:
+            old_user_avatar_url = user.avatar
+            avatar_file_name = "{}-{}.{}".format(prefix, user_id, file_format)
+            avatar.save(full_path+avatar_file_name)
+            user.change_avatar_url('{}?avatar={}'.format(image_store_url, avatar_file_name))
+            if old_user_avatar_url.find('?') != -1:
+                old_avatar_name = old_user_avatar_url[old_user_avatar_url.rindex('=') + 1:]
+                cls.delete_old_avatar_file(old_avatar_name)
+        else:
+            raise ValidationError('Wrong avatar extension')
+
+    @classmethod
     def setup_registration_otc(cls, user):
         celery_app = celery.Celery(
             current_app.config['CELERY_APP_NAME'],
@@ -79,3 +110,17 @@ class UserController:
             return 'Your password was updated'
         else:
             raise ValidationError('Wrong password')
+
+    @staticmethod
+    def delete_old_avatar_file(avatar_file_name):
+        full_path = os.path.join(str(Path().absolute())+current_app.config['UPLOAD_FOLDER']+avatar_file_name)
+        print('Detele ', full_path, os.path.isfile(full_path))
+        if os.path.isfile(full_path):
+            os.remove(full_path)
+
+    @staticmethod
+    def get_user_avatar_path():
+        full_path = os.path.join(str(Path().absolute()) + current_app.config['UPLOAD_FOLDER'])
+        return full_path
+
+
