@@ -74,6 +74,7 @@ class LoginView(BaseView):
             session_id, user_id = self.login_controller.login(data=user_data)
         return self._get_response({"session_id": session_id, "user_id": user_id}, status_code=201)
 
+
 class LogoutView(BaseView):
     @login_required
     def post(self):
@@ -81,4 +82,28 @@ class LogoutView(BaseView):
             redis_client.delete(g.user_id)
             redis_client.delete(request.headers.get('Authorization'))
         return self._get_response('You successfully logged out.')
+
+
+class UserAvatarView(BaseView):
+    def __init__(self):
+        self.user_profile_controller = current_app.blueprints['user'].controllers.UserController
+
+    @login_required
+    def post(self):
+        try:
+            if 'file' not in request.files:
+                return self._get_response("No file part", status_code=422)
+            file = request.files['file']
+            self.user_profile_controller.save_user_avatar(user_id=g.user_id, avatar=file)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
+        return self._get_response(f'User`s avatar updated', status_code=200)
+
+
+    def get(self):
+        avatar = request.args.get('avatar')
+        try:
+            return send_from_directory(self.user_profile_controller.get_user_avatar_path(), filename=avatar, as_attachment=True)
+        except FileNotFoundError as e:
+            return self._get_response("file not found", status_code=400)
 

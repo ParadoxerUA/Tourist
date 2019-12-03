@@ -99,3 +99,34 @@ class UserController:
         user_data = user.get_fields(fields, trip_id=trip_id)
         return user_data, 201
 
+    @classmethod
+    def save_user_avatar(cls, user_id, avatar):
+        allowed_extensions = {'png', 'jpg', 'jpeg'}
+        image_store_url = 'http://localhost:5000/api/user/v1/user/avatar'
+        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        prefix = uuid.uuid4()
+        file_format = avatar.filename[avatar.filename.rindex('.')+1:]
+        full_path = cls.get_user_avatar_path()
+        if not os.path.isdir(full_path):
+            os.makedirs(full_path)
+        if file_format in allowed_extensions:
+            old_user_avatar_url = user.avatar
+            avatar_file_name = "{}-{}.{}".format(prefix, user_id, file_format)
+            avatar.save(full_path+avatar_file_name)
+            user.change_avatar_url('{}?avatar={}'.format(image_store_url, avatar_file_name))
+            if old_user_avatar_url.find('?') != -1:
+                old_avatar_name = old_user_avatar_url[old_user_avatar_url.rindex('=') + 1:]
+                cls.delete_old_avatar_file(old_avatar_name)
+        else:
+            raise ValidationError('Wrong avatar extension')
+
+    @classmethod
+    def delete_old_avatar_file(cls, avatar_file_name):
+        full_path = os.path.join(cls.get_user_avatar_path()+avatar_file_name)
+        if os.path.isfile(full_path):
+            os.remove(full_path)
+
+    @staticmethod
+    def get_user_avatar_path():
+        full_path = os.path.join(str(Path().absolute()) + current_app.config['UPLOAD_FOLDER'])
+        return full_path
