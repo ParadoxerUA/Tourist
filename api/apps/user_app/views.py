@@ -1,5 +1,5 @@
 import redis
-from flask import current_app, request, g
+from flask import current_app, request, g, send_from_directory
 from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema

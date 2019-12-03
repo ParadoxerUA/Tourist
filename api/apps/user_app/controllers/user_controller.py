@@ -1,7 +1,11 @@
 from helper_classes.email_builder.build_email import build_email
 from marshmallow import ValidationError
-from flask import current_app, g
+from flask import current_app, send_from_directory, g
+import uuid
 import celery
+import os
+from pathlib import Path
+print("Directory Path:", Path().absolute())
 
 
 class UserController:
@@ -87,6 +91,11 @@ class UserController:
     @classmethod
     def get_user_data(cls, fields, *, trip_id=None):
         user = cls._get_user(g.user_id)
+        if trip_id:
+            try:
+                trip_id = int(trip_id)
+            except TypeError:
+                'trip_id should be int', 402
         user_data = user.get_fields(fields, trip_id=trip_id)
         return user_data, 201
 
