@@ -28,8 +28,8 @@ class Role(db.Model):
         return role
 
     @classmethod
-    def delete_role(cls, name, trip_id):
-        role = cls.query.filter_by(name=name, trip_id=trip_id).first()
+    def delete_role(cls, role_id):
+        role = cls.query.filter_by(id=role_id).first()
         db.session.delete(role)
         db.session.commit()
         return role

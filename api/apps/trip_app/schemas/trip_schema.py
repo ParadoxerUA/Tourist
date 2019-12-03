@@ -17,3 +17,22 @@ class TripSchema(Schema):
         if start_date > end_date:
             raise ValidationError("Start date can not be greater than end date")
 
+
+class UpdateTripSchema(Schema):
+    start_date = fields.DateTime()
+    end_date = fields.DateTime()
+    status = fields.String(validate=validate.Length(min=1, max=20))
+
+    @validates_schema
+    def _validate_date(self, data, **kwargs):
+        start_date = data['start_date']
+        end_date = data['end_date']
+        if start_date > end_date:
+            raise ValidationError("Start date can not be greater than end date")
+
+    @validates_schema
+    def _validate_status(self, data, **kwargs):
+        status = data['status']
+        available_statuses = {'Open', 'Closed'}
+        if status not in available_statuses:
+            raise ValidationError("Status does not exist")

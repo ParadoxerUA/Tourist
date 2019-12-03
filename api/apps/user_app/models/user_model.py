@@ -47,6 +47,11 @@ class User(db.Model):
         db.session.commit()
 
     @classmethod
+    def update_user(cls, data, user_id=user_id):
+        cls.query.filter_by(user_id=user_id).update(data)
+        db.session.commit()
+
+    @classmethod
     def get_user_by_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()
 
@@ -109,4 +114,11 @@ class User(db.Model):
             "passwordIsSet": self.password_is_set(),
         }
         return public_data
-        
+
+    def get_trips(self):
+        result = [trip.get_trip_details(self.user_id) for trip in self.trips]
+        return result
+
+    def get_roles(self):
+        result = [role for role in self.roles]
+        return result
