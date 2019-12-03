@@ -44,8 +44,10 @@ class Trip(db.Model):
     def get_all_trips(cls):
         return cls.query.all()
 
-    def update_trip(self, data):
-        self.update(**data)
+    def update_trip(self, start_date, end_date, status):
+        self.start_date = start_date
+        self.end_date = end_date
+        self.status = status
         db.session.add(self)
         db.session.commit()
 
