@@ -30,7 +30,7 @@ class UserView(BaseView):
         fields = request.args.get('fields')
         trip_id = request.args.get('trip_id')
         if fields:
-            fields = fields.split(',')
+            fields = fields.split(',')&trip_id=
         response, status_code = self.uer_controller.get_user_data(fields, trip_id=trip_id)
         return self._get_response(response, status_code=status_code)
 
