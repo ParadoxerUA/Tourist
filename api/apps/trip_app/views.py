@@ -1,6 +1,6 @@
 from helper_classes.base_view import BaseView
 from flask import current_app, request, g
-from .schemas.trip_schema import TripSchema
+from .schemas.trip_schema import TripSchema, UpdateTripSchema
 from marshmallow import ValidationError
 from werkzeug.exceptions import Unauthorized
 from helper_classes.auth_decorator import login_required
@@ -22,10 +22,10 @@ class TripView(BaseView):
     @login_required
     def put(self, trip_id):
         try:
-            trip_data = TripSchema().load(request.json)
+            trip_data = UpdateTripSchema().load(request.json)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
-        response, status_code = self.trip_controller.update_trip(trip_id, trip_data)
+        response, status_code = self.trip_controller.update_trip(trip_id, **trip_data)
         return self._get_response(response, status_code=status_code)
 
     @login_required
