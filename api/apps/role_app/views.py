@@ -17,6 +17,8 @@ class RoleView(BaseView):
         except (ValidationError, Exception) as err:
             return self._get_response(str(err), status_code=400)
         response, status_code = self.role_controller.create_role(role_data)
+        print('response from RoleView.post()')
+        print(response)
         return self._get_response(response, status_code=status_code)
 
 

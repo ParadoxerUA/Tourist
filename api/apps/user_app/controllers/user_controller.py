@@ -100,10 +100,10 @@ class UserController:
         return user_data, 201
 
     @classmethod
-    def save_user_avatar(cls, user_id, avatar):
+    def save_user_avatar(cls, avatar):
         allowed_extensions = {'png', 'jpg', 'jpeg'}
         image_store_url = 'http://localhost:5000/api/user/v1/user/avatar'
-        user = current_app.models.User.get_user_by_id(user_id=user_id)
+        user = current_app.models.User.get_user_by_id(user_id=g.user_id)
         prefix = uuid.uuid4()
         file_format = avatar.filename[avatar.filename.rindex('.')+1:]
         full_path = cls.get_user_avatar_path()
@@ -111,7 +111,7 @@ class UserController:
             os.makedirs(full_path)
         if file_format in allowed_extensions:
             old_user_avatar_url = user.avatar
-            avatar_file_name = "{}-{}.{}".format(prefix, user_id, file_format)
+            avatar_file_name = "{}-{}.{}".format(prefix, g.user_id, file_format)
             avatar.save(full_path+avatar_file_name)
             user.change_avatar_url('{}?avatar={}'.format(image_store_url, avatar_file_name))
             if old_user_avatar_url.find('?') != -1:
@@ -132,6 +132,6 @@ class UserController:
         return full_path
 
     @staticmethod
-    def change_capacity(user_id, capacity):
-        user = current_app.models.User.get_user_by_id(user_id)
+    def change_capacity(capacity):
+        user = current_app.models.User.get_user_by_id(g.user_id)
         user.change_capacity(capacity['capacity'])

@@ -94,7 +94,7 @@ class UserAvatarView(BaseView):
             if 'file' not in request.files:
                 return self._get_response("No file part", status_code=422)
             file = request.files['file']
-            self.user_profile_controller.save_user_avatar(user_id=g.user_id, avatar=file)
+            self.user_profile_controller.save_user_avatar(avatar=file)
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
         return self._get_response(f'User`s avatar updated', status_code=200)
