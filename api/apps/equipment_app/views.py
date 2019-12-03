@@ -40,5 +40,5 @@ class EquipmentView(BaseView):
             equipment_data = EquipmentSchema().load(request.json)
         except ValidationError as err:
             return self._get_response(err.messages, status_code=400)
-        response, status_code = self.equipment_controller.create_equipment(equipment_data)
-        return self._get_response(response, status_code=status_code)
+        response = self.equipment_controller.create_equipment(equipment_data)
+        return self._get_response(response, status_code=201)
