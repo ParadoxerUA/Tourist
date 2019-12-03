@@ -63,10 +63,13 @@ class TripController:
             return 'Couldn`t assign user to trip', 400
 
     @classmethod
-    def update_trip(cls, trip_id, trip_data):
+    def update_trip(cls, trip_id, *, start_date, end_date, status):
+        print(start_date)
+        print(end_date)
+        print(status)
         trip = cls._get_trip(trip_id)
         user = cls._get_user(g.user_id)
         if user == trip.admin:
-            trip.update_trip(trip_data)
+            trip.update_trip(start_date, end_date, status)
             return 'Trip was updated', 201
         return 'You are not admin of current trip', 400
