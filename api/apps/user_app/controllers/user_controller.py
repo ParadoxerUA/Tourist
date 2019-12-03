@@ -144,4 +144,7 @@ class UserController:
         full_path = os.path.join(str(Path().absolute()) + current_app.config['UPLOAD_FOLDER'])
         return full_path
 
-
+    @staticmethod
+    def change_capacity(user_id, capacity):
+        user = current_app.models.User.get_user_by_id(user_id)
+        user.change_capacity(capacity['capacity'])

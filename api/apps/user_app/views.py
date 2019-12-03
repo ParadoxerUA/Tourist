@@ -51,6 +51,20 @@ class UserView(BaseView):
         user_profile_controller.change_user_data(user_id=g.user_id, capacity=capacity, name=name, surname=surname)
         return self._get_response(f'User`s data updated', status_code=200)
 
+    
+    # delete user from trip
+    @login_required
+    def delete(self):
+        user_to_delete = request.args.get('user_id')
+        trip_id = request.args.get('trip_id')
+        if not user_to_delete:
+            user_to_delete = g.user_id
+        result = self.user_controller.delete_user_from_trip(trip_id, user_to_delete)
+        if result:
+            return self._get_response(result, status_code=200)
+        else:
+            return self._get_response('User delete failed', status_code=400)
+
 
 class UserAvatarView(BaseView):
 
@@ -76,18 +90,9 @@ class UserAvatarView(BaseView):
             return self._get_response("file not found", status_code=400)
 
 
-    # delete user from trip
-    @login_required
-    def delete(self):
-        user_to_delete = request.args.get('user_id')
-        trip_id = request.args.get('trip_id')
-        if not user_to_delete:
-            user_to_delete = g.user_id
-        result = self.user_controller.delete_user_from_trip(trip_id, user_to_delete)
-        if result:
-            return self._get_response(result, status_code=200)
-        else:
-            return self._get_response('User delete failed', status_code=400)
+class ChangePasswordView(BaseView):
+    def __init__(self):
+        self.user_controller = current_app.blueprints['user'].controllers.UserController
 
     @login_required
     def patch(self):
