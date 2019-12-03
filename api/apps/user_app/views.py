@@ -1,5 +1,5 @@
 import redis
-from flask import current_app, request, g
+from flask import current_app, request, g, send_from_directory
 from .schemas.UserRegisterSchema import UserRegisterSchema
 from marshmallow import ValidationError
 from apps.user_app.schemas.login_schema import LoginSchema
@@ -35,8 +35,46 @@ class UserView(BaseView):
 
     # will update user fields
     @login_required
+    def patch(self):
+        capacity = request.json
+        user_capacity = self.user_controller.change_capacity(user_id=g.user_id, capacity=capacity)
+        
+        return self._get_response(f'User new capacity is: {user_capacity}', status_code=200)
+
+    @login_required
     def put(self):
-        return self._get_response('i am UserView.put()')
+        user_data = request.json
+        name = user_data['name']
+        surname = user_data['surname']
+        capacity = user_data['capacity']
+        user_profile_controller = current_app.blueprints['user'].controllers.UserController
+        user_profile_controller.change_user_data(user_id=g.user_id, capacity=capacity, name=name, surname=surname)
+        return self._get_response(f'User`s data updated', status_code=200)
+
+
+class UserAvatarView(BaseView):
+
+    def __init__(self):
+        self.user_profile_controller = current_app.blueprints['user'].controllers.UserController
+
+    @login_required
+    def post(self):
+        try:
+            if 'file' not in request.files:
+                return self._get_response("No file part", status_code=422)
+            file = request.files['file']
+            self.user_profile_controller.save_user_avatar(user_id=g.user_id, avatar=file)
+        except ValidationError as e:
+            return self._get_response(e.messages, status_code=400)
+        return self._get_response(f'User`s avatar updated', status_code=200)
+
+    def get(self):
+        avatar = request.args.get('avatar')
+        try:
+            return send_from_directory(self.user_profile_controller.get_user_avatar_path(), filename=avatar, as_attachment=True)
+        except FileNotFoundError as e:
+            return self._get_response("file not found", status_code=400)
+
 
     # delete user from trip
     @login_required
