@@ -27,8 +27,12 @@ class UserView(BaseView):
 
     @login_required
     def get(self):
-        user_data, status_code = self.user_controller.get_profile()
-        return self._get_response(user_data, status_code=status_code)
+        fields = request.args.get('fields')
+        trip_id = request.args.get('trip_id')
+        if fields:
+            fields = fields.split(',')
+        response, status_code = self.uer_controller.get_user_data(fields, trip_id=trip_id)
+        return self._get_response(response, status_code=status_code)
 
     # will update user fields
     @login_required
@@ -78,11 +82,3 @@ class LogoutView(BaseView):
             redis_client.delete(request.headers.get('Authorization'))
         return self._get_response('You successfully logged out.')
 
-class UserTripsView(BaseView):
-    def __init__(self):
-        self.user_controller = current_app.blueprints['user'].controllers.UserController
-
-    @login_required
-    def get(self):
-        trips_list, status_code = self.user_controller.get_trips()
-        return self._get_response(trips_list, status_code=status_code)

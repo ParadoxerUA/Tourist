@@ -67,11 +67,6 @@ class UserController:
         email_data = build_email(user.email, em_type, **content)
         celery_app.send_task('app.async_email', kwargs = email_data)
 
-    @staticmethod
-    def get_profile():
-        user = current_app.models.User.get_user_by_id(user_id=g.user_id)
-        return user.get_public_data(), 201
-
     @classmethod
     def change_password(cls, new_password, old_password=None):
         user = cls._get_user(g.user_id)
@@ -90,7 +85,8 @@ class UserController:
         return trip.delete_user(user), 201
 
     @classmethod
-    def get_trips(cls):
+    def get_user_data(cls, fields, *, trip_id=None):
         user = cls._get_user(g.user_id)
-        return user.get_trips(), 201
+        user_data = user.get_fields(fields, trip_id=trip_id)
+        return user_data, 201
 

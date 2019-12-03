@@ -100,9 +100,22 @@ class User(db.Model):
             "capacity": self.capacity,
             "roles": self.roles,
             "passwordIsSet": self.password_is_set(),
+            "trips": self._get_trips(),
         }
         return public_data
 
-    def get_trips(self):
+    def _get_trips(self):
         result = [trip.get_trip_details(self.user_id) for trip in self.trips]
         return result
+
+    # tofix
+    def get_fields(self, fields, *, trip_id=None):
+        public_data = {}
+        if not fields:
+            return self.get_public_data()
+        for field in fields:
+            if field == 'roles':
+                public_data[field] = [role for role in getattr(self, field) if role.trip_id == trip_id]
+            else:
+                public_data[field] = getattr(self, field)
+        return public_data
