@@ -17,3 +17,4 @@ build/
 .idea/dump.db
 api/migrations/
 .idea/
+data/
