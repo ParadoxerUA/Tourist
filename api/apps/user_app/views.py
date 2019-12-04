@@ -46,8 +46,8 @@ class UserView(BaseView):
     def patch(self):
         try:
             data = UpdateUserSchema().load(data=request.json)
-        except ValidationError as e:
-            return self._get_response(e.messages, status_code=400)
+        except ValidationError:
+            return self._get_response('Incorrect data', status_code=400)
         if data.get('new_password'):
             message, status_code = self.user_controller.change_password(**data)
         else:
@@ -64,10 +64,10 @@ class LoginView(BaseView):
         if not user_data:
             return self._get_response('Invalid user data', status_code=400)
         if user_data.get('provider'):
-            session_id, user_id = self.login_controller.login_with_social(data=user_data)
+            data, status_code = self.login_controller.login_with_social(data=user_data)
         else:
-            session_id, user_id = self.login_controller.login(data=user_data)
-        return self._get_response({"session_id": session_id, "user_id": user_id}, status_code=201)
+            data, status_code = self.login_controller.login(data=user_data)
+        return self._get_response(data, status_code=status_code)
 
 
 class LogoutView(BaseView):
