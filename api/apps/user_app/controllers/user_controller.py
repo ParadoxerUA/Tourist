@@ -28,7 +28,7 @@ class UserController:
             return 'user created', 201
 
         if user.is_active:
-            return 'User is already registered', 401
+            return 'User is already registered', 400
         if user.is_uuid_valid():
             return 'uuid is valid', 402
 
@@ -78,13 +78,13 @@ class UserController:
             user.set_password(new_password)
             return 'Your password was updated', 200
         else:
-            return 'Wrong password', 401
+            return 'Wrong password', 400
 
     @classmethod
     def delete_user_from_trip(cls, trip_id, user_to_delete):
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
         if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
-            return 'You have no rights', 401
+            return 'You have no rights', 400
         user = cls._get_user(user_to_delete)
         return trip.delete_user(user), 201
 
