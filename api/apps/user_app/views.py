@@ -34,11 +34,6 @@ class UserView(BaseView):
         response, status_code = self.user_controller.get_user_data(fields, trip_id=trip_id)
         return self._get_response(response, status_code=status_code)
 
-    # will update user fields
-    @login_required
-    def put(self):
-        return self._get_response('i am UserView.put()')
-
     # delete user from trip
     @login_required
     def delete(self):
