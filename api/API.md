@@ -30,10 +30,10 @@
 
 # equipment_app
 > equipment/v1/equipment/<int:equipment_id>
-    GET: get eq data
-    PATCH: edit eq data
-    DELETE: delete eq from db
+    GET: get equipment data
+    PATCH: edit equipment data
+    DELETE: delete equipment from db
 > equipment/v1/equipment
-    POST: create new eq
+    POST: create new equipment
 
 
