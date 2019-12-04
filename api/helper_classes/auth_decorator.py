@@ -32,6 +32,7 @@ def otc_authorization(f):
     def wrap(*args, **kwargs):
         token = request.headers.get('Authorization')
         if not token:
+            g.user_id = None
             return f(*args, **kwargs)
         with redis.Redis() as redis_client:
             user = redis_client.get(token) # return bytes

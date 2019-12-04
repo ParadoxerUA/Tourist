@@ -9,23 +9,29 @@ from google.auth.exceptions import GoogleAuthError
 class LoginController:
     @classmethod
     def validate_fields(cls, email, password):
-        error_message = 'Incorrect email or password'
-
         user = current_app.models.User.get_user_by_email(email=email)
 
         if not user or not user.check_password(password):
-            raise ValidationError(error_message)
+            raise Exception('Incorrect email or password')
 
         if not user.is_active:
-            raise ValidationError('Your account is not active')
+            return Exception('Your account is not active')
 
         return user
 
     @classmethod
     def login(cls, data):
-        user = cls.validate_fields(**data)
+        try:
+            user = cls.validate_fields(**data)
+        except Exception as e:
+            return str(e), 400
         session_id = cls._create_session(user=user)
-        return (session_id, user.user_id)
+
+        data = {
+            'session_id': session_id,
+            'user_id': user.user_id
+        }
+        return data, 200
     
     @classmethod
     def login_with_social(cls, data):
@@ -38,7 +44,11 @@ class LoginController:
         elif not user.is_active:
             user.activate_user()
         session_id = cls._create_session(user=user)
-        return (session_id, user.user_id)
+        data = {
+            'session_id': session_id,
+            'user_id': user.user_id
+        }
+        return data, 200
     
     @classmethod
     def _authorize_user(cls, token, provider):
@@ -68,10 +78,7 @@ class LoginController:
     def _authorize_with_google(token):
         credentials = Credentials(token)
         authed_session = AuthorizedSession(credentials)
-        try:
-            response = authed_session.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
-        except GoogleAuthError:
-            raise ValidationError('Invalid auth token')
+        response = authed_session.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
 
         raw_data = json.loads(response.text)
         user_data = {
