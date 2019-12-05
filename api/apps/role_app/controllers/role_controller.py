@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, g
 
 
 class RoleController:
@@ -12,33 +12,45 @@ class RoleController:
     def _get_user(user_id):
         user = current_app.models.User.get_user_by_id(user_id)
         return user
-
+    
     @staticmethod
-    def get_role(role_id):
+    def _get_role(role_id):
         role = current_app.models.Role.get_role_by_id(role_id)
         return role
 
     @classmethod
-    def create_role(cls, data, user_id):
-        user = cls._get_user(user_id)
-        trip = cls._get_trip(data['trip_id'])
-        if user == trip.admin:
-            role = current_app.models.Role.create_role(data)
-        else:
-            role = None
-        return role
+    def get_role(cls, role_id):
+        user = cls._get_user(g.user_id)
+        role = current_app.models.Role.get_role_by_id(role_id)
+        if role.trip_id in map(lambda x: x.trip_id, user.trips):
+            return role, 201
+        return 'You have no rights', 401
 
     @classmethod
-    def toggle_role(cls, role_id, user_id, admin_id):
-        role = cls.get_role(role_id)
+    def create_role(cls, data):
+        user = cls._get_user(g.user_id)
+        trip = cls._get_trip(data['trip_id'])
+        if user == trip.admin:
+            return current_app.models.Role.create_role(data), 201
+        else:
+            return 'You are not admin of current trip', 400
+
+    @classmethod
+    def toggle_role(cls, role_id, user_id):
+        role = cls._get_role(role_id)
         user = cls._get_user(user_id)
-        admin = cls._get_user(admin_id)
+        admin = cls._get_user(g.user_id)
         trip = cls._get_trip(role.trip_id)
         if trip.admin == admin and user in trip.users:
-            return role.toggle_role(user)
+            return role.toggle_role(user), 201
         else:
-            return None
+            return 'Assigning role failed', 401
 
-    @staticmethod
-    def delete_role(role_id):
-        current_app.models.Role.delete_role(role_id)
+    @classmethod
+    def delete_role(cls, role_id):
+        user = cls._get_user(g.user_id)
+        role = cls._get_role(role_id)
+        if role.trip_id in map(lambda x: x.trip_id, user.admin_trips):
+            result = current_app.models.Role.delete_role(role_id)
+            return result, 201
+        return 'You are not amin of current trip', 401

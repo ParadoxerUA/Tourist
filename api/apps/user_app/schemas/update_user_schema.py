@@ -5,7 +5,7 @@ import re
 class UpdateUserSchema(Schema):
 
     name = fields.Str(validate=validate.Length(min=2, max=30))
-    surname = fields.Str(validate=validate.Length(min=2, max=30))
+    surname = fields.Str(validate=validate.Length(min=0, max=30))
     capacity = fields.Int(validate=validate.Range(min=0))
     old_password = fields.String()
     new_password = fields.String()
