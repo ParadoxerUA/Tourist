@@ -14,7 +14,6 @@ class EquipmentView(BaseView):
             data = self.equipment_controller.get_equipment_data(equipment_id)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
-
         return self._get_response(data, status_code=200)
 
     def patch(self, equipment_id):
@@ -23,7 +22,6 @@ class EquipmentView(BaseView):
             data = self.equipment_controller.update_equipment(equipment_id, new_equipment_data)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
-
         return self._get_response("Successfully updated", status_code=200)
 
     def delete(self, equipment_id):
@@ -31,7 +29,6 @@ class EquipmentView(BaseView):
             data = self.equipment_controller.delete_equipment(equipment_id)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
-
         return self._get_response("Successfully deleted", status_code=200)
 
     @login_required
@@ -41,4 +38,5 @@ class EquipmentView(BaseView):
         except ValidationError as err:
             return self._get_response(err.messages, status_code=400)
         response = self.equipment_controller.create_equipment(equipment_data)
+        print(response)
         return self._get_response(response, status_code=201)
