@@ -83,6 +83,7 @@ class UserAvatarView(BaseView):
     def __init__(self):
         self.user_profile_controller = current_app.blueprints['user'].controllers.UserController
 
+    # tofix
     @login_required
     def post(self):
         try:
