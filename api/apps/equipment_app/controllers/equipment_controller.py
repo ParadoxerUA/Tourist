@@ -46,4 +46,4 @@ class EquipmentController:
             response = current_app.models.Equipment.create_equipment(data)
         else:
             response = 'You dont have rights'
-        return response, 402
+        return response, 201
