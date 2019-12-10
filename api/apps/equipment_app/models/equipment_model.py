@@ -24,7 +24,7 @@ class Equipment(db.Model):
         nullable=True)
     owner = db.relationship('User', backref='personal_stuff')
     users = db.relationship('User', secondary='equipment_user', lazy=True,
-                            backref=db.backref('equipment', lazy=True))
+                            backref=db.backref('equipment', lazy=False))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=True)
 
     @classmethod

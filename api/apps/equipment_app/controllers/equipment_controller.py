@@ -50,5 +50,20 @@ class EquipmentController:
 
     @classmethod
     def assign_equipment_to_user(cls, equipment_id, amount, user_id):
-        print(equipment_id, amount, user_id)
-        return 'successfully added'
+        equipment = cls._get_eq(equipment_id)
+        user = cls._get_user(g.user_id)
+        target_user = cls._get_user(user_id)
+        trip = cls._get_trip(equipment.trip_id)
+        user_has_role = equipment.role_id in (role.id for role in user.roles)
+        is_admin = user == trip.admin
+        target_user_in_trip = trip.trip_id in (trip.trip_id for trip in target_user.trips)
+
+        if (user_has_role or is_admin) and target_user_in_trip:
+            response = {
+                'equipment_id': equipment_id,
+                'amount': amount,
+                'user_id': user_id,
+            }
+        else:
+            response = 'You dont have rights'
+        return response, 201

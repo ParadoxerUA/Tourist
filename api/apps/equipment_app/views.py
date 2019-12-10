@@ -41,7 +41,7 @@ class EquipmentView(BaseView):
         return self._get_response(response, status_code=status_code)
 
     @login_required
-    def HTTPMETHOD(self, equipment_id):
+    def patch(self, equipment_id):
         try:
             equipment_data = PatchEquipmentSchema().load(request.json)
         except ValidationError as err:
