@@ -41,6 +41,7 @@ class Equipment(db.Model):
         equipment.weight = updated_data['weight']
         equipment.quantity = updated_data['quantity']
         db.session.commit()
+        return equipment
 
     @classmethod
     def delete_equipment(cls, id):
@@ -49,6 +50,7 @@ class Equipment(db.Model):
         equipment = cls.get_equipment_by_id(id)
         db.session.delete(equipment)
         db.session.commit()
+        return 'Successfully deleted'
 
     def get_public_data(self):
         if not self.owner_id:
