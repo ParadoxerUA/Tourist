@@ -39,6 +39,11 @@ class EquipmentController:
     def create_equipment(cls, data):
         user = cls._get_user(g.user_id)
         trip = cls._get_trip(data['trip_id'])
-        if (data.get('role_id') in (role.id for role in user.roles)) or (data.get('owner_id') == user.user_id):
-            equipment = current_app.models.Equipment.create_equipment(data)
-        return data
+        user_has_role = data.get('role_id') in (role.id for role in user.roles)
+        is_item_owner = data.get('owner_id') == user.user_id
+        is_admin = user == trip.admin
+        if user_has_role or is_item_owner or is_admin:
+            response = current_app.models.Equipment.create_equipment(data)
+        else:
+            response = 'You dont have rights'
+        return response, 402
