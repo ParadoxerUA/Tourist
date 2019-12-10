@@ -9,14 +9,13 @@ class EquipmentView(BaseView):
     def __init__(self):
         self.equipment_controller = current_app.blueprints['equipment'].controllers.EquipmentController
 
+    @login_required
     def get(self, equipment_id):
-        try:
-            data = self.equipment_controller.get_equipment_data(equipment_id)
-        except ValidationError as err:
-            return self._get_response(data=err.messages, status_code=400)
-        return self._get_response(data, status_code=200)
+        response, status_code = self.equipment_controller.get_equipment_data(equipment_id)
+        return self._get_response(response, status_code=status_code)
 
-    def patch(self, equipment_id):
+    @login_required
+    def put(self, equipment_id):
         try:
             new_equipment_data = EquipmentSchema().load(request.json)
             data = self.equipment_controller.update_equipment(equipment_id, new_equipment_data)
@@ -24,6 +23,7 @@ class EquipmentView(BaseView):
             return self._get_response(data=err.messages, status_code=400)
         return self._get_response("Successfully updated", status_code=200)
 
+    @login_required
     def delete(self, equipment_id):
         try:
             data = self.equipment_controller.delete_equipment(equipment_id)
@@ -37,6 +37,5 @@ class EquipmentView(BaseView):
             equipment_data = EquipmentSchema().load(request.json)
         except ValidationError as err:
             return self._get_response(err.messages, status_code=400)
-        response = self.equipment_controller.create_equipment(equipment_data)
-        print(response)
-        return self._get_response(response, status_code=201)
+        response, status_code = self.equipment_controller.create_equipment(equipment_data)
+        return self._get_response(response, status_code=status_code)
