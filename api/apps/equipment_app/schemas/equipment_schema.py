@@ -17,3 +17,4 @@ class PatchEquipmentSchema(Schema):
     owner_id = fields.Integer(required=False, validate=validate.Range(min=1))
     role_id = fields.Integer(validate=validate.Range(min=1), required=False)
     amount = fields.Integer(validate=validate.Range(min=1), required=False)
+    user_id = fields.Integer(required=False, validate=validate.Range(min=1))
