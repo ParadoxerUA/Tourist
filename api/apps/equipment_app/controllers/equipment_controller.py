@@ -22,3 +22,8 @@ class EquipmentController:
     def create_equipment(cls, data):
         data = Equipment.create_equipment(data)
         return data
+
+    @classmethod
+    def assign_equipment_to_user(cls, equipment_id, amount, user_id):
+        print(equipment_id, amount, user_id)
+        return 'successfully added'

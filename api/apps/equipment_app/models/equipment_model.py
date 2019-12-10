@@ -1,5 +1,13 @@
 from database import db
 
+class EquipmentUser(db.Model):
+    __tablename__ = 'equipment_user'
+    __table_args__ = {'extend_existing': True}
+
+    equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.equipment_id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), primary_key=True)
+    amount = db.Column(db.Integer, nullable=False)
+
 
 class Equipment(db.Model):
     """Model for equipment"""
@@ -15,6 +23,8 @@ class Equipment(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'),
         nullable=True)
     owner = db.relationship('User', backref='personal_stuff')
+    users = db.relationship('User', secondary='equipment_user', lazy=True,
+                            backref=db.backref('equipment', lazy=True))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=True)
 
     @classmethod

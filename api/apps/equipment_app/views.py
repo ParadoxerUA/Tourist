@@ -1,6 +1,6 @@
 from helper_classes.base_view import BaseView
 from flask import current_app, request
-from .schemas.equipment_schema import EquipmentSchema
+from .schemas.equipment_schema import EquipmentSchema, PatchEquipmentSchema
 from marshmallow import ValidationError
 from helper_classes.auth_decorator import login_required
 
@@ -41,4 +41,18 @@ class EquipmentView(BaseView):
         except ValidationError as err:
             return self._get_response(err.messages, status_code=400)
         response = self.equipment_controller.create_equipment(equipment_data)
+        return self._get_response(response, status_code=201)
+
+    @login_required
+    def HTTPMETHOD(self, equipment_id):
+        try:
+            equipment_data = PatchEquipmentSchema().load(request.json)
+        except ValidationError as err:
+            return self._get_response(err.messages, status_code=400)
+        if equipment_data.get('amount'):
+            response = self.equipment_controller.assign_equipment_to_user(
+                equipment_id, equipment_data['amount'], equipment_data['user_id']
+            )
+        else:
+            return self._get_response('Invalid data in body', status_code=400)
         return self._get_response(response, status_code=201)
