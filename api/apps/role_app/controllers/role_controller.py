@@ -51,6 +51,6 @@ class RoleController:
         user = cls._get_user(g.user_id)
         role = cls._get_role(role_id)
         if role.trip_id in map(lambda x: x.trip_id, user.admin_trips):
-            result = current_app.models.Role.delete_role(role_id)
-            return result, 201
+            current_app.models.Role.delete_role(role_id)
+            return f"Role {role_id} successfully deleted", 201
         return 'You are not amin of current trip', 401
