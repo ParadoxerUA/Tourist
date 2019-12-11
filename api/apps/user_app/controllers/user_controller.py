@@ -83,10 +83,21 @@ class UserController:
     @classmethod
     def delete_user_from_trip(cls, trip_id, user_to_delete):
         trip = current_app.models.Trip.get_trip_by_id(trip_id=trip_id)
-        if (user_to_delete != g.user_id) and (g.user_id != trip.admin_id):
+        user_to_delete_id = int(user_to_delete)
+        if (user_to_delete_id != g.user_id) and (g.user_id != trip.admin_id):
             return 'You have no rights', 400
+        if (g.user_id == trip.admin_id) and (user_to_delete_id == g.user_id):
+            participants = trip.get_trip_details(g.user_id)['participants']
+            if participants > 1:
+                return 'The captain goes down with the ship', 400
+            user = cls._get_user(user_to_delete)
+            trip.delete_user(user),
+            return trip.delete_trip(), 201
         user = cls._get_user(user_to_delete)
         return trip.delete_user(user), 201
+
+
+
 
     @classmethod
     def get_user_data(cls, fields, *, trip_id=None):

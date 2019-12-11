@@ -28,6 +28,12 @@ class Trip(db.Model):
                          single_parent=True)
     roles = db.relationship('Role', backref='trip', lazy=True)
 
+
+
+    def delete_trip(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @classmethod
     def get_trip_by_id(cls, trip_id):
         return cls.query.filter_by(trip_id=trip_id).first()
