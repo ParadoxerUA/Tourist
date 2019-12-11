@@ -96,9 +96,6 @@ class UserController:
         user = cls._get_user(user_to_delete)
         return trip.delete_user(user), 201
 
-
-
-
     @classmethod
     def get_user_data(cls, fields, *, trip_id=None):
         user = cls._get_user(g.user_id)
