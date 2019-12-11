@@ -27,11 +27,12 @@ class UserView(BaseView):
 
     @login_required
     def get(self):
+        user_id = int(request.args.get('user_id')) if request.args.get('user_id') else None
         fields = request.args.get('fields')
-        trip_id = request.args.get('trip_id')
+        trip_id = int(request.args.get('trip_id')) if request.args.get('trip_id') else None
         if fields:
             fields = fields.split(',')
-        response, status_code = self.user_controller.get_user_data(fields, trip_id=trip_id)
+        response, status_code = self.user_controller.get_user_data(fields, trip_id=trip_id, user_id=user_id)
         return self._get_response(response, status_code=status_code)
 
     # delete user from trip

@@ -89,13 +89,10 @@ class UserController:
         return trip.delete_user(user), 201
 
     @classmethod
-    def get_user_data(cls, fields, *, trip_id=None):
-        user = cls._get_user(g.user_id)
-        if trip_id:
-            try:
-                trip_id = int(trip_id)
-            except TypeError:
-                'trip_id should be int', 402
+    def get_user_data(cls, fields, *, trip_id=None, user_id=None):
+        if user_id:
+            fields = [field for field in fields if field not in ['equipment', 'email', 'password_hash', 'uuid', 'is_active', 'registration_time']]
+        user = cls._get_user(user_id or g.user_id)
         user_data = user.get_fields(fields, trip_id=trip_id)
         return user_data, 201
 
