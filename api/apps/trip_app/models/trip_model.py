@@ -18,15 +18,15 @@ class Trip(db.Model):
     status = db.Column(db.String(20), default='Open')
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
     points = db.relationship('Point', cascade='all, delete, delete-orphan', lazy=True, 
-        backref=db.backref('trip', lazy=True))
+                         backref=db.backref('trip', lazy=True))
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
-                            backref=db.backref('trips', lazy=True))
+                         backref=db.backref('trips', lazy=True))
     equipment = db.relationship('apps.equipment_app.models.equipment_model.Equipment',
                          backref=db.backref('trip'),
                          cascade='all, delete, delete-orphan',
                          single_parent=True)
-    roles = db.relationship('Role', backref='trip', lazy=True)
+    roles = db.relationship('Role', backref='trip', cascade='all, delete, delete-orphan', lazy=True)
 
 
 
