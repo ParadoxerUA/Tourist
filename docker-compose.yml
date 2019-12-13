@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  flask-reload:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash deploy.sh
+    environment:
+      PYTHONPATH: .
+    ports:
+      - '5000:5000'
