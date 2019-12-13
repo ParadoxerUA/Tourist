@@ -62,17 +62,17 @@ class TestTripController(BasicTest):
     #     self.assertEqual(True, bool(trip_data_2))
     #     self.assertEqual(bool(trip_data_1), True)
 
-    def test_user_to_trip_success(self):
-        trip_uuid = g.user_id = 1
-        response, status_code = TripController.user_to_trip(trip_uuid)
-        self.assertEqual(response, 'User assigned to trip')
-        self.assertEqual(status_code, 200)
+    # def test_user_to_trip_success(self):
+    #     trip_uuid = g.user_id = 1
+    #     response, status_code = TripController.user_to_trip(trip_uuid)
+    #     self.assertEqual(response, 'User assigned to trip')
+    #     self.assertEqual(status_code, 200)
 
-    def test_user_to_trip_fail(self):
-        trip_uuid = g.user_id = 1
-        trip = self.Trip.create_trip()
-        self.Trip.get_trip_by_uuid.return_value = trip
-        trip.join_user = BaseException()
-        response, status_code = TripController.user_to_trip(trip_uuid)
-        self.assertEqual(response, 'Couldn`t assign user to trip')
-        self.assertEqual(status_code, 400)
+    # def test_user_to_trip_fail(self):
+    #     trip_uuid = g.user_id = 1
+    #     trip = self.Trip.create_trip()
+    #     self.Trip.get_trip_by_uuid.return_value = trip
+    #     trip.join_user = BaseException()
+    #     response, status_code = TripController.user_to_trip(trip_uuid)
+    #     self.assertEqual(response, 'Couldn`t assign user to trip')
+    #     self.assertEqual(status_code, 400)
