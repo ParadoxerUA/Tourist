@@ -17,5 +17,4 @@ test job:
 deploy job:
     stage: deploy
     script:
-      - apt-get update -qy
-      - apt-get install curl -y
+      - echo 'You are deploying now'
