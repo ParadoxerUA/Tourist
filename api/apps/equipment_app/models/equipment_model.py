@@ -37,6 +37,7 @@ class Equipment(db.Model):
         """Update equipment data in the list of items"""
 
         equipment = cls.get_equipment_by_id(id)
+        equipment.role_id = updated_data.get('role_id')
         equipment.name = updated_data['name']
         equipment.weight = updated_data['weight']
         equipment.quantity = updated_data['quantity']
