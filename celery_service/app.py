@@ -11,14 +11,12 @@ app = Celery(
     broker=CeleryConfig.CELERY_BROKER_URL
 )
 
-
 @app.task
 def async_email(recipient, subject, body):
     mail = smtplib.SMTP(
         host=MailServiceConfig.MAIL_SERVER,
         port=MailServiceConfig.MAIL_PORT
     )
-
 
     msg = MIMEMultipart()
 
