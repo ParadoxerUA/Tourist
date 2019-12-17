@@ -97,6 +97,10 @@ class Trip(db.Model):
                     public_data[field] = getattr(self, field).get_public_data()
             else:
                 public_data[field] = getattr(self, field)
+        try:
+            public_data['equipment'] = [x for x in public_data['equipment'] if x is not None]
+        except:
+            pass
         public_data = {k:v for k, v in public_data.items() if v}
         return public_data
 
