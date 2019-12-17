@@ -32,7 +32,7 @@ class Role(db.Model):
         role = cls.query.filter_by(id=role_id).first()
         db.session.delete(role)
         db.session.commit()
-        return role
+        
 
     @classmethod
     def get_role_by_id(cls, role_id):

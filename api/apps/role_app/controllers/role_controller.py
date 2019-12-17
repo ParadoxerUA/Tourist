@@ -33,7 +33,7 @@ class RoleController:
         if user == trip.admin:
             return current_app.models.Role.create_role(data), 201
         else:
-            return 'You are not admin of current trip', 400
+            return 'You are not admin of current trip', 401
 
     @classmethod
     def toggle_role(cls, role_id, user_id):
@@ -51,6 +51,6 @@ class RoleController:
         user = cls._get_user(g.user_id)
         role = cls._get_role(role_id)
         if role.trip_id in map(lambda x: x.trip_id, user.admin_trips):
-            result = current_app.models.Role.delete_role(role_id)
-            return result, 201
-        return 'You are not amin of current trip', 401
+            current_app.models.Role.delete_role(role_id)
+            return f"Role {role_id} successfully deleted", 201
+        return 'You are not admin of current trip', 401
