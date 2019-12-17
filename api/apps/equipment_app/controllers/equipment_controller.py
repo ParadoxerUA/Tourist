@@ -54,9 +54,8 @@ class EquipmentController:
     def create_equipment(cls, data):
         if cls._user_has_privileges(data['trip_id'], data.get('role_id'), data.get('owner_id')):
             response = current_app.models.Equipment.create_equipment(data)
-        else:
-            response = 'You dont have rights'
-        return response, 402
+            return response, 201
+        return 'You dont have rights', 402
 
     @classmethod
     def assign_equipment_to_users(cls, equipment_id, users_eq_amount):
