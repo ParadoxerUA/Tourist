@@ -8,6 +8,29 @@ class EquipmentUser(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), primary_key=True)
     amount = db.Column(db.Integer, nullable=False)
 
+    @classmethod
+    def get_existing_user_equipment(cls, user_id, equipment_id):
+        res = cls.query.filter_by(equipment_id=equipment_id, user_id=user_id).first()
+        return res
+
+    @classmethod
+    def assign_equipment_to_user(cls, user_id, equipment_id, amount):
+        existing_user_equipment = cls.get_existing_user_equipment(user_id, equipment_id)
+        if existing_user_equipment:
+            existing_user_equipment.amount = amount
+            db.session.commit()
+            return
+
+        equipment_user=cls(equipment_id=equipment_id, user_id=user_id, amount=amount)
+        db.session.add(equipment_user)
+        db.session.commit()
+
+    @classmethod
+    def get_each_user_eq_amount(cls, equipment_id):
+        return {
+            eq_u.user_id: eq_u.amount for eq_u in  cls.query.filter_by(equipment_id=equipment_id).all()
+        }
+
 
 class Equipment(db.Model):
     """Model for equipment"""
@@ -62,7 +85,18 @@ class Equipment(db.Model):
 
     def get_public_data(self):
         if not self.owner_id:
-            return self
+            users = []
+            for user in self.users:
+                equipment_user = EquipmentUser.get_existing_user_equipment(
+                    user.user_id, self.equipment_id
+                )
+                users.append({
+                    'user_id': equipment_user.user_id,
+                    'amount': equipment_user.amount
+                })
+            res = dict(self.__dict__)
+            res['users'] = users
+            return res
 
     def __repr__(self):
         return f'Equipment: {self.name}'

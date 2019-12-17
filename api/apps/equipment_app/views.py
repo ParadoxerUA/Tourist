@@ -43,12 +43,13 @@ class EquipmentView(BaseView):
     @login_required
     def patch(self, equipment_id):
         try:
-            equipment_data = PatchEquipmentSchema().load(request.json)
+            request_data = PatchEquipmentSchema().load(request.json)
         except ValidationError as err:
+            print(err)
             return self._get_response(err.messages, status_code=400)
-        if equipment_data.get('amount'):
-            response = self.equipment_controller.assign_equipment_to_user(
-                equipment_id, equipment_data['amount'], equipment_data['user_id']
+        if request_data.get('users_eq_amount'):
+            response = self.equipment_controller.assign_equipment_to_users(
+                equipment_id, request_data['users_eq_amount']
             )
         else:
             return self._get_response('Invalid data in body', status_code=400)

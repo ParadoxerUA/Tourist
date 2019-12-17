@@ -49,21 +49,40 @@ class EquipmentController:
         return response, 201
 
     @classmethod
-    def assign_equipment_to_user(cls, equipment_id, amount, user_id):
+    def assign_equipment_to_users(cls, equipment_id, users_eq_amount):
         equipment = cls._get_eq(equipment_id)
         user = cls._get_user(g.user_id)
-        target_user = cls._get_user(user_id)
+        target_users = [cls._get_user(u_eq['user_id']) for u_eq in users_eq_amount]
         trip = cls._get_trip(equipment.trip_id)
         user_has_role = equipment.role_id in (role.id for role in user.roles)
         is_admin = user == trip.admin
-        target_user_in_trip = trip.trip_id in (trip.trip_id for trip in target_user.trips)
 
-        if (user_has_role or is_admin) and target_user_in_trip:
-            response = {
-                'equipment_id': equipment_id,
-                'amount': amount,
-                'user_id': user_id,
-            }
+        target_users_in_trip = cls._check_if_users_in_trip(target_users, trip)
+
+        if (user_has_role or is_admin) and target_users_in_trip:
+            target_equipment_amount = cls._get_incoming_eq_amount(equipment_id, users_eq_amount)
+            if equipment.quantity < target_equipment_amount:
+                return 'Too many items to dispense', 409
+
+            for user_eq_amount in users_eq_amount:
+                current_app.models.EquipmentUser.assign_equipment_to_user(
+                    user_eq_amount['user_id'], equipment_id, user_eq_amount['equipment_amount']
+                )
+            return 'Items successfully dispensed', 201
         else:
-            response = 'You dont have rights'
-        return response, 201
+            return 'You dont have rights', 201
+
+    @staticmethod
+    def _check_if_users_in_trip(users, trip):
+        for user in users:
+            if not trip.trip_id in (trip.trip_id for trip in user.trips):
+                return False
+        return True
+
+    @staticmethod
+    def _get_incoming_eq_amount(equipment_id, each_user_eq_amount):
+        existing_user_eq_amount = current_app.models.EquipmentUser.get_each_user_eq_amount(equipment_id)
+        for u_eq in each_user_eq_amount:
+            existing_user_eq_amount[u_eq['user_id']] = u_eq['equipment_amount']
+
+        return sum(existing_user_eq_amount.values())
