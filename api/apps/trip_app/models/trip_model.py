@@ -87,7 +87,7 @@ class Trip(db.Model):
     def get_fields(self, args):
         public_data = {}
         if not args:
-            args = list(self.__dict__.keys()) 
+            args = list(self.__dict__.keys())
             args.extend(['users', 'admin', 'points', 'roles'])
         for field in args:
             if field in ['users', 'admin', 'equipment']:
