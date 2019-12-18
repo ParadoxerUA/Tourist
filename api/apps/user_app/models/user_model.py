@@ -126,7 +126,10 @@ class User(db.Model):
             elif field == 'trips':
                 public_data[field] = [trip.get_trip_details(self.user_id) for trip in getattr(self, field)]
             elif field == 'equipment':
-                public_data[field] = getattr(self, field).filter_by(trip_id=trip_id).all()
+                item_list = getattr(self, field).filter_by(trip_id=trip_id).all()
+                public_data[field] = [item.get_quantity(self.user_id) for item in item_list]
+            elif field == 'personal_stuff':
+                public_data[field] = [item for item in getattr(self, field) if item.trip_id == trip_id]
             else:
                 public_data[field] = getattr(self, field)
         return public_data
