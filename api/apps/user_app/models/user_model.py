@@ -125,6 +125,9 @@ class User(db.Model):
                 public_data[field] = [role for role in getattr(self, field) if role.trip_id == trip_id]
             elif field == 'trips':
                 public_data[field] = [trip.get_trip_details(self.user_id) for trip in getattr(self, field)]
+            elif field == 'equipment':
+                public_data[field] = getattr(self, field).filter_by(trip_id=trip_id).all()
             else:
                 public_data[field] = getattr(self, field)
+        print(public_data)
         return public_data
