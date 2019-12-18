@@ -129,5 +129,4 @@ class User(db.Model):
                 public_data[field] = getattr(self, field).filter_by(trip_id=trip_id).all()
             else:
                 public_data[field] = getattr(self, field)
-        print(public_data)
         return public_data

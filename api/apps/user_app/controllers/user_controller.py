@@ -109,6 +109,8 @@ class UserController:
         if user_id:
             fields = [field for field in fields if field not in ['email', 'password_hash', 'uuid', 'is_active', 'registration_time']]
         user = cls._get_user(user_id or g.user_id)
+        if (not user.user_id == g.user_id) and ('personal_stuff' in fields):
+            fields.remove('personal_stuff')
         user_data = user.get_fields(fields, trip_id=trip_id)
         return user_data, 201
 
