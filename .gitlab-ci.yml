@@ -18,3 +18,5 @@ deploy job:
     stage: deploy
     script:
       - echo 'You are deploying now'
+    # only:
+    #   - development
