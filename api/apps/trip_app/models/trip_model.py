@@ -92,11 +92,16 @@ class Trip(db.Model):
         for field in args:
             if field in ['users', 'admin', 'equipment']:
                 try:
-                    public_data[field] = [field.get_public_data() for field in getattr(self, field) if field.get_public_data()]
+                    public_data[field] = [field.get_public_data() for field in getattr(self, field)]
                 except:
                     public_data[field] = getattr(self, field).get_public_data()
             else:
                 public_data[field] = getattr(self, field)
+        try:
+            public_data['equipment'] = [x for x in public_data['equipment'] if x is not None]
+        except:
+            pass
+        public_data = {k:v for k, v in public_data.items() if v}
         return public_data
 
     def get_trip_details(self, user_id):
