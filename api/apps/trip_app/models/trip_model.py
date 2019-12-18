@@ -18,15 +18,21 @@ class Trip(db.Model):
     status = db.Column(db.String(20), default='Open')
     admin_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), nullable=False)
     points = db.relationship('Point', cascade='all, delete, delete-orphan', lazy=True, 
-        backref=db.backref('trip', lazy=True))
+                         backref=db.backref('trip', lazy=True))
     trip_uuid = db.Column(db.String(36), unique=True)
     users = db.relationship('User', secondary=trip_user_table, lazy=True,
-                            backref=db.backref('trips', lazy=True))
+                         backref=db.backref('trips', lazy=True))
     equipment = db.relationship('apps.equipment_app.models.equipment_model.Equipment',
                          backref=db.backref('trip'),
                          cascade='all, delete, delete-orphan',
                          single_parent=True)
-    roles = db.relationship('Role', backref='trip', lazy=True)
+    roles = db.relationship('Role', backref='trip', cascade='all, delete, delete-orphan', lazy=True)
+
+
+
+    def delete_trip(self):
+        db.session.delete(self)
+        db.session.commit()
 
     @classmethod
     def get_trip_by_id(cls, trip_id):
@@ -86,11 +92,16 @@ class Trip(db.Model):
         for field in args:
             if field in ['users', 'admin', 'equipment']:
                 try:
-                    public_data[field] = [field.get_public_data() for field in getattr(self, field) if field.get_public_data()]
+                    public_data[field] = [field.get_public_data() for field in getattr(self, field)]
                 except:
                     public_data[field] = getattr(self, field).get_public_data()
             else:
                 public_data[field] = getattr(self, field)
+        try:
+            public_data['equipment'] = [x for x in public_data['equipment'] if x is not None]
+        except:
+            pass
+        public_data = {k:v for k, v in public_data.items() if v}
         return public_data
 
     def get_trip_details(self, user_id):

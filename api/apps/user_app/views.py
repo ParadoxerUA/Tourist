@@ -38,8 +38,8 @@ class UserView(BaseView):
     # delete user from trip
     @login_required
     def delete(self):
-        user_to_delete = request.args.get('user_id') or g.user_id
-        trip_id = request.args.get('trip_id')
+        user_to_delete = int(request.args.get('user_id')) if request.args.get('user_id') else g.user_id
+        trip_id = int(request.args.get('trip_id')) if request.args.get('trip_id') else None
         result, status_code = self.user_controller.delete_user_from_trip(trip_id, user_to_delete)
         return self._get_response(result, status_code=status_code)
 
@@ -95,7 +95,6 @@ class UserAvatarView(BaseView):
         except ValidationError as e:
             return self._get_response(e.messages, status_code=400)
         return self._get_response(f'User`s avatar updated', status_code=200)
-
 
     def get(self):
         avatar = request.args.get('avatar')
