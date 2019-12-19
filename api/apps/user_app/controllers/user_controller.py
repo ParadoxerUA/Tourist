@@ -93,16 +93,24 @@ class UserController:
         if (g.user_id == trip.admin_id) and (user_to_delete == g.user_id):
             participants = trip.get_trip_details(g.user_id)['participants']
             if participants > 1:
-                return 'The captain goes down with the ship', 400
+                return 'The captain is last to leave a ship', 400
             user = cls._get_user(user_to_delete)
             trip.delete_user(user),
             return trip.delete_trip(), 201
         user = cls._get_user(user_to_delete)
+        items = trip.get_fields(['equipment'])
+        if items:
+            for item in items['equipment']:
+                for user_eq in item['users']:
+                    if user_eq['user_id'] == user_to_delete:
+                        current_app.models.EquipmentUser.assign_equipment_to_user(user_to_delete, item['equipment_id'], 0)
         roles = user.get_fields(['roles'], trip_id=trip_id)
         if roles:
             for role in roles['roles']:
                 role.toggle_role(user)
         return trip.delete_user(user), 201
+
+
 
     @classmethod
     def get_user_data(cls, fields, *, trip_id=None, user_id=None):

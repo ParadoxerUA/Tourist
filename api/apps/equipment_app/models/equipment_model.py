@@ -1,5 +1,6 @@
 from database import db
 
+
 class EquipmentUser(db.Model):
     __tablename__ = 'equipment_user'
     __table_args__ = {'extend_existing': True}
@@ -21,7 +22,7 @@ class EquipmentUser(db.Model):
             db.session.commit()
             return
 
-        equipment_user=cls(equipment_id=equipment_id, user_id=user_id, amount=amount)
+        equipment_user = cls(equipment_id=equipment_id, user_id=user_id, amount=amount)
         db.session.add(equipment_user)
         db.session.commit()
 
