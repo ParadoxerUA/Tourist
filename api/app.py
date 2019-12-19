@@ -17,7 +17,6 @@ def create_app(config):
     _setup_blueprints(main_app, APPS)
     main_app.app_context().push()
     set_db(main_app)
-
     return main_app
 
 
@@ -27,6 +26,7 @@ if __name__ == '__main__':
     # only for development
     from flask_cors import CORS
     CORS(app)
+
 
 
     @app.route('/static/<path:path>')

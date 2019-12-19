@@ -1,7 +1,8 @@
 from flask.views import MethodView
-from flask import jsonify, make_response, current_app
+from flask import jsonify, make_response, current_app, g
 from datetime import datetime
 
+request_counter = 0
 
 class BaseView(MethodView):
     def _get_response(self, data, *, status_code=200):
@@ -9,7 +10,9 @@ class BaseView(MethodView):
             'data': self._serialize(data),
             'date': datetime.now().__str__(),
         }
-        
+        global request_counter
+        request_counter += 1
+        print('request_counter=' + str(request_counter))
         return make_response(jsonify(response), status_code)
 
     def _serialize(self, data):
