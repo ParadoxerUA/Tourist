@@ -16,8 +16,9 @@ class EquipmentView(BaseView):
 
     @login_required
     def put(self, equipment_id):
+        req = {k:v for k, v in request.json.items() if v}
         try:
-            new_equipment_data = EquipmentSchema().load(request.json)
+            new_equipment_data = EquipmentSchema().load(req)
         except ValidationError as err:
             return self._get_response(data=err.messages, status_code=400)
         response, status_code = self.equipment_controller.update_equipment(equipment_id, new_equipment_data)
