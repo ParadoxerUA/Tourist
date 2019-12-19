@@ -93,13 +93,19 @@ class Equipment(db.Model):
                 equipment_user = EquipmentUser.get_existing_user_equipment(
                     user.user_id, self.equipment_id
                 )
-                users.append({
-                    'user_id': equipment_user.user_id,
-                    'amount': equipment_user.amount
-                })
+                if equipment_user.amount > 0:
+                    users.append({
+                        'user_id': equipment_user.user_id,
+                        'amount': equipment_user.amount
+                    })
             res = dict(self.__dict__)
             res['users'] = users
             return res
+
+    def get_quantity(self, user_id):
+        equipment_user = EquipmentUser.get_existing_user_equipment(user_id, self.equipment_id)
+        self.quantity = equipment_user.amount
+        return self
 
     def __repr__(self):
         return f'Equipment: {self.name}'
