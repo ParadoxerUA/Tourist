@@ -15,10 +15,9 @@ RUN ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
 
 WORKDIR /opt/tourist/fe
 RUN git init && git remote add origin git@gitlab.com:Kv056Python/touristfe.git
-RUN git fetch
-RUN git checkout origin/development
+RUN git fetch && git checkout fix/design
 
 RUN npm install
 RUN npm install -g @angular/cli@8.3.8
 
-CMD ["ng"  , "serve", "--host", "0.0.0.0"]
+CMD ["ng"  , "serve",  "--host", "0.0.0.0", "--disable-host-check"]

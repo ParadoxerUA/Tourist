@@ -1,5 +1,5 @@
 from celery import Celery
-from config import MailServiceConfig, CeleryConfig
+from config import MailServiceConfig, CeleryConfig, DockerConfig
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
@@ -9,6 +9,11 @@ import json
 app = Celery(
     CeleryConfig.CELERY_APP_NAME,
     broker=CeleryConfig.CELERY_BROKER_URL
+)
+
+dockerApp = Celery(
+    DockerConfig.CELERY_APP_NAME,
+    broker=DockerConfig.CELERY_BROKER_URL
 )
 
 @app.task

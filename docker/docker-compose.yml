@@ -1,0 +1,10 @@
+version: "3"
+services:
+  nginx:
+    container_name: nginx
+    image: tourist-nginx
+    ports:
+      - 7000:80
+    depends_on:
+      - server
+    command: nginx -g 'daemon off';

@@ -11,3 +11,8 @@ class MailServiceConfig:
 class CeleryConfig:
     CELERY_APP_NAME = 'tasks'
     CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+
+class DockerConfig:
+    CELERY_APP_NAME = 'tasks'
+    CELERY_BROKER_URL = 'redis://redis:6379/0'
