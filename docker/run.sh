@@ -1,4 +1,4 @@
-docker run -d --network=tourist-network --name postgres postgres:latest
+
 docker run -d --network=tourist-network --name redis redis:latest
 docker run -d --network=tourist-network --name tourist-celery tourist-celery:latest
 
