@@ -1,6 +1,38 @@
 from database import db
 
 
+class EquipmentUser(db.Model):
+    __tablename__ = 'equipment_user'
+    __table_args__ = {'extend_existing': True}
+
+    equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.equipment_id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'), primary_key=True)
+    amount = db.Column(db.Integer, nullable=False)
+
+    @classmethod
+    def get_existing_user_equipment(cls, user_id, equipment_id):
+        res = cls.query.filter_by(equipment_id=equipment_id, user_id=user_id).first()
+        return res
+
+    @classmethod
+    def assign_equipment_to_user(cls, user_id, equipment_id, amount):
+        existing_user_equipment = cls.get_existing_user_equipment(user_id, equipment_id)
+        if existing_user_equipment:
+            existing_user_equipment.amount = amount
+            db.session.commit()
+            return
+
+        equipment_user = cls(equipment_id=equipment_id, user_id=user_id, amount=amount)
+        db.session.add(equipment_user)
+        db.session.commit()
+
+    @classmethod
+    def get_each_user_eq_amount(cls, equipment_id):
+        return {
+            eq_u.user_id: eq_u.amount for eq_u in  cls.query.filter_by(equipment_id=equipment_id).all()
+        }
+
+
 class Equipment(db.Model):
     """Model for equipment"""
 
@@ -15,6 +47,8 @@ class Equipment(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user_profile.user_id'),
         nullable=True)
     owner = db.relationship('User', backref='personal_stuff')
+    users = db.relationship('User', secondary='equipment_user', lazy='dynamic',
+                            backref=db.backref('equipment', lazy='dynamic'))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=True)
 
     @classmethod
@@ -37,6 +71,7 @@ class Equipment(db.Model):
         """Update equipment data in the list of items"""
 
         equipment = cls.get_equipment_by_id(id)
+        equipment.role_id = updated_data.get('role_id')
         equipment.name = updated_data['name']
         equipment.weight = updated_data['weight']
         equipment.quantity = updated_data['quantity']
@@ -54,7 +89,24 @@ class Equipment(db.Model):
 
     def get_public_data(self):
         if not self.owner_id:
-            return self
+            users = []
+            for user in self.users:
+                equipment_user = EquipmentUser.get_existing_user_equipment(
+                    user.user_id, self.equipment_id
+                )
+                if equipment_user.amount > 0:
+                    users.append({
+                        'user_id': equipment_user.user_id,
+                        'amount': equipment_user.amount
+                    })
+            res = dict(self.__dict__)
+            res['users'] = users
+            return res
+
+    def get_quantity(self, user_id):
+        equipment_user = EquipmentUser.get_existing_user_equipment(user_id, self.equipment_id)
+        self.quantity = equipment_user.amount
+        return self
 
     def __repr__(self):
         return f'Equipment: {self.name}'
