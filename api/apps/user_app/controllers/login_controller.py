@@ -91,6 +91,7 @@ class LoginController:
 
     @classmethod
     def _create_session(cls, user):
+        broker_url = current_app.config['CELERY_BROKER_URL']
         session_id = str(uuid.uuid1())
         login_time = 24 * 60 * 60
         started_at = time.time()
@@ -100,7 +101,7 @@ class LoginController:
             'started_at': started_at,
             'expired_at': expired_at,
         }
-        with redis.Redis() as redis_client:
+        with redis.Redis(host=u'redis', port=6379, db=0) as redis_client:
             redis_client.set(session_id, json.dumps(session_data), ex=login_time)
 
         return session_id
