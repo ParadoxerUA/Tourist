@@ -17,6 +17,7 @@ WORKDIR /opt/tourist/fe
 RUN git init && git remote add origin git@gitlab.com:Kv056Python/touristfe.git
 RUN git fetch && git checkout fix/design
 
+COPY config.ts /opt/tourist/fe/src/app/_services/config.ts
 RUN npm install
 RUN npm install -g @angular/cli@8.3.8
 
