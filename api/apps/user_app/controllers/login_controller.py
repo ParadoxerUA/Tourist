@@ -91,14 +91,6 @@ class LoginController:
 
     @classmethod
     def _create_session(cls, user):
-        broker_url = current_app.config['CELERY_BROKER_URL']
-        slashes_index = broker_url.index('//')
-        semicolon_index = broker_url.index(':', slashes_index)
-        last_slash_index = broker_url.index('/', semicolon_index)
-
-        host = broker_url[slashes_index+2:semicolon_index]
-        port = broker_url[semicolon_index+1:last_slash_index]
-        db = broker_url[last_slash_index+1:]
         session_id = str(uuid.uuid1())
         login_time = 24 * 60 * 60
         started_at = time.time()
@@ -108,7 +100,19 @@ class LoginController:
             'started_at': started_at,
             'expired_at': expired_at,
         }
-        with redis.Redis(host=host, port=port, db=db) as redis_client:
+        with cls.create_redis_tmp() as redis_client:
             redis_client.set(session_id, json.dumps(session_data), ex=login_time)
 
         return session_id
+
+    @classmethod
+    def create_redis_tmp(cls):
+        broker_url = current_app.config['CELERY_BROKER_URL']
+        slashes_index = broker_url.index('//')
+        semicolon_index = broker_url.index(':', slashes_index)
+        last_slash_index = broker_url.index('/', semicolon_index)
+
+        host = broker_url[slashes_index + 2:semicolon_index]
+        port = broker_url[semicolon_index + 1:last_slash_index]
+        db = broker_url[last_slash_index + 1:]
+        return redis.Redis(host=host, port=port, db=db)

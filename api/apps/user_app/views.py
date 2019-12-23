@@ -74,7 +74,7 @@ class LoginView(BaseView):
 class LogoutView(BaseView):
     @login_required
     def post(self):
-        with redis.Redis() as redis_client:
+        with create_redis_tmp() as redis_client:
             redis_client.delete(g.user_id)
             redis_client.delete(request.headers.get('Authorization'))
         return self._get_response('You successfully logged out.')
@@ -103,3 +103,14 @@ class UserAvatarView(BaseView):
         except FileNotFoundError as e:
             return self._get_response("file not found", status_code=400)
 
+
+def create_redis_tmp():
+    broker_url = current_app.config['CELERY_BROKER_URL']
+    slashes_index = broker_url.index('//')
+    semicolon_index = broker_url.index(':', slashes_index)
+    last_slash_index = broker_url.index('/', semicolon_index)
+
+    host = broker_url[slashes_index + 2:semicolon_index]
+    port = broker_url[semicolon_index + 1:last_slash_index]
+    db = broker_url[last_slash_index + 1:]
+    return redis.Redis(host=host, port=port, db=db)

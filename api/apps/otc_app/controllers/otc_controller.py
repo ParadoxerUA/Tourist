@@ -9,7 +9,7 @@ import redis
 class OtcController():
     @classmethod
     def handle_uuid(cls, uuid):
-        redis_client = redis.Redis()
+        redis_client = cls.create_redis_tmp()
         otc_type = redis_client.get(uuid)
         if otc_type is None:
             raise OtcNoneError('specified uuid does not exist')
@@ -32,7 +32,7 @@ class OtcController():
     @classmethod
     def create_trip_link_uuid(cls, *, current_uuid=None):
         if current_uuid:
-            redis_client = redis.Redis()
+            redis_client = cls.create_redis_tmp()
             redis_client.delete(current_uuid)
         otc = trip_link_otc.TripLinkOtc()
         return cls._setup_otc(otc)
@@ -42,3 +42,15 @@ class OtcController():
         otc.create_otc()
         otc.add_otc_to_redis()
         return otc.get_otc()
+
+    @classmethod
+    def create_redis_tmp(cls):
+        broker_url = current_app.config['CELERY_BROKER_URL']
+        slashes_index = broker_url.index('//')
+        semicolon_index = broker_url.index(':', slashes_index)
+        last_slash_index = broker_url.index('/', semicolon_index)
+
+        host = broker_url[slashes_index + 2:semicolon_index]
+        port = broker_url[semicolon_index + 1:last_slash_index]
+        db = broker_url[last_slash_index + 1:]
+        return redis.Redis(host=host, port=port, db=db)
