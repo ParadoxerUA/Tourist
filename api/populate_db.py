@@ -45,7 +45,7 @@ def create_users(from_number, amount):
 
 
 # to create 5 new users
-create_users(0, 5)
+# create_users(0, 5)
 
 # user = User.query.first()
 # trip = Trip.query.first()

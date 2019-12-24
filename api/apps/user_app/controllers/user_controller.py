@@ -93,25 +93,34 @@ class UserController:
         if (g.user_id == trip.admin_id) and (user_to_delete == g.user_id):
             participants = trip.get_trip_details(g.user_id)['participants']
             if participants > 1:
-                return 'The captain goes down with the ship', 400
+                return 'The captain is last to leave a ship', 400
             user = cls._get_user(user_to_delete)
             trip.delete_user(user),
             return trip.delete_trip(), 201
         user = cls._get_user(user_to_delete)
+        items = trip.get_fields(['equipment'])
+        if items:
+            for item in items['equipment']:
+                for user_eq in item['users']:
+                    if user_eq['user_id'] == user_to_delete:
+                        current_app.models.EquipmentUser.assign_equipment_to_user(user_to_delete, item['equipment_id'], 0)
         roles = user.get_fields(['roles'], trip_id=trip_id)
         if roles:
             for role in roles['roles']:
                 role.toggle_role(user)
         return trip.delete_user(user), 201
 
+
+
     @classmethod
-    def get_user_data(cls, fields, *, trip_id=None):
-        user = cls._get_user(g.user_id)
-        if trip_id:
-            try:
-                trip_id = int(trip_id)
-            except TypeError:
-                'trip_id should be int', 402
+    def get_user_data(cls, fields, *, trip_id=None, user_id=None):
+        if user_id:
+            fields = [field for field in fields if field not in ['email', 'password_hash', 'uuid', 'is_active', 'registration_time']]
+        user = cls._get_user(user_id or g.user_id)
+        if not user:
+            return 'User not exist', 401
+        if (not user.user_id == g.user_id) and ('personal_stuff' in fields):
+            fields.remove('personal_stuff')
         user_data = user.get_fields(fields, trip_id=trip_id)
         return user_data, 201
 
